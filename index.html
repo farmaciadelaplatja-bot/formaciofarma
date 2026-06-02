@@ -1,0 +1,1617 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FormacióFarma — Generador de Contenido</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #0e1117;
+    --surface: #161b27;
+    --surface2: #1e2535;
+    --border: #2a3348;
+    --accent: #4fffb0;
+    --accent2: #6e9dff;
+    --accent3: #ff6b6b;
+    --accent4: #ffd166;
+    --text: #e8ecf4;
+    --text-muted: #7a8ba6;
+    --radius: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    padding: 24px 16px;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(78,255,176,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(78,255,176,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container { max-width: 900px; margin: 0 auto; position: relative; z-index: 1; }
+
+  header { margin-bottom: 28px; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+
+  .logo { font-family: 'DM Serif Display', serif; font-size: 28px; color: var(--accent); letter-spacing: -0.5px; }
+  .logo span { color: var(--text-muted); font-style: italic; }
+  .subtitle { color: var(--text-muted); font-size: 13px; font-family: 'DM Mono', monospace; margin-top: 4px; letter-spacing: 0.5px; }
+
+  /* Nav tabs */
+  .nav-tabs {
+    display: flex; gap: 6px; background: var(--surface); padding: 5px;
+    border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 24px;
+  }
+  .nav-tab {
+    flex: 1; padding: 9px 12px; border: none; border-radius: 8px; background: transparent;
+    color: var(--text-muted); font-family: 'DM Sans', sans-serif; font-size: 13px;
+    font-weight: 500; cursor: pointer; transition: all 0.2s; text-align: center;
+  }
+  .nav-tab.active { background: var(--surface2); color: var(--accent); border: 1px solid var(--border); }
+
+  /* Mode selector */
+  .mode-tabs {
+    display: flex; gap: 8px; margin-bottom: 24px; background: var(--surface);
+    padding: 6px; border-radius: var(--radius); border: 1px solid var(--border);
+  }
+  .mode-tab {
+    flex: 1; padding: 10px 16px; border: none; border-radius: 8px; background: transparent;
+    color: var(--text-muted); font-family: 'DM Sans', sans-serif; font-size: 13px;
+    font-weight: 500; cursor: pointer; transition: all 0.2s; text-align: center;
+  }
+  .mode-tab.active { background: var(--surface2); color: var(--accent); border: 1px solid var(--border); }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px; margin-bottom: 16px;
+  }
+  .card-title {
+    font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent);
+    text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 6px; font-family: 'DM Mono', monospace; letter-spacing: 0.3px; }
+
+  input, select, textarea {
+    width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+    color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px;
+    padding: 10px 14px; outline: none; transition: border-color 0.2s; margin-bottom: 14px;
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+  select option { background: var(--surface); }
+  textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+  .tag {
+    padding: 5px 12px; border-radius: 20px; font-size: 12px; cursor: pointer;
+    border: 1px solid var(--border); background: transparent; color: var(--text-muted);
+    font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+  }
+  .tag.selected { background: rgba(78,255,176,0.12); border-color: var(--accent); color: var(--accent); }
+
+  .upload-zone {
+    border: 1px dashed var(--border); border-radius: 8px; padding: 20px; text-align: center;
+    color: var(--text-muted); font-size: 13px; cursor: pointer; transition: all 0.2s;
+    margin-bottom: 14px; position: relative;
+  }
+  .upload-zone:hover { border-color: var(--accent); color: var(--accent); background: rgba(78,255,176,0.04); }
+  .upload-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; margin: 0; padding: 0; border: none; height: 100%; }
+
+  .file-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .file-item {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+    padding: 8px 12px; font-size: 12px; font-family: 'DM Mono', monospace; color: var(--text-muted);
+  }
+  .file-item .remove { background: none; border: none; color: var(--accent3); cursor: pointer; font-size: 14px; line-height: 1; padding: 0 2px; }
+
+  .data-row { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 8px; align-items: end; margin-bottom: 8px; }
+  .data-row input { margin-bottom: 0; }
+
+  .btn-icon {
+    background: var(--surface2); border: 1px solid var(--border); color: var(--text-muted);
+    border-radius: 8px; width: 38px; height: 38px; cursor: pointer; font-size: 16px;
+    display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0;
+  }
+  .btn-icon:hover { border-color: var(--accent3); color: var(--accent3); }
+  .btn-icon.add:hover { border-color: var(--accent); color: var(--accent); }
+
+  .btn-generate {
+    width: 100%; padding: 16px; background: var(--accent); color: var(--bg); border: none;
+    border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 15px;
+    font-weight: 600; cursor: pointer; transition: all 0.2s; letter-spacing: 0.3px; margin-top: 8px;
+  }
+  .btn-generate:hover { background: #6bffbf; transform: translateY(-1px); }
+  .btn-generate:disabled { background: var(--border); color: var(--text-muted); transform: none; cursor: not-allowed; }
+
+  .output-container { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-top: 24px; }
+  .output-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--border); background: var(--surface2); }
+  .output-title { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; }
+  .output-actions { display: flex; gap: 8px; }
+
+  .btn-small {
+    padding: 6px 14px; border-radius: 6px; font-size: 12px; font-family: 'DM Sans', sans-serif;
+    font-weight: 500; cursor: pointer; border: 1px solid var(--border); background: transparent;
+    color: var(--text-muted); transition: all 0.2s;
+  }
+  .btn-small:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-small.primary { background: rgba(78,255,176,0.1); border-color: var(--accent); color: var(--accent); }
+  .btn-small.gold { background: rgba(255,209,102,0.1); border-color: var(--accent4); color: var(--accent4); }
+
+  .output-body {
+    padding: 24px; font-size: 14px; line-height: 1.8; color: var(--text);
+    white-space: pre-wrap; font-family: 'DM Sans', sans-serif; min-height: 200px;
+  }
+  .output-body.loading { display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-family: 'DM Mono', monospace; font-size: 13px; }
+
+  .loader { display: inline-block; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; margin-right: 12px; animation: pulse 1s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.3; transform: scale(0.6); } }
+
+  .prompt-preview {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px;
+    font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-muted); line-height: 1.7;
+    max-height: 200px; overflow-y: auto; margin-top: 8px; display: none;
+  }
+  .prompt-preview.visible { display: block; }
+  .toggle-prompt {
+    background: none; border: none; color: var(--text-muted); font-size: 12px; cursor: pointer;
+    font-family: 'DM Mono', monospace; padding: 0; margin-top: 8px; text-decoration: underline; text-underline-offset: 3px;
+  }
+  .toggle-prompt:hover { color: var(--accent2); }
+
+  .output-body h2 { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--accent); margin-bottom: 12px; margin-top: 20px; }
+  .output-body h2:first-child { margin-top: 0; }
+  .output-body h3 { font-size: 11px; font-weight: 600; color: var(--accent2); margin-bottom: 8px; margin-top: 16px; font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: 1px; }
+  .output-body p { margin-bottom: 10px; }
+  .output-body ul { padding-left: 20px; margin-bottom: 10px; }
+  .output-body li { margin-bottom: 4px; }
+  .output-body strong { color: var(--accent); }
+
+  /* ── QUIZ INTERACTIVE ── */
+  .quiz-section { margin-top: 20px; border-top: 1px solid var(--border); padding-top: 20px; }
+  .quiz-header { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent4); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 16px; }
+  .quiz-question { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 12px; }
+  .quiz-question p { font-size: 14px; font-weight: 500; margin-bottom: 12px; color: var(--text); }
+  .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+  .quiz-option {
+    padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--bg); color: var(--text-muted); font-size: 13px; cursor: pointer;
+    transition: all 0.2s; text-align: left; font-family: 'DM Sans', sans-serif;
+  }
+  .quiz-option:hover:not(:disabled) { border-color: var(--accent2); color: var(--text); }
+  .quiz-option.correct { border-color: var(--accent); background: rgba(78,255,176,0.1); color: var(--accent); }
+  .quiz-option.wrong { border-color: var(--accent3); background: rgba(255,107,107,0.1); color: var(--accent3); }
+  .quiz-option:disabled { cursor: not-allowed; opacity: 0.7; }
+  .quiz-feedback { font-size: 12px; margin-top: 8px; padding: 8px 12px; border-radius: 6px; display: none; }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.ok { background: rgba(78,255,176,0.08); color: var(--accent); }
+  .quiz-feedback.ko { background: rgba(255,107,107,0.08); color: var(--accent3); }
+
+  /* Participant selector for quiz */
+  .participant-select {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
+    padding: 12px 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+  }
+  .participant-select label { margin: 0; white-space: nowrap; }
+  .participant-select select { margin: 0; flex: 1; }
+
+  /* ── GAMIFICATION PANEL ── */
+  #panel-gamification { display: none; }
+
+  .ranking-container { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  .podium {
+    display: flex; align-items: flex-end; justify-content: center;
+    gap: 8px; height: 120px; margin-bottom: 20px;
+  }
+  .podium-place {
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+    gap: 6px; flex: 1;
+  }
+  .podium-name { font-size: 11px; color: var(--text-muted); font-family: 'DM Mono', monospace; text-align: center; }
+  .podium-score { font-size: 12px; font-weight: 600; font-family: 'DM Mono', monospace; }
+  .podium-bar {
+    width: 100%; border-radius: 6px 6px 0 0; display: flex; align-items: center;
+    justify-content: center; font-size: 18px;
+  }
+  .podium-bar.p1 { background: linear-gradient(180deg, #ffd166, #e6a800); height: 80px; }
+  .podium-bar.p2 { background: linear-gradient(180deg, #9ba4b4, #6b7685); height: 60px; }
+  .podium-bar.p3 { background: linear-gradient(180deg, #cd7f32, #a05c1a); height: 45px; }
+
+  .ranking-list { display: flex; flex-direction: column; gap: 8px; }
+  .ranking-item {
+    display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+    background: var(--bg); border: 1px solid var(--border); border-radius: 8px; transition: all 0.2s;
+  }
+  .ranking-item:hover { border-color: var(--border); background: var(--surface2); }
+  .ranking-pos { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text-muted); width: 20px; text-align: center; }
+  .ranking-name { flex: 1; font-size: 14px; font-weight: 500; }
+  .ranking-pts { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--accent); }
+  .ranking-streak { font-size: 11px; color: var(--accent4); }
+  .ranking-badges { display: flex; gap: 4px; }
+  .badge { font-size: 14px; title: attr(data-label); cursor: default; }
+
+  .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+  .stat-box {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+    padding: 14px; text-align: center;
+  }
+  .stat-val { font-family: 'DM Serif Display', serif; font-size: 26px; color: var(--accent); }
+  .stat-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+
+  /* Player management */
+  .player-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+  .player-item {
+    display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+    background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+  }
+  .player-item .player-name { flex: 1; font-size: 14px; }
+  .player-item .player-pts { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--accent); margin-right: 8px; }
+  .player-item .remove { background: none; border: none; color: var(--accent3); cursor: pointer; font-size: 16px; }
+
+  .add-player-row { display: flex; gap: 8px; }
+  .add-player-row input { margin: 0; flex: 1; }
+  .btn-add { padding: 10px 18px; background: rgba(78,255,176,0.1); border: 1px solid var(--accent); color: var(--accent); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
+  .btn-add:hover { background: rgba(78,255,176,0.2); }
+
+  /* History */
+  .history-list { display: flex; flex-direction: column; gap: 8px; }
+  .history-item {
+    padding: 12px 14px; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; font-size: 13px;
+  }
+  .history-date { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text-muted); margin-bottom: 4px; }
+  .history-topic { font-weight: 500; margin-bottom: 4px; }
+  .history-scores { display: flex; gap: 8px; flex-wrap: wrap; }
+  .history-score { font-size: 11px; padding: 3px 8px; background: var(--surface2); border-radius: 4px; font-family: 'DM Mono', monospace; }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px; background: var(--surface2);
+    border: 1px solid var(--accent); color: var(--accent); padding: 12px 20px;
+    border-radius: 10px; font-size: 13px; font-family: 'DM Mono', monospace;
+    z-index: 999; transform: translateY(80px); opacity: 0; transition: all 0.3s;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* Page sections */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  @media (max-width: 600px) {
+    .grid-2, .grid-3, .ranking-container { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .data-row { grid-template-columns: 1fr 1fr auto; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div>
+      <div class="logo">Formació<span>Farma</span></div>
+      <div class="subtitle">// farmàcia ortopèdia platja cubelles</div>
+    </div>
+    <div id="conn-status" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-muted);cursor:pointer;" onclick="loadState()" title="Clica per refrescar">
+      <span style="color:var(--text-muted)">⏳ Connectant...</span>
+    </div>
+  </header>
+
+  <!-- Nav -->
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('generator')">⚡ Generador</button>
+    <button class="nav-tab" onclick="showPage('quiz')">❓ Quiz del dia</button>
+    <button class="nav-tab" onclick="showPage('gamification')">🏆 Ranking</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       PAGE 1: GENERATOR
+  ══════════════════════════════════════════ -->
+  <div class="page active" id="page-generator">
+
+    <div class="mode-tabs">
+      <button class="mode-tab active" onclick="setMode('auto')">🤖 Automàtic (Farmatic)</button>
+      <button class="mode-tab" onclick="setMode('manual')">✏️ Manual (setmanal)</button>
+    </div>
+
+    <div id="mode-auto">
+      <div class="card">
+        <div class="card-title">Dades Farmatic (exportació Excel)</div>
+
+        <!-- Excel upload zone -->
+        <div id="excel-upload-zone" style="border:1px dashed var(--border);border-radius:8px;padding:20px;text-align:center;color:var(--text-muted);font-size:13px;cursor:pointer;transition:all 0.2s;margin-bottom:12px;position:relative;">
+          <input type="file" accept=".xlsx,.xls,.csv" onchange="handleExcel(event)" style="position:absolute;inset:0;opacity:0;cursor:pointer;margin:0;padding:0;border:none;height:100%;">
+          <div style="font-size:28px;margin-bottom:6px;">📊</div>
+          <strong style="color:var(--text);">Carrega l'Excel de Farmatic</strong><br>
+          <span style="font-size:11px;">Formats acceptats: .xlsx · .xls · .csv</span>
+        </div>
+
+        <!-- Column mapping (hidden until file loaded) -->
+        <div id="excel-mapping" style="display:none;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:12px;">
+          <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">Assigna les columnes del teu Excel</div>
+          <div class="grid-3" style="gap:10px;">
+            <div>
+              <label>Columna: Nom producte</label>
+              <select id="col-name" style="margin:0;font-size:12px;padding:7px 10px;"></select>
+            </div>
+            <div>
+              <label>Columna: Unitats venudes</label>
+              <select id="col-units" style="margin:0;font-size:12px;padding:7px 10px;"></select>
+            </div>
+            <div>
+              <label>Columna: Caducitat (opcional)</label>
+              <select id="col-exp" style="margin:0;font-size:12px;padding:7px 10px;"></select>
+            </div>
+          </div>
+          <div style="margin-top:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <div>
+              <label style="margin-bottom:4px;">Màx. productes a importar</label>
+              <select id="excel-max-rows" style="margin:0;font-size:12px;padding:7px 10px;width:auto;">
+                <option value="10">Top 10</option>
+                <option value="20" selected>Top 20</option>
+                <option value="50">Top 50</option>
+                <option value="999">Tots</option>
+              </select>
+            </div>
+            <div style="flex:1;"></div>
+            <button onclick="importExcelData()" style="padding:9px 20px;background:rgba(78,255,176,0.12);border:1px solid var(--accent);color:var(--accent);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">↓ Importar dades</button>
+          </div>
+        </div>
+
+        <!-- Excel preview table -->
+        <div id="excel-preview" style="display:none;margin-bottom:12px;">
+          <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;" id="excel-preview-label"></div>
+          <div style="overflow-x:auto;max-height:180px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;">
+            <table id="excel-table" style="width:100%;border-collapse:collapse;font-size:12px;"></table>
+          </div>
+          <button onclick="clearExcel()" style="margin-top:8px;background:none;border:none;color:var(--accent3);font-size:12px;cursor:pointer;font-family:'DM Mono',monospace;text-decoration:underline;">× Esborrar i tornar a carregar</button>
+        </div>
+
+        <!-- Divider -->
+        <div style="display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--text-muted);font-size:11px;font-family:'DM Mono',monospace;">
+          <div style="flex:1;height:1px;background:var(--border);"></div>
+          O afegeix productes manualment
+          <div style="flex:1;height:1px;background:var(--border);"></div>
+        </div>
+
+        <label>Productes addicionals (vendes / caducitats)</label>
+        <div id="farmatic-rows">
+          <div class="data-row">
+            <input type="text" placeholder="Nom producte" class="prod-name">
+            <input type="number" placeholder="Unitats" class="prod-units" min="0">
+            <input type="text" placeholder="Caducitat (mm/aa)" class="prod-exp">
+            <button class="btn-icon" onclick="removeRow(this)">×</button>
+          </div>
+        </div>
+        <button class="btn-icon add" onclick="addRow()" style="width:100%;border-radius:8px;height:36px;font-size:13px;font-family:'DM Sans',sans-serif;gap:6px;">+ afegir producte</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Variables estratègiques</div>
+        <label>Estacionalitat activa</label>
+        <div class="tags" id="season-tags">
+          <button class="tag selected" onclick="toggleTag(this)">Primavera</button>
+          <button class="tag" onclick="toggleTag(this)">Estiu</button>
+          <button class="tag" onclick="toggleTag(this)">Tardor</button>
+          <button class="tag" onclick="toggleTag(this)">Hivern</button>
+          <button class="tag" onclick="toggleTag(this)">Al·lèrgies</button>
+          <button class="tag" onclick="toggleTag(this)">Grip</button>
+          <button class="tag" onclick="toggleTag(this)">Sol</button>
+          <button class="tag" onclick="toggleTag(this)">Diabetis</button>
+          <button class="tag" onclick="toggleTag(this)">Ortopèdia</button>
+        </div>
+        <label>Enfocament prioritari avui</label>
+        <select id="auto-focus">
+          <option value="rotacion">Producte més venut</option>
+          <option value="caducidad">Caducitat pròxima</option>
+          <option value="estacionalidad">Estacionalitat</option>
+          <option value="interacciones">Interaccions freqüents</option>
+          <option value="ortopedia">Connexió farmàcia-ortopèdia</option>
+          <option value="adherencia">Adherència en crònics</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="mode-manual" style="display:none">
+      <div class="card">
+        <div class="card-title">Tema de la setmana</div>
+        <div class="grid-2">
+          <div>
+            <label>Patologia / producte principal</label>
+            <input type="text" id="manual-topic" placeholder="ex: peu diabètic, MPOC, antihistamínics...">
+          </div>
+          <div>
+            <label>Dia de la formació</label>
+            <select id="manual-day">
+              <option>Dilluns</option><option>Dimarts</option><option>Dimecres</option>
+              <option>Dijous</option><option>Divendres</option>
+            </select>
+          </div>
+        </div>
+        <label>Objectiu específic d'aprenentatge</label>
+        <input type="text" id="manual-goal" placeholder="ex: saber detectar un peu diabètic de risc en mostrador">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Fonts d'informació</div>
+      <label>Documents de referència (PDFs, fitxes tècniques, protocols)</label>
+      <div class="upload-zone">
+        <input type="file" multiple accept=".pdf,.txt,.docx" onchange="handleFiles(event)">
+        📎 Arrossega o clica per adjuntar fitxers
+      </div>
+      <div class="file-list" id="file-list"></div>
+      <label>Notes de Bot Plus / fitxa farmacològica</label>
+      <textarea id="botplus-text" placeholder="Enganxa aquí el text de la fitxa tècnica de Bot Plus, prospecte o qualsevol referència farmacològica..."></textarea>
+      <label>Instruccions addicionals (opcional)</label>
+      <textarea id="extra-instructions" placeholder="ex: posa èmfasi en interaccions amb anticoagulants, inclou un exemple clínic real..." style="min-height:60px;"></textarea>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Format de sortida</div>
+      <div class="tags" id="format-tags">
+        <button class="tag selected" onclick="toggleTag(this)">📋 Fitxa formativa</button>
+        <button class="tag selected" onclick="toggleTag(this)">❓ Quiz (3 preguntes)</button>
+        <button class="tag" onclick="toggleTag(this)">🧠 Cas clínic</button>
+        <button class="tag" onclick="toggleTag(this)">⚠️ Alertes i senyals d'alarma</button>
+        <button class="tag" onclick="toggleTag(this)">🔗 Connexió ortopèdia</button>
+      </div>
+      <label>Nivell de l'equip</label>
+      <select id="team-level">
+        <option value="mixto">Mixt (farmacèutic + auxiliars)</option>
+        <option value="farmaceutico">Farmacèutic/a</option>
+        <option value="auxiliar">Auxiliar sense titulació universitària</option>
+      </select>
+    </div>
+
+    <!-- STEP 1: Generate prompt -->
+    <div style="display:flex;align-items:center;gap:10px;margin:16px 0 10px;color:var(--text-muted);font-size:11px;font-family:'DM Mono',monospace;">
+      <div style="width:20px;height:20px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;">1</div>
+      Genera el prompt i enganxa'l a Claude.ai
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn-generate" onclick="copyPromptToClipboard()" style="flex:1;">
+        📋 Copiar prompt per a Claude
+      </button>
+      <a href="https://claude.ai" target="_blank" style="display:flex;align-items:center;padding:0 20px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);color:var(--text-muted);font-size:13px;font-family:'DM Sans',sans-serif;text-decoration:none;white-space:nowrap;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--accent2)';this.style.color='var(--accent2)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">
+        Obrir Claude.ai ↗
+      </a>
+    </div>
+
+    <!-- Prompt preview box -->
+    <div id="prompt-box" style="display:none;margin-top:12px;">
+      <div style="background:var(--bg);border:1px solid var(--accent);border-radius:10px;overflow:hidden;">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:rgba(78,255,176,0.06);border-bottom:1px solid var(--border);">
+          <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);text-transform:uppercase;letter-spacing:1px;">✓ Prompt copiat — enganxa'l a Claude.ai</span>
+          <button onclick="copyPromptToClipboard()" style="background:none;border:1px solid var(--accent);color:var(--accent);border-radius:6px;padding:4px 12px;font-size:11px;cursor:pointer;font-family:'DM Mono',monospace;">Tornar a copiar</button>
+        </div>
+        <div id="prompt-preview-text" style="padding:16px;font-family:'DM Mono',monospace;font-size:11px;color:var(--text-muted);line-height:1.7;max-height:180px;overflow-y:auto;white-space:pre-wrap;"></div>
+      </div>
+    </div>
+
+    <!-- STEP 2: Paste Claude response -->
+    <div style="margin-top:16px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;color:var(--text-muted);font-size:11px;font-family:'DM Mono',monospace;">
+        <div style="width:20px;height:20px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;">2</div>
+        Enganxa aquí la resposta de Claude
+      </div>
+      <textarea id="claude-response-input" placeholder="1. Ves a Claude.ai&#10;2. Enganxa el prompt&#10;3. Copia la resposta completa&#10;4. Enganxa-la aquí..." style="min-height:140px;border-color:var(--border);font-size:13px;" oninput="onResponseInput()"></textarea>
+      <button class="btn-generate" id="btn-load-response" onclick="loadClaudeResponse()" disabled>
+        → Carregar formació i generar Quiz
+      </button>
+    </div>
+
+    <!-- Output -->
+    <div class="output-container" id="output-container" style="display:none;margin-top:16px;">
+      <div class="output-header">
+        <div class="output-title">📚 Formació del dia</div>
+        <div class="output-actions">
+          <button class="btn-small primary" onclick="downloadPDF()">🖨 Imprimir / PDF</button>
+        </div>
+      </div>
+      <div class="output-body" id="output-body"></div>
+      <!-- Quiz CTA -->
+      <div id="quiz-cta" style="margin:0;padding:20px;border-top:1px solid var(--border);background:rgba(255,209,102,0.04);">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;">Ja has llegit la formació?</div>
+            <div style="font-size:12px;color:var(--text-muted);">Posa a prova el que has après i suma punts al ranking</div>
+          </div>
+          <button onclick="goToQuiz()" style="padding:12px 28px;background:var(--accent4);color:#1a0a00;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.background='#ffe08a'" onmouseout="this.style.background='var(--accent4)'">
+            🎯 Fer el Quiz →
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       PAGE 2: QUIZ
+  ══════════════════════════════════════════ -->
+  <div class="page" id="page-quiz">
+    <div class="card">
+      <div class="card-title">Quiz del dia</div>
+
+      <div id="quiz-empty" style="text-align:center;padding:40px;color:var(--text-muted);font-size:13px;">
+        <div style="font-size:40px;margin-bottom:12px;">📋</div>
+        Primer genera una formació i clica <strong style="color:var(--accent4)">→ Enviar al Quiz</strong>
+        <br><br>
+        <button class="btn-small" onclick="loadDemoQuiz()">Carregar quiz de demo</button>
+      </div>
+
+      <div id="quiz-content" style="display:none">
+        <div class="participant-select">
+          <label>Qui respon?</label>
+          <select id="quiz-participant"></select>
+        </div>
+
+        <div id="quiz-topic-label" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-muted);margin-bottom:16px;"></div>
+
+        <div class="quiz-section">
+          <div class="quiz-header">🎮 Preguntes</div>
+          <div id="quiz-questions-container"></div>
+          <button class="btn-generate" id="btn-submit-quiz" onclick="submitQuiz()" style="margin-top:8px;" disabled>
+            Enviar respostes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       PAGE 3: GAMIFICATION
+  ══════════════════════════════════════════ -->
+  <div class="page" id="page-gamification">
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-box">
+        <div class="stat-val" id="stat-sessions">0</div>
+        <div class="stat-label">Sessions fetes</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val" id="stat-questions">0</div>
+        <div class="stat-label">Preguntes totals</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val" id="stat-players">0</div>
+        <div class="stat-label">Participants</div>
+      </div>
+    </div>
+
+    <div class="ranking-container">
+      <!-- Ranking -->
+      <div class="card">
+        <div class="card-title">🏆 Ranking</div>
+        <div class="podium" id="podium"></div>
+        <div class="ranking-list" id="ranking-list"></div>
+      </div>
+
+      <!-- Player management -->
+      <div>
+        <div class="card">
+          <div class="card-title">👥 Participants</div>
+          <div class="player-list" id="player-list"></div>
+          <div class="add-player-row">
+            <input type="text" id="new-player-name" placeholder="Nom del participant" style="margin:0;" onkeydown="if(event.key==='Enter')addPlayer()">
+            <button class="btn-add" onclick="addPlayer()">+ Afegir</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">🎖️ Insígnies</div>
+          <div style="font-size:12px;color:var(--text-muted);line-height:1.8;">
+            🥇 <strong style="color:var(--text)">Primer lloc</strong> — líder del ranking<br>
+            🔥 <strong style="color:var(--text)">Ratxa x5</strong> — 5 sessions seguides<br>
+            🎯 <strong style="color:var(--text)">Perfecte</strong> — quiz sense errors<br>
+            💊 <strong style="color:var(--text)">Expert farmàcia</strong> — 50 pts acumulats<br>
+            🦴 <strong style="color:var(--text)">Expert ortopèdia</strong> — 3 quizos d'ortopèdia<br>
+            ⚡ <strong style="color:var(--text)">Constància</strong> — 10 sessions participades
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- History -->
+    <div class="card">
+      <div class="card-title">📅 Historial de sessions</div>
+      <div class="history-list" id="history-list">
+        <div style="color:var(--text-muted);font-size:13px;text-align:center;padding:20px;">Encara no hi ha sessions registrades.</div>
+      </div>
+    </div>
+
+    <div style="margin-top:12px;text-align:right;">
+      <button class="btn-small" onclick="if(confirm('Reseteja tot el ranking i historial?'))resetAll()">🗑 Reseteja tot</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════
+// STATE
+// ══════════════════════════
+let currentMode = 'auto';
+let uploadedFiles = [];
+let fileContents = [];
+let isLoading = false;
+let currentQuizData = null;
+let quizAnswers = {};
+
+// Google Sheets backend
+const GS_URL = 'https://script.google.com/macros/s/AKfycbziP-sxR1Ran0UYzv8MRuDjQFlVhNpeEm-W93HkEQQ2tEf8LsBeDvhTXXu2W9UCaQGn/exec';
+
+let gameState = {
+  players: [],
+  history: [],
+  totalSessions: 0,
+  totalQuestions: 0
+};
+
+async function gsCall(params) {
+  const url = GS_URL + '?' + new URLSearchParams(params).toString();
+  const res = await fetch(url);
+  const json = await res.json();
+  if (!json.success) throw new Error(json.error || 'Error');
+  return json.data;
+}
+
+async function gsPost(action, body) {
+  const url = GS_URL + '?action=' + action;
+  const res = await fetch(url, { method: 'POST', body: JSON.stringify(body) });
+  const json = await res.json();
+  if (!json.success) throw new Error(json.error || 'Error');
+  return json.data;
+}
+
+function showConnectionStatus(status) {
+  const el = document.getElementById('conn-status');
+  if (!el) return;
+  const map = {
+    loading: ['⏳', '#ffd166', 'Connectant amb Google Sheets...'],
+    ok:      ['✓', '#4fffb0', 'Google Sheets connectat'],
+    error:   ['✗', '#ff6b6b', 'Error de connexió']
+  };
+  const [icon, color, text] = map[status];
+  el.innerHTML = `<span style="color:${color};font-family:'DM Mono',monospace;font-size:11px;">${icon} ${text}</span>`;
+}
+
+async function loadState() {
+  showConnectionStatus('loading');
+  try {
+    const [rankData, histData] = await Promise.all([
+      gsCall({ action: 'getRanking' }),
+      gsCall({ action: 'getHistorial', limit: 30 })
+    ]);
+    gameState.players = rankData.players.map(p => ({
+      name: p.nom, points: p.punts, streak: p.racha,
+      sessions: p.sessions, badges: p.insignies || []
+    }));
+    const histMap = {};
+    (histData.historial || []).forEach(h => {
+      const key = h.data + '|' + h.tema;
+      if (!histMap[key]) histMap[key] = { date: h.data, topic: h.tema, scores: [] };
+      histMap[key].scores.push({ name: h.participant, pts: h.punts, correct: h.correctes, total: h.total });
+    });
+    gameState.history = Object.values(histMap);
+    gameState.totalSessions = gameState.history.length;
+    gameState.totalQuestions = (histData.historial||[]).reduce((s,h) => s+(h.total||0), 0);
+    showConnectionStatus('ok');
+  } catch(e) {
+    showConnectionStatus('error');
+  }
+  renderAll();
+}
+
+async function saveState() { /* saved per-action */ }
+
+// ══════════════════════════
+// EXCEL / FARMATIC IMPORT
+// ══════════════════════════
+let excelRawData = [];
+let excelHeaders = [];
+
+function loadSheetJS(cb) {
+  if (window.XLSX) { cb(); return; }
+  const s = document.createElement('script');
+  s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+  s.onload = cb;
+  document.head.appendChild(s);
+}
+
+function handleExcel(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  loadSheetJS(() => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const wb = XLSX.read(e.target.result, { type: 'binary' });
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        const json = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+        if (json.length < 2) { showToast('⚠️ El fitxer sembla buit'); return; }
+
+        excelHeaders = json[0].map(h => String(h).trim());
+        excelRawData = json.slice(1).filter(row => row.some(c => c !== ''));
+
+        const opts = ['(cap)', ...excelHeaders].map((h, i) =>
+          `<option value="${i-1}">${h}</option>`).join('');
+        ['col-name','col-units','col-exp'].forEach(id =>
+          document.getElementById(id).innerHTML = opts);
+
+        // Auto-detect columns
+        const detect = (kws) => excelHeaders.findIndex(h => kws.some(k => h.toLowerCase().includes(k)));
+        const ni = detect(['nom','nombre','descripci','product','articul']);
+        const ui = detect(['unitat','unidad','vendes','ventas','quantitat','cantidad','total']);
+        const ei = detect(['caduc','expir','vencim']);
+        if (ni >= 0) document.getElementById('col-name').value = ni;
+        if (ui >= 0) document.getElementById('col-units').value = ui;
+        if (ei >= 0) document.getElementById('col-exp').value = ei;
+
+        document.getElementById('excel-mapping').style.display = 'block';
+        document.getElementById('excel-upload-zone').style.display = 'none';
+        showToast(`✓ ${file.name} — ${excelRawData.length} files detectades`);
+      } catch(err) { showToast('⚠️ Error: ' + err.message); }
+    };
+    reader.readAsBinaryString(file);
+  });
+}
+
+function importExcelData() {
+  const nc = parseInt(document.getElementById('col-name').value);
+  const uc = parseInt(document.getElementById('col-units').value);
+  const ec = parseInt(document.getElementById('col-exp').value);
+  const max = parseInt(document.getElementById('excel-max-rows').value);
+  if (nc < 0) { showToast('⚠️ Selecciona la columna de nom'); return; }
+
+  let rows = [...excelRawData];
+  if (uc >= 0) rows.sort((a,b) => (parseFloat(String(b[uc]).replace(',','.')) || 0) - (parseFloat(String(a[uc]).replace(',','.')) || 0));
+  rows = rows.slice(0, max).filter(r => String(r[nc]||'').trim());
+
+  const container = document.getElementById('farmatic-rows');
+  container.innerHTML = '';
+  rows.forEach(row => {
+    const div = document.createElement('div');
+    div.className = 'data-row';
+    div.innerHTML = `
+      <input type="text" class="prod-name" value="${String(row[nc]||'').trim().replace(/"/g,'&quot;')}">
+      <input type="number" class="prod-units" value="${uc>=0?String(row[uc]||'').trim():''}" min="0">
+      <input type="text" class="prod-exp" value="${ec>=0?String(row[ec]||'').trim():''}">
+      <button class="btn-icon" onclick="removeRow(this)">×</button>`;
+    container.appendChild(div);
+  });
+
+  renderExcelPreview(rows, nc, uc, ec);
+  document.getElementById('excel-mapping').style.display = 'none';
+  document.getElementById('excel-preview').style.display = 'block';
+  document.getElementById('excel-preview-label').textContent = `${rows.length} productes importats · ordenats per vendes`;
+  showToast(`✓ ${rows.length} productes importats`);
+}
+
+function renderExcelPreview(rows, nc, uc, ec) {
+  const cols = [nc, uc, ec].filter(c => c >= 0);
+  const table = document.getElementById('excel-table');
+  table.innerHTML = `
+    <thead><tr style="background:var(--surface2)">
+      ${cols.map(c => `<th style="padding:8px 12px;text-align:left;font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);text-transform:uppercase;border-bottom:1px solid var(--border)">${excelHeaders[c]||'Col '+(c+1)}</th>`).join('')}
+    </tr></thead>
+    <tbody>
+      ${rows.slice(0,15).map((row,i) => `
+        <tr style="border-bottom:1px solid var(--border);${i%2?'background:rgba(255,255,255,0.02)':''}">
+          ${cols.map(c => `<td style="padding:7px 12px;font-size:12px;color:var(--text-muted)">${row[c]||'—'}</td>`).join('')}
+        </tr>`).join('')}
+      ${rows.length>15?`<tr><td colspan="${cols.length}" style="padding:8px 12px;font-size:11px;color:var(--text-muted);font-family:'DM Mono',monospace;text-align:center">... i ${rows.length-15} productes més</td></tr>`:''}
+    </tbody>`;
+}
+
+function clearExcel() {
+  excelRawData = []; excelHeaders = [];
+  document.getElementById('excel-upload-zone').style.display = 'block';
+  document.getElementById('excel-mapping').style.display = 'none';
+  document.getElementById('excel-preview').style.display = 'none';
+  document.getElementById('farmatic-rows').innerHTML = `
+    <div class="data-row">
+      <input type="text" placeholder="Nom producte" class="prod-name">
+      <input type="number" placeholder="Unitats" class="prod-units" min="0">
+      <input type="text" placeholder="Caducitat (mm/aa)" class="prod-exp">
+      <button class="btn-icon" onclick="removeRow(this)">×</button>
+    </div>`;
+}
+
+// ══════════════════════════
+// NAVIGATION
+// ══════════════════════════
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  const idx = ['generator','quiz','gamification'].indexOf(name);
+  document.querySelectorAll('.nav-tab')[idx].classList.add('active');
+  if (name === 'gamification') renderAll();
+  if (name === 'quiz') renderQuizParticipants();
+}
+
+// ══════════════════════════
+// GENERATOR
+// ══════════════════════════
+function setMode(mode) {
+  currentMode = mode;
+  document.querySelectorAll('.mode-tab').forEach((t,i) => {
+    t.classList.toggle('active', (mode==='auto'&&i===0)||(mode==='manual'&&i===1));
+  });
+  document.getElementById('mode-auto').style.display = mode==='auto' ? 'block' : 'none';
+  document.getElementById('mode-manual').style.display = mode==='manual' ? 'block' : 'none';
+}
+
+function toggleTag(el) { el.classList.toggle('selected'); }
+
+function addRow() {
+  const c = document.getElementById('farmatic-rows');
+  const row = document.createElement('div');
+  row.className = 'data-row';
+  row.innerHTML = `
+    <input type="text" placeholder="Nom producte" class="prod-name">
+    <input type="number" placeholder="Unitats" class="prod-units" min="0">
+    <input type="text" placeholder="Caducitat (mm/aa)" class="prod-exp">
+    <button class="btn-icon" onclick="removeRow(this)">×</button>`;
+  c.appendChild(row);
+}
+
+function removeRow(btn) {
+  if (document.querySelectorAll('.data-row').length > 1) btn.parentElement.remove();
+}
+
+function handleFiles(event) {
+  Array.from(event.target.files).forEach(file => {
+    if (!uploadedFiles.find(f => f.name === file.name)) {
+      uploadedFiles.push(file);
+      if (file.type === 'application/pdf') {
+        fileContents.push({ name: file.name, content: `[PDF: ${file.name}]` });
+      } else {
+        const r = new FileReader();
+        r.onload = e => fileContents.push({ name: file.name, content: e.target.result });
+        r.readAsText(file);
+      }
+      renderFileList();
+    }
+  });
+}
+
+function renderFileList() {
+  document.getElementById('file-list').innerHTML = uploadedFiles.map((f,i) =>
+    `<div class="file-item"><span>📄 ${f.name}</span><button class="remove" onclick="removeFile(${i})">×</button></div>`
+  ).join('');
+}
+
+function removeFile(i) { uploadedFiles.splice(i,1); fileContents.splice(i,1); renderFileList(); }
+
+function getFarmaticData() {
+  return Array.from(document.querySelectorAll('.data-row')).map(row => ({
+    name: row.querySelector('.prod-name').value.trim(),
+    units: row.querySelector('.prod-units').value.trim() || 'N/D',
+    exp: row.querySelector('.prod-exp').value.trim() || 'N/D'
+  })).filter(p => p.name);
+}
+
+function getSelectedTags(id) {
+  return Array.from(document.querySelectorAll(`#${id} .tag.selected`)).map(t => t.textContent.trim());
+}
+
+function buildPrompt() {
+  const botplus = document.getElementById('botplus-text').value.trim();
+  const extra = document.getElementById('extra-instructions').value.trim();
+  const teamLevel = document.getElementById('team-level').value;
+  const formats = getSelectedTags('format-tags');
+  const seasons = getSelectedTags('season-tags');
+  const files = fileContents.map(f => `[${f.name}]: ${f.content.substring(0,500)}`).join('\n');
+
+  const teamDesc = {
+    mixto: 'equip mixt (farmacèutic titular i auxiliars de farmàcia)',
+    farmaceutico: 'farmacèutic/a amb formació universitària',
+    auxiliar: 'auxiliar de farmàcia, evitar terminologia molt tècnica'
+  }[teamLevel];
+
+  let contextBlock = '';
+  if (currentMode === 'auto') {
+    const data = getFarmaticData();
+    const focusMap = {
+      rotacion:'productes amb més rotació', caducidad:'productes amb caducitat pròxima',
+      estacionalidad:'productes rellevants per l\'estacionalitat', interacciones:'interaccions farmacològiques freqüents',
+      ortopedia:'connexió clínica farmàcia-ortopèdia', adherencia:'adherència terapèutica en crònics'
+    };
+    contextBlock = `
+## DADES FARMATIC
+${data.length > 0 ? data.map(p=>`- ${p.name} | Unitats: ${p.units} | Caducitat: ${p.exp}`).join('\n') : '(sense dades — genera contingut rellevant genèric)'}
+## ENFOCAMENT: ${focusMap[document.getElementById('auto-focus').value]}
+## ESTACIONALITAT: ${seasons.join(', ') || 'General'}`;
+  } else {
+    contextBlock = `
+## TEMA: ${document.getElementById('manual-topic').value.trim() || 'No especificat'}
+## DIA: ${document.getElementById('manual-day').value}
+## OBJECTIU: ${document.getElementById('manual-goal').value.trim() || 'No especificat'}`;
+  }
+
+  return `Ets un expert en formació per a equips de farmàcia comunitària i ortopèdia. La farmàcia és Farmàcia Ortopèdia Platja Cubelles, referència de salut a la seva població.
+
+Genera contingut de formació diària de 10-15 minuts, pràctic i aplicable al mostrador.
+
+---
+${contextBlock}
+## NIVELL DE L'EQUIP: ${teamDesc}
+## FORMAT: ${formats.join(', ') || 'Fitxa formativa + Quiz'}
+${botplus ? `## BOT PLUS:\n${botplus}` : ''}
+${files ? `## DOCUMENTS:\n${files}` : ''}
+${extra ? `## INSTRUCCIONS ADDICIONALS:\n${extra}` : ''}
+---
+
+ESTRUCTURA OBLIGATÒRIA (segueix exactament):
+
+# [TÍTOL DE LA SESSIÓ]
+
+## OBJECTIU
+Avui aprendràs a...
+
+## CONTINGUT PRINCIPAL
+[3-5 punts clau aplicables al mostrador]
+
+## ALERTA CLÍNICA
+[1 interacció, senyal d'alarma o error freqüent]
+
+## CONNEXIÓ ORTOPÈDIA
+[Com connectar el tema amb productes o serveis ortopèdics — sempre incloure]
+
+## QUIZ
+PREGUNTA 1: [text de la pregunta]
+A) [opció]
+B) [opció]
+C) [opció]
+CORRECTA: [lletra]
+EXPLICACIÓ: [breu explicació de per què]
+
+PREGUNTA 2: [text de la pregunta]
+A) [opció]
+B) [opció]
+C) [opció]
+CORRECTA: [lletra]
+EXPLICACIÓ: [breu explicació]
+
+PREGUNTA 3: [text de la pregunta]
+A) [opció]
+B) [opció]
+C) [opció]
+CORRECTA: [lletra]
+EXPLICACIÓ: [breu explicació]
+
+## TIP DE L'EXPERT
+[1 consell pràctic aplicable avui mateix]
+
+Usa un to proper i professional. Contingut específic per a farmàcia costanera amb secció d'ortopèdia i pacients crònics.`;
+}
+
+function renderOutput(text) {
+  // Remove QUIZ section (keep TIP DE L'EXPERT)
+  let clean = text.replace(/## QUIZ[\s\S]*?(?=## TIP|$)/i, '');
+  return clean
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+    .replace(/^# (.+)$/gm, '<h2>$1</h2>')
+    .replace(/^- (.+)$/gm, '<li>$1</li>')
+    .replace(/\n\n/g, '<br><br>');
+}
+
+function goToQuiz() {
+  const raw = document.getElementById('output-body').dataset.raw || '';
+  if (!raw) { showToast('Primer carrega una formació'); return; }
+  sendToQuiz();
+  showPage('quiz');
+}
+
+function copyPromptToClipboard() {
+  const prompt = buildPrompt();
+  navigator.clipboard.writeText(prompt).then(() => {
+    // Show prompt box
+    document.getElementById('prompt-preview-text').textContent = prompt;
+    document.getElementById('prompt-box').style.display = 'block';
+    showToast('✓ Prompt copiat! Enganxa\'l a Claude.ai');
+  }).catch(() => {
+    // Fallback: show text area to manual copy
+    document.getElementById('prompt-preview-text').textContent = prompt;
+    document.getElementById('prompt-box').style.display = 'block';
+    showToast('Copia el prompt manualment del requadre verd');
+  });
+}
+
+function onResponseInput() {
+  const val = document.getElementById('claude-response-input').value.trim();
+  document.getElementById('btn-load-response').disabled = val.length < 20;
+}
+
+async function loadClaudeResponse() {
+  const text = document.getElementById('claude-response-input').value.trim();
+  if (!text) return;
+  const ob = document.getElementById('output-body');
+  ob.innerHTML = renderOutput(text);
+  ob.dataset.raw = text;
+  document.getElementById('output-container').style.display = 'block';
+  document.getElementById('output-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // Auto-save to Google Sheets
+  const titleMatch = text.match(/^#\s+(.+)$/m);
+  const titol = titleMatch ? titleMatch[1].trim() : 'Formació ' + new Date().toLocaleDateString('ca-ES');
+  try {
+    await gsPost('saveFormacio', { titol, contingut: text });
+    showToast('✓ Formació carregada i guardada a Google Sheets!');
+  } catch(e) {
+    showToast('✓ Formació carregada (no s\'ha pogut guardar al Sheet)');
+  }
+}
+
+function copyOutput() {
+  navigator.clipboard.writeText(document.getElementById('output-body').innerText);
+  showToast('✓ Copiat al porta-retalls');
+}
+
+function parseContentSections(raw) {
+  // Extract sections excluding QUIZ and after
+  const sections = {};
+  const lines = raw.split('\n');
+  let current = null;
+  let buf = [];
+  for (const line of lines) {
+    if (line.match(/^## QUIZ/i)) break; // stop before quiz
+    if (line.match(/^# (.+)/)) { sections['_title'] = line.replace(/^# /, '').trim(); current = null; }
+    else if (line.match(/^## (.+)/)) {
+      if (current) sections[current] = buf.join('\n').trim();
+      current = line.replace(/^## /, '').trim();
+      buf = [];
+    } else if (current) { buf.push(line); }
+  }
+  if (current) sections[current] = buf.join('\n').trim();
+  return sections;
+}
+
+function downloadPDF() {
+  const raw = document.getElementById('output-body').dataset.raw || '';
+  if (!raw) { showToast('⚠️ Primer carrega una formació'); return; }
+
+  const s = parseContentSections(raw);
+  const title = s['_title'] || 'Formació del dia';
+  const objectiu = s['OBJECTIU'] || '';
+  const contingut = s['CONTINGUT PRINCIPAL'] || '';
+  const alerta = s['ALERTA CLÍNICA'] || '';
+  const ortopedia = s['CONNEXIÓ ORTOPÈDIA'] || '';
+  const tip = s["TIP DE L'EXPERT"] || s['TIP DE L\'EXPERT'] || '';
+  const today = new Date().toLocaleDateString('ca-ES', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+  // Parse bullet points
+  function toBullets(text) {
+    return text.split('\n')
+      .filter(l => l.trim())
+      .map(l => l.replace(/^\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/^[-•]\s*/, '').replace(/^\d+\.\s*/, ''))
+      .map(l => `<li>${l}</li>`)
+      .join('');
+  }
+
+  // Parse table rows
+  function toTable(text) {
+    const rows = text.split('\n').filter(l => l.includes('|') && !l.match(/^[\|\s\-]+$/));
+    if (rows.length < 2) return `<p>${text}</p>`;
+    const [header, ...body] = rows;
+    const ths = header.split('|').filter(c => c.trim()).map(c => `<th>${c.trim()}</th>`).join('');
+    const trs = body.map(r => {
+      const tds = r.split('|').filter(c => c.trim()).map(c => `<td>${c.trim()}</td>`).join('');
+      return `<tr>${tds}</tr>`;
+    }).join('');
+    return `<table><thead><tr>${ths}</tr></thead><tbody>${trs}</tbody></table>`;
+  }
+
+  const html = `<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<title>${title}</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: #fff; color: #1a1f2e; }
+
+  .page {
+    width: 210mm; min-height: 297mm; margin: 0 auto;
+    padding: 12mm 14mm; display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    gap: 0;
+  }
+
+  /* Header */
+  .header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-bottom: 8px; border-bottom: 3px solid #4fffb0; margin-bottom: 14px;
+  }
+  .header-left .farmacia { font-size: 10px; color: #7a8ba6; letter-spacing: 1px; text-transform: uppercase; }
+  .header-left .session-title {
+    font-family: 'DM Serif Display', serif; font-size: 22px; color: #1a1f2e;
+    line-height: 1.2; margin-top: 2px; max-width: 140mm;
+  }
+  .header-right { text-align: right; }
+  .header-right .pill {
+    background: #4fffb0; color: #0e1117; font-size: 9px; font-weight: 700;
+    padding: 4px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;
+    display: inline-block; margin-bottom: 4px;
+  }
+  .header-right .date { font-size: 9px; color: #7a8ba6; }
+
+  /* Main grid */
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+
+  /* Sections */
+  .section {
+    background: #f8fafb; border-radius: 10px; padding: 12px 14px;
+    border-left: 4px solid #4fffb0;
+  }
+  .section.blue { border-left-color: #6e9dff; }
+  .section.red { border-left-color: #ff6b6b; background: #fff8f8; }
+  .section.gold { border-left-color: #ffd166; background: #fffbf0; }
+  .section.full { grid-column: 1 / -1; }
+
+  .section-label {
+    font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+    color: #7a8ba6; margin-bottom: 6px; display: flex; align-items: center; gap: 5px;
+  }
+  .section-label .dot { width: 6px; height: 6px; border-radius: 50%; background: #4fffb0; flex-shrink: 0; }
+  .section.blue .dot { background: #6e9dff; }
+  .section.red .dot { background: #ff6b6b; }
+  .section.gold .dot { background: #ffd166; }
+
+  .section h3 { font-size: 13px; font-weight: 600; color: #1a1f2e; margin-bottom: 8px; line-height: 1.3; }
+
+  ul { padding-left: 14px; }
+  li { font-size: 11px; line-height: 1.6; color: #3a4560; margin-bottom: 3px; }
+  li strong { color: #1a1f2e; font-weight: 600; }
+  p { font-size: 11px; line-height: 1.6; color: #3a4560; }
+
+  /* Objectiu highlight */
+  .objectiu-box {
+    background: linear-gradient(135deg, #0e1117, #1e2535);
+    border-radius: 10px; padding: 12px 16px; color: #fff; margin-bottom: 10px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .objectiu-icon { font-size: 24px; flex-shrink: 0; }
+  .objectiu-label { font-size: 8px; color: #4fffb0; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; margin-bottom: 3px; }
+  .objectiu-text { font-size: 12px; line-height: 1.4; color: #e8ecf4; }
+
+  /* Table */
+  table { width: 100%; border-collapse: collapse; font-size: 10px; }
+  th { background: #1e2535; color: #4fffb0; padding: 6px 8px; text-align: left; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; }
+  td { padding: 5px 8px; border-bottom: 1px solid #e8ecf4; color: #3a4560; }
+  tr:last-child td { border-bottom: none; }
+
+  /* Tip */
+  .tip-box {
+    background: linear-gradient(135deg, #ffd166, #ffb347);
+    border-radius: 10px; padding: 12px 16px;
+    display: flex; align-items: center; gap: 12px; margin-top: 10px;
+  }
+  .tip-icon { font-size: 22px; flex-shrink: 0; }
+  .tip-label { font-size: 8px; color: #7a4000; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; margin-bottom: 3px; }
+  .tip-text { font-size: 11px; color: #3a2000; line-height: 1.4; font-weight: 500; }
+
+  /* Footer */
+  .footer {
+    border-top: 1px solid #e8ecf4; padding-top: 8px; margin-top: 10px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .footer-left { font-size: 8px; color: #aab; }
+  .footer-badge {
+    background: #0e1117; color: #4fffb0; font-size: 8px; font-weight: 700;
+    padding: 3px 10px; border-radius: 20px; letter-spacing: 0.5px;
+  }
+
+  @media print {
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .page { margin: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <div class="farmacia">Farmàcia Ortopèdia Platja Cubelles · Formació d'equip</div>
+      <div class="session-title">${title}</div>
+    </div>
+    <div class="header-right">
+      <div class="pill">Dilluns</div>
+      <div class="date">${today}</div>
+    </div>
+  </div>
+
+  <!-- Objectiu -->
+  <div class="objectiu-box">
+    <div class="objectiu-icon">🎯</div>
+    <div>
+      <div class="objectiu-label">Objectiu de la sessió</div>
+      <div class="objectiu-text">${objectiu.replace(/^Avui aprendràs a[:\s]*/i,'Avui aprendràs a ').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div>
+    </div>
+  </div>
+
+  <!-- Main grid -->
+  <div>
+    <div class="grid">
+      <!-- Contingut principal -->
+      <div class="section">
+        <div class="section-label"><span class="dot"></span>Contingut principal</div>
+        <ul>${toBullets(contingut)}</ul>
+      </div>
+
+      <!-- Alerta + Ortopèdia -->
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="section red">
+          <div class="section-label"><span class="dot"></span>⚠️ Alerta clínica</div>
+          <p>${alerta.replace(/^⚠️\s*/,'').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ortopèdia full width -->
+    <div class="section blue full">
+      <div class="section-label"><span class="dot"></span>🔗 Connexió ortopèdia</div>
+      ${ortopedia.includes('|') ? toTable(ortopedia) : `<ul>${toBullets(ortopedia)}</ul>`}
+    </div>
+  </div>
+
+  <!-- Tip + Footer -->
+  <div>
+    <div class="tip-box">
+      <div class="tip-icon">💡</div>
+      <div>
+        <div class="tip-label">Tip de l'expert · aplica-ho avui</div>
+        <div class="tip-text">${tip.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="footer-left">Farmàcia Ortopèdia Platja Cubelles · Ús intern · ${today}</div>
+      <div class="footer-badge">FormacióFarma</div>
+    </div>
+  </div>
+
+</div>
+<script>window.onload = () => { window.print(); }<\/script>
+</body>
+</html>`;
+
+  const win = window.open('', '_blank');
+  win.document.write(html);
+  win.document.close();
+  showToast('📄 Obrint PDF — usa Ctrl+P per desar');
+}
+
+// ══════════════════════════
+// QUIZ PARSER
+// ══════════════════════════
+function parseQuizFromText(text) {
+  const questions = [];
+  // Extract title
+  const titleMatch = text.match(/^#\s+(.+)$/m);
+  const topic = titleMatch ? titleMatch[1].trim() : 'Formació del dia';
+
+  // Find QUIZ section
+  const quizMatch = text.match(/## QUIZ([\s\S]*?)(?:## TIP|$)/i);
+  if (!quizMatch) return null;
+
+  const quizText = quizMatch[1];
+  // Split by PREGUNTA
+  const qBlocks = quizText.split(/PREGUNTA \d+:/i).filter(b => b.trim());
+
+  qBlocks.forEach(block => {
+    const lines = block.trim().split('\n').map(l => l.trim()).filter(l => l);
+    if (lines.length < 4) return;
+    const q = lines[0];
+    const options = [];
+    let correct = 0;
+    let explanation = '';
+
+    lines.slice(1).forEach(line => {
+      const optMatch = line.match(/^([A-C])\)\s*(.+)$/i);
+      if (optMatch) options.push(optMatch[2]);
+      const corrMatch = line.match(/CORRECTA:\s*([A-C])/i);
+      if (corrMatch) correct = corrMatch[1].toUpperCase().charCodeAt(0) - 65;
+      const expMatch = line.match(/EXPLICACIÓ:\s*(.+)/i);
+      if (expMatch) explanation = expMatch[1];
+    });
+
+    if (q && options.length >= 2) {
+      questions.push({ q, options, correct, explanation });
+    }
+  });
+
+  return questions.length > 0 ? { topic, questions } : null;
+}
+
+function sendToQuiz() {
+  const raw = document.getElementById('output-body').dataset.raw || '';
+  const parsed = parseQuizFromText(raw);
+  if (!parsed) { showToast('⚠️ No s\'han trobat preguntes al contingut generat'); return; }
+  currentQuizData = parsed;
+  quizAnswers = {};
+  showPage('quiz');
+  renderQuiz();
+  showToast('✓ Quiz carregat! Selecciona qui respon.');
+}
+
+function loadDemoQuiz() {
+  currentQuizData = {
+    topic: 'Demo — Peu diabètic',
+    questions: [
+      { q: 'Quina és la freqüència recomanada d\'exploració del peu en un pacient diabètic sense complicacions?', options: ['Cada 5 anys','Anualment','Cada 6 mesos'], correct: 1, explanation: 'L\'exploració anual del peu és estàndard per a tots els diabètics sense complicacions actives.' },
+      { q: 'Quin signe indica neuropatia perifèrica en un pacient diabètic?', options: ['Dolor intens al caminar','Pèrdua de sensibilitat als peus','Envermelliment i calor local'], correct: 1, explanation: 'La pèrdua de sensibilitat (hipoestèsia) és el signe clàssic de neuropatia perifèrica.' },
+      { q: 'Quina crema és la més adequada per a la cura del peu diabètic?', options: ['Crema hidratant amb urea al 10-25%','Crema amb salicílic per als calls','Talc per mantenir els peus secs'], correct: 0, explanation: 'La urea al 10-25% hidrata profundament sense riscos. Evitar talc (fissures) i salicílic sense supervisió.' }
+    ]
+  };
+  quizAnswers = {};
+  renderQuiz();
+}
+
+function renderQuiz() {
+  if (!currentQuizData) return;
+  document.getElementById('quiz-empty').style.display = 'none';
+  document.getElementById('quiz-content').style.display = 'block';
+  document.getElementById('quiz-topic-label').textContent = '📚 ' + currentQuizData.topic;
+
+  const container = document.getElementById('quiz-questions-container');
+  container.innerHTML = currentQuizData.questions.map((q, qi) => `
+    <div class="quiz-question" id="qq-${qi}">
+      <p>${qi+1}. ${q.q}</p>
+      <div class="quiz-options">
+        ${q.options.map((opt, oi) => `
+          <button class="quiz-option" onclick="selectAnswer(${qi}, ${oi})" id="qo-${qi}-${oi}">
+            <span style="font-family:'DM Mono',monospace;color:var(--accent2);margin-right:8px;">${String.fromCharCode(65+oi)})</span>${opt}
+          </button>
+        `).join('')}
+      </div>
+      <div class="quiz-feedback" id="qf-${qi}"></div>
+    </div>
+  `).join('');
+
+  document.getElementById('btn-submit-quiz').disabled = true;
+  renderQuizParticipants();
+}
+
+function renderQuizParticipants() {
+  const sel = document.getElementById('quiz-participant');
+  if (!sel) return;
+  sel.innerHTML = gameState.players.length > 0
+    ? gameState.players.map(p => `<option value="${p.name}">${p.name}</option>`).join('')
+    : '<option value="Anònim">Anònim</option>';
+}
+
+function selectAnswer(qi, oi) {
+  quizAnswers[qi] = oi;
+  // Highlight selected
+  const q = document.querySelectorAll(`#qq-${qi} .quiz-option`);
+  q.forEach((btn, i) => {
+    btn.style.borderColor = i === oi ? 'var(--accent2)' : 'var(--border)';
+    btn.style.color = i === oi ? 'var(--text)' : '';
+  });
+  // Enable submit if all answered
+  if (currentQuizData && Object.keys(quizAnswers).length === currentQuizData.questions.length) {
+    document.getElementById('btn-submit-quiz').disabled = false;
+  }
+}
+
+async function submitQuiz() {
+  if (!currentQuizData) return;
+  const participant = document.getElementById('quiz-participant').value || 'Anònim';
+  let correct = 0;
+
+  currentQuizData.questions.forEach((q, qi) => {
+    const chosen = quizAnswers[qi];
+    const isCorrect = chosen === q.correct;
+    if (isCorrect) correct++;
+
+    // Show results
+    document.querySelectorAll(`#qq-${qi} .quiz-option`).forEach((btn, oi) => {
+      btn.disabled = true;
+      if (oi === q.correct) btn.classList.add('correct');
+      else if (oi === chosen && !isCorrect) btn.classList.add('wrong');
+    });
+
+    const fb = document.getElementById(`qf-${qi}`);
+    fb.className = `quiz-feedback show ${isCorrect ? 'ok' : 'ko'}`;
+    fb.innerHTML = isCorrect
+      ? `✓ Correcte! ${q.explanation}`
+      : `✗ La resposta correcta era ${String.fromCharCode(65+q.correct)}. ${q.explanation}`;
+  });
+
+  const pts = correct * 10;
+  document.getElementById('btn-submit-quiz').disabled = true;
+  document.getElementById('btn-submit-quiz').textContent = `✓ ${correct}/${currentQuizData.questions.length} correctes — ${pts} pts per a ${participant}`;
+
+  // Update game state
+  await awardPoints(participant, pts, correct, currentQuizData.questions.length, currentQuizData.topic);
+  showToast(`🏆 ${pts} punts per a ${participant}!`);
+}
+
+// ══════════════════════════
+// GAMIFICATION
+// ══════════════════════════
+async function awardPoints(playerName, pts, correct, total, topic) {
+  showToast('⏳ Guardant a Google Sheets...');
+  try {
+    const result = await gsPost('saveQuizResult', {
+      nom: playerName, punts: pts, correctes: correct, total: total, tema: topic
+    });
+    // Refresh state from sheets
+    gameState.players = result.players.map(p => ({
+      name: p.nom, points: p.punts, streak: p.racha,
+      sessions: p.sessions, badges: p.insignies || []
+    }));
+    // Add to local history for immediate display
+    const today = new Date().toLocaleDateString('ca-ES');
+    let session = gameState.history.find(h => h.date === today && h.topic === topic);
+    if (!session) {
+      session = { date: today, topic, scores: [] };
+      gameState.history.unshift(session);
+      gameState.totalSessions++;
+    }
+    session.scores.push({ name: playerName, pts, correct, total });
+    gameState.totalQuestions += total;
+    showToast('✓ Guardat a Google Sheets!');
+  } catch(e) {
+    showToast('⚠️ Error guardant: ' + e.message);
+  }
+  renderAll();
+}
+
+function renderAll() {
+  renderPodium();
+  renderRankingList();
+  renderPlayerList();
+  renderHistory();
+  document.getElementById('stat-sessions').textContent = gameState.totalSessions;
+  document.getElementById('stat-questions').textContent = gameState.totalQuestions;
+  document.getElementById('stat-players').textContent = gameState.players.length;
+}
+
+function renderPodium() {
+  const sorted = [...gameState.players].sort((a,b) => b.points - a.points).slice(0,3);
+  const podium = document.getElementById('podium');
+  if (sorted.length === 0) { podium.innerHTML = ''; return; }
+
+  const order = [sorted[1], sorted[0], sorted[2]].filter(Boolean);
+  const classes = sorted.length >= 2 ? ['p2','p1','p3'] : ['p1'];
+  const emojis = ['🥈','🥇','🥉'];
+
+  podium.innerHTML = order.map((p, i) => {
+    const cl = sorted.length === 1 ? 'p1' : classes[i];
+    const em = sorted.length === 1 ? '🥇' : emojis[i];
+    return `<div class="podium-place">
+      <div class="podium-name">${p.name}</div>
+      <div class="podium-score" style="color:var(--accent4)">${p.points}pts</div>
+      <div class="podium-bar ${cl}">${em}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderRankingList() {
+  const sorted = [...gameState.players].sort((a,b) => b.points - a.points);
+  const medals = ['🥇','🥈','🥉'];
+  document.getElementById('ranking-list').innerHTML = sorted.length === 0
+    ? '<div style="color:var(--text-muted);font-size:13px;text-align:center;padding:20px;">Afegeix participants i fes quizos per veure el ranking.</div>'
+    : sorted.map((p, i) => `
+      <div class="ranking-item">
+        <div class="ranking-pos">${medals[i] || (i+1)}</div>
+        <div class="ranking-name">${p.name}</div>
+        <div class="ranking-badges">${p.badges.slice(0,4).join(' ')}</div>
+        <div style="text-align:right;">
+          <div class="ranking-pts">${p.points} pts</div>
+          <div class="ranking-streak">${p.streak > 1 ? '🔥'+p.streak : ''} ${p.sessions} sessions</div>
+        </div>
+      </div>`).join('');
+}
+
+function renderPlayerList() {
+  document.getElementById('player-list').innerHTML = gameState.players.length === 0
+    ? '<div style="color:var(--text-muted);font-size:13px;">Encara no hi ha participants.</div>'
+    : gameState.players.map((p, i) => `
+      <div class="player-item">
+        <div class="player-name">${p.name}</div>
+        <div class="player-pts">${p.points} pts</div>
+        <button class="remove" onclick="removePlayer(${i})">×</button>
+      </div>`).join('');
+}
+
+function renderHistory() {
+  document.getElementById('history-list').innerHTML = gameState.history.length === 0
+    ? '<div style="color:var(--text-muted);font-size:13px;text-align:center;padding:20px;">Encara no hi ha sessions registrades.</div>'
+    : gameState.history.slice(0,10).map(h => `
+      <div class="history-item">
+        <div class="history-date">${h.date}</div>
+        <div class="history-topic">${h.topic}</div>
+        <div class="history-scores">${h.scores.map(s =>
+          `<span class="history-score">${s.name}: ${s.pts}pts (${s.correct}/${s.total})</span>`
+        ).join('')}</div>
+      </div>`).join('');
+}
+
+async function addPlayer() {
+  const input = document.getElementById('new-player-name');
+  const name = input.value.trim();
+  if (!name) return;
+  if (gameState.players.find(p => p.name === name)) { showToast('⚠️ Aquest participant ja existeix'); return; }
+  try {
+    await gsPost('addPlayer', { nom: name });
+    gameState.players.push({ name, points: 0, streak: 0, sessions: 0, badges: [] });
+    input.value = '';
+    renderAll();
+    renderQuizParticipants();
+    showToast(`✓ ${name} afegit/da`);
+  } catch(e) { showToast('⚠️ Error: ' + e.message); }
+}
+
+async function removePlayer(i) {
+  const name = gameState.players[i].name;
+  if (!confirm(`Eliminar ${name}?`)) return;
+  try {
+    await gsPost('removePlayer', { nom: name });
+    gameState.players.splice(i, 1);
+    renderAll();
+    renderQuizParticipants();
+    showToast(`✓ ${name} eliminat/da`);
+  } catch(e) { showToast('⚠️ Error: ' + e.message); }
+}
+
+async function resetAll() {
+  if (!confirm('Reseteja tot el ranking i historial?')) return;
+  try {
+    await gsCall({ action: 'resetRanking' });
+    gameState = { players: [], history: [], totalSessions: 0, totalQuestions: 0 };
+    renderAll();
+    showToast('✓ Ranking resetejat');
+  } catch(e) { showToast('⚠️ Error: ' + e.message); }
+}
+
+// ══════════════════════════
+// UTILS
+// ══════════════════════════
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// Init
+loadState();
+</script>
+</body>
+</html>
