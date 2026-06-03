@@ -375,7 +375,7 @@
 
     <div class="mode-tabs">
       <button class="mode-tab active" onclick="setMode('auto')">🤖 Automàtic (Farmatic)</button>
-      <button class="mode-tab" onclick="setMode('manual')">✏️ Manual (setmanal)</button>
+      <button class="mode-tab" onclick="setMode('manual')">✏️ Manual</button>
     </div>
 
     <div id="mode-auto">
@@ -477,24 +477,93 @@
     </div>
 
     <div id="mode-manual" style="display:none">
+
+      <!-- STEP 1: Tema i fonts -->
       <div class="card">
-        <div class="card-title">Tema de la setmana</div>
-        <div class="grid-2">
-          <div>
-            <label>Patologia / producte principal</label>
-            <input type="text" id="manual-topic" placeholder="ex: peu diabètic, MPOC, antihistamínics...">
-          </div>
-          <div>
-            <label>Dia de la formació</label>
-            <select id="manual-day">
-              <option>Dilluns</option><option>Dimarts</option><option>Dimecres</option>
-              <option>Dijous</option><option>Divendres</option>
-            </select>
+        <div class="card-title">1 · Tema i fonts</div>
+        <label>Tema / patologia</label>
+        <input type="text" id="manual-topic" placeholder="ex: peu diabètic, MPOC, antihistamínics...">
+        <label>Objectiu d'aprenentatge (opcional)</label>
+        <input type="text" id="manual-goal" placeholder="ex: saber detectar un peu diabètic de risc en mostrador">
+
+        <!-- URLs -->
+        <label style="margin-top:4px;">URLs de referència</label>
+        <div id="manual-urls">
+          <div class="data-row" style="grid-template-columns:1fr auto;margin-bottom:8px;">
+            <input type="url" placeholder="https://..." class="manual-url" style="margin:0;">
+            <button class="btn-icon" onclick="removeUrlRow(this)">×</button>
           </div>
         </div>
-        <label>Objectiu específic d'aprenentatge</label>
-        <input type="text" id="manual-goal" placeholder="ex: saber detectar un peu diabètic de risc en mostrador">
+        <button class="btn-icon add" onclick="addUrlRow()" style="width:100%;border-radius:8px;height:34px;font-size:12px;font-family:'DM Sans',sans-serif;">+ afegir URL</button>
+
+        <!-- PDFs -->
+        <label style="margin-top:14px;">Documents PDF de referència</label>
+        <div class="upload-zone" style="margin-bottom:8px;">
+          <input type="file" multiple accept=".pdf" onchange="handleManualPDFs(event)">
+          📎 Adjunta PDFs (seran llegits per Claude al Projecte)
+        </div>
+        <div class="file-list" id="manual-pdf-list"></div>
       </div>
+
+      <!-- STEP 2: Genera contingut -->
+      <div class="card">
+        <div class="card-title">2 · Genera el contingut</div>
+
+        <!-- Sub-tabs -->
+        <div style="display:flex;gap:8px;margin-bottom:16px;background:var(--bg);padding:5px;border-radius:8px;border:1px solid var(--border);">
+          <button id="manual-tab-prompt" onclick="setManualTab('prompt')" style="flex:1;padding:8px;border:1px solid var(--accent);background:rgba(78,255,176,0.1);color:var(--accent);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;">
+            📋 Genera prompt → Claude
+          </button>
+          <button id="manual-tab-direct" onclick="setManualTab('direct')" style="flex:1;padding:8px;border:1px solid var(--border);background:transparent;color:var(--text-muted);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;">
+            ✏️ Enganxa contingut directament
+          </button>
+        </div>
+
+        <!-- Prompt mode -->
+        <div id="manual-prompt-mode">
+          <div style="display:flex;gap:10px;margin-bottom:12px;">
+            <button onclick="copyManualPrompt()" style="flex:1;padding:12px;background:var(--accent);color:var(--bg);border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">📋 Copiar prompt per a Claude</button>
+            <a href="https://claude.ai" target="_blank" style="display:flex;align-items:center;padding:0 16px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text-muted);font-size:12px;font-family:'DM Sans',sans-serif;text-decoration:none;white-space:nowrap;">Obrir Claude ↗</a>
+          </div>
+          <div id="manual-prompt-box" style="display:none;background:var(--bg);border:1px solid var(--accent);border-radius:8px;padding:12px;font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);line-height:1.6;max-height:150px;overflow-y:auto;margin-bottom:12px;white-space:pre-wrap;"></div>
+          <label>Enganxa la resposta de Claude</label>
+          <textarea id="manual-response" placeholder="Copia la resposta de Claude i enganxa-la aquí..." style="min-height:120px;" oninput="onManualResponseInput()"></textarea>
+          <button id="manual-load-btn" onclick="loadManualResponse()" disabled style="width:100%;padding:12px;background:var(--accent4);color:#1a0a00;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;opacity:0.5;">→ Carregar contingut</button>
+        </div>
+
+        <!-- Direct mode -->
+        <div id="manual-direct-mode" style="display:none;">
+          <label>Enganxa o escriu el contingut formatiu</label>
+          <textarea id="manual-direct-content" placeholder="Escriu o enganxa el contingut amb el format:&#10;# Títol&#10;## OBJECTIU&#10;## CONTINGUT PRINCIPAL&#10;## ALERTA CLINICA&#10;## CONNEXIO ORTOPEDIA&#10;## QUIZ&#10;## TIP DE L EXPERT" style="min-height:200px;" oninput="onManualDirectInput()"></textarea>
+          <button id="manual-direct-btn" onclick="loadDirectContent()" disabled style="width:100%;padding:12px;background:var(--accent4);color:#1a0a00;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;opacity:0.5;">→ Carregar contingut</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: Previsualització i programació -->
+      <div class="card" id="manual-preview-card" style="display:none;">
+        <div class="card-title">3 · Previsualitza i programa</div>
+        <div id="manual-preview-body" style="font-size:13px;line-height:1.7;margin-bottom:16px;"></div>
+
+        <div style="border-top:1px solid var(--border);padding-top:16px;">
+          <div class="grid-2" style="margin-bottom:12px;">
+            <div>
+              <label>Quan publicar?</label>
+              <select id="manual-pub-tipus" style="margin:0;" onchange="toggleManualDate()">
+                <option value="cua">Afegir a la cua (proper dia disponible)</option>
+                <option value="data">Data concreta</option>
+              </select>
+            </div>
+            <div id="manual-date-picker" style="display:none;">
+              <label>Data de publicació</label>
+              <input type="date" id="manual-pub-data" style="margin:0;">
+            </div>
+          </div>
+          <button onclick="programarManual()" style="width:100%;padding:14px;background:var(--accent);color:var(--bg);border:none;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;">
+            📅 Programar formació
+          </button>
+        </div>
+      </div>
+
     </div>
 
     <div class="card">
@@ -1847,6 +1916,218 @@ function showToast(msg) {
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ══════════════════════════
+// MANUAL MODE
+// ══════════════════════════
+let manualPDFs = [];
+let manualPDFContents = [];
+let manualLoadedContent = '';
+
+function addUrlRow() {
+  const container = document.getElementById('manual-urls');
+  const div = document.createElement('div');
+  div.className = 'data-row';
+  div.style.cssText = 'grid-template-columns:1fr auto;margin-bottom:8px;';
+  div.innerHTML = `<input type="url" placeholder="https://..." class="manual-url" style="margin:0;"><button class="btn-icon" onclick="removeUrlRow(this)">×</button>`;
+  container.appendChild(div);
+}
+
+function removeUrlRow(btn) {
+  const rows = document.querySelectorAll('#manual-urls .data-row');
+  if (rows.length > 1) btn.parentElement.remove();
+}
+
+function handleManualPDFs(event) {
+  Array.from(event.target.files).forEach(file => {
+    if (!manualPDFs.find(f => f.name === file.name)) {
+      manualPDFs.push(file);
+      manualPDFContents.push({ name: file.name, size: file.size });
+      renderManualPDFList();
+    }
+  });
+}
+
+function renderManualPDFList() {
+  document.getElementById('manual-pdf-list').innerHTML = manualPDFs.map((f,i) =>
+    `<div class="file-item"><span>📄 ${f.name}</span><button class="remove" onclick="removeManualPDF(${i})">×</button></div>`
+  ).join('');
+}
+
+function removeManualPDF(i) {
+  manualPDFs.splice(i,1); manualPDFContents.splice(i,1);
+  renderManualPDFList();
+}
+
+function setManualTab(tab) {
+  const isPrompt = tab === 'prompt';
+  document.getElementById('manual-prompt-mode').style.display = isPrompt ? 'block' : 'none';
+  document.getElementById('manual-direct-mode').style.display = isPrompt ? 'none' : 'block';
+  document.getElementById('manual-tab-prompt').style.cssText = isPrompt
+    ? 'flex:1;padding:8px;border:1px solid var(--accent);background:rgba(78,255,176,0.1);color:var(--accent);border-radius:6px;font-family:"DM Sans",sans-serif;font-size:12px;font-weight:600;cursor:pointer;'
+    : 'flex:1;padding:8px;border:1px solid var(--border);background:transparent;color:var(--text-muted);border-radius:6px;font-family:"DM Sans",sans-serif;font-size:12px;cursor:pointer;';
+  document.getElementById('manual-tab-direct').style.cssText = isPrompt
+    ? 'flex:1;padding:8px;border:1px solid var(--border);background:transparent;color:var(--text-muted);border-radius:6px;font-family:"DM Sans",sans-serif;font-size:12px;cursor:pointer;'
+    : 'flex:1;padding:8px;border:1px solid var(--accent4);background:rgba(255,209,102,0.1);color:var(--accent4);border-radius:6px;font-family:"DM Sans",sans-serif;font-size:12px;font-weight:600;cursor:pointer;';
+}
+
+function buildManualPrompt() {
+  const topic = document.getElementById('manual-topic').value.trim();
+  const goal = document.getElementById('manual-goal').value.trim();
+  const urls = Array.from(document.querySelectorAll('.manual-url')).map(i => i.value.trim()).filter(Boolean);
+  const pdfs = manualPDFs.map(f => f.name);
+
+  let prompt = "";
+
+  // PDF warning - must be shown prominently
+  if (pdfs.length > 0) {
+    prompt += "⚠️ ABANS D'ENVIAR AQUEST PROMPT: adjunta manualment aquests fitxers al Projecte Claude:\n";
+    pdfs.forEach(p => prompt += "   → " + p + "\n");
+    prompt += "\n---\n\n";
+  }
+
+  prompt += "Genera una formació diària per a l'equip de Farmàcia Ortopèdia Platja Cubelles.\n\n";
+
+  // Strict sources instruction
+  prompt += "⚠️ IMPORTANT — FONTS: Basa't EXCLUSIVAMENT en les fonts que t'indico a continuació";
+  if (pdfs.length > 0) prompt += " (PDFs adjunts i URLs)";
+  prompt += ". NO uses coneixements generals ni cap font externa no indicada. Si no tens prou informació de les fonts donades, indica-ho explícitament.\n\n";
+
+  if (topic) prompt += "TEMA: " + topic + "\n";
+  if (goal) prompt += "OBJECTIU ESPECÍFIC: " + goal + "\n";
+
+  if (urls.length > 0) {
+    prompt += "\nFONTS WEB (llegeix i basa't en el contingut d'aquestes URLs):\n";
+    urls.forEach(u => prompt += "- " + u + "\n");
+  }
+
+  if (pdfs.length > 0) {
+    prompt += "\nDOCUMENTS ADJUNTS (basa't en el contingut d'aquests fitxers):\n";
+    pdfs.forEach(p => prompt += "- " + p + "\n");
+  }
+
+  if (urls.length === 0 && pdfs.length === 0) {
+    prompt += "\n⚠️ No has indicat cap font. Afegeix URLs o PDFs a l'apartat de fonts abans de generar el prompt.\n";
+  }
+
+  prompt += "\nSegueix exactament el format i les instruccions del projecte.";
+  return prompt;
+}
+
+function copyManualPrompt() {
+  const topic = document.getElementById('manual-topic').value.trim();
+  const urls = Array.from(document.querySelectorAll('.manual-url')).map(i => i.value.trim()).filter(Boolean);
+  const pdfs = manualPDFs.map(f => f.name);
+
+  if (!topic) { showToast('Cal posar un tema primer'); return; }
+  if (urls.length === 0 && pdfs.length === 0) {
+    showToast('Afegeix almenys una URL o un PDF com a font');
+    return;
+  }
+
+  const prompt = buildManualPrompt();
+
+  // Show PDF reminder prominently if needed
+  if (pdfs.length > 0) {
+    document.getElementById('manual-prompt-box').innerHTML =
+      '<div style="background:rgba(255,107,107,0.1);border:1px solid var(--accent3);border-radius:6px;padding:10px;margin-bottom:10px;font-size:11px;color:var(--accent3);">' +
+      '<strong>⚠️ Recorda:</strong> abans de pegar el prompt al Projecte Claude, adjunta manualment:<br>' +
+      pdfs.map(p => '&nbsp;&nbsp;→ ' + p).join('<br>') +
+      '</div>' +
+      '<div style="white-space:pre-wrap;">' + prompt.replace(/</g,'&lt;') + '</div>';
+    document.getElementById('manual-prompt-box').style.display = 'block';
+  } else {
+    document.getElementById('manual-prompt-box').textContent = prompt;
+    document.getElementById('manual-prompt-box').style.display = 'block';
+  }
+
+  // Copy to clipboard (without the PDF warning header)
+  const promptToCopy = pdfs.length > 0 ? prompt.split('---\n\n')[1] || prompt : prompt;
+  navigator.clipboard.writeText(promptToCopy).then(() => {
+    showToast(pdfs.length > 0 ? "Prompt copiat — recorda adjuntar els PDFs!" : "Prompt copiat! Enganxa'l al Projecte Claude");
+  });
+}
+
+
+
+function onManualResponseInput() {
+  const val = document.getElementById('manual-response').value.trim();
+  const btn = document.getElementById('manual-load-btn');
+  btn.disabled = val.length < 20;
+  btn.style.opacity = val.length < 20 ? '0.5' : '1';
+}
+
+function onManualDirectInput() {
+  const val = document.getElementById('manual-direct-content').value.trim();
+  const btn = document.getElementById('manual-direct-btn');
+  btn.disabled = val.length < 20;
+  btn.style.opacity = val.length < 20 ? '0.5' : '1';
+}
+
+function loadManualResponse() {
+  const text = document.getElementById('manual-response').value.trim();
+  if (!text) return;
+  manualLoadedContent = text;
+  showManualPreview(text);
+}
+
+function loadDirectContent() {
+  const text = document.getElementById('manual-direct-content').value.trim();
+  if (!text) return;
+  manualLoadedContent = text;
+  showManualPreview(text);
+}
+
+function showManualPreview(text) {
+  const card = document.getElementById('manual-preview-card');
+  const body = document.getElementById('manual-preview-body');
+  body.innerHTML = renderOutput(text);
+  card.style.display = 'block';
+  card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  showToast('Contingut carregat — tria quan publicar-lo');
+}
+
+function toggleManualDate() {
+  const tipus = document.getElementById('manual-pub-tipus').value;
+  document.getElementById('manual-date-picker').style.display = tipus === 'data' ? 'block' : 'none';
+}
+
+async function programarManual() {
+  if (!manualLoadedContent) { showToast('Cal carregar el contingut primer'); return; }
+  const tipus = document.getElementById('manual-pub-tipus').value;
+  const dataInput = document.getElementById('manual-pub-data').value;
+  if (tipus === 'data' && !dataInput) { showToast('Cal seleccionar una data'); return; }
+
+  const titolMatch = manualLoadedContent.match(/^#\s+(.+)$/m);
+  const titol = titolMatch ? titolMatch[1].trim() : document.getElementById('manual-topic').value.trim() || 'Formació manual';
+
+  let dataStr = '';
+  let estat = 'PENDENT';
+  if (tipus === 'cua') {
+    estat = 'CUA';
+  } else {
+    const d = new Date(dataInput + 'T12:00:00');
+    dataStr = d.toLocaleDateString('ca-ES');
+  }
+
+  try {
+    showToast('Programant...');
+    await gsPost('addProgramacio', { data: dataStr, titol, contingut: manualLoadedContent, estat });
+    // Reset form
+    document.getElementById('manual-topic').value = '';
+    document.getElementById('manual-goal').value = '';
+    document.getElementById('manual-response').value = '';
+    document.getElementById('manual-direct-content').value = '';
+    document.getElementById('manual-preview-card').style.display = 'none';
+    manualLoadedContent = '';
+    manualPDFs = []; manualPDFContents = [];
+    renderManualPDFList();
+    showToast('Formació programada!');
+    showPage('programacio');
+  } catch(e) {
+    showToast('Error: ' + e.message);
+  }
 }
 
 // ══════════════════════════
