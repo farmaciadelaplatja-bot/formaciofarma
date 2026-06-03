@@ -534,7 +534,7 @@
         <!-- Direct mode -->
         <div id="manual-direct-mode" style="display:none;">
           <label>Enganxa o escriu el contingut formatiu</label>
-          <textarea id="manual-direct-content" placeholder="Escriu o enganxa el contingut amb el format:&#10;# Títol&#10;## OBJECTIU&#10;## CONTINGUT PRINCIPAL&#10;## ALERTA CLINICA&#10;## CONNEXIO ORTOPEDIA&#10;## QUIZ&#10;## TIP DE L EXPERT" style="min-height:200px;" oninput="onManualDirectInput()"></textarea>
+          <textarea id="manual-direct-content" placeholder="Escriu o enganxa qualsevol contingut formatiu. Pot ser text lliure o amb el format estructurat (## OBJECTIU, ## CONTINGUT PRINCIPAL, etc.)" style="min-height:200px;" oninput="onManualDirectInput()"></textarea>
           <button id="manual-direct-btn" onclick="loadDirectContent()" disabled style="width:100%;padding:12px;background:var(--accent4);color:#1a0a00;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;opacity:0.5;">→ Carregar contingut</button>
         </div>
       </div>
@@ -2061,8 +2061,8 @@ function onManualResponseInput() {
 function onManualDirectInput() {
   const val = document.getElementById('manual-direct-content').value.trim();
   const btn = document.getElementById('manual-direct-btn');
-  btn.disabled = val.length < 20;
-  btn.style.opacity = val.length < 20 ? '0.5' : '1';
+  btn.disabled = val.length < 5;
+  btn.style.opacity = val.length < 5 ? '0.5' : '1';
 }
 
 function loadManualResponse() {
@@ -2106,7 +2106,8 @@ async function programarManual() {
   if (tipus === 'data' && !dataInput) { showToast('Cal seleccionar una data'); return; }
 
   const titolMatch = window.manualLoadedContent.match(/^#\s+(.+)$/m);
-  const titol = titolMatch ? titolMatch[1].trim() : document.getElementById('manual-topic').value.trim() || 'Formació manual';
+  const topicInput = document.getElementById('manual-topic').value.trim();
+  const titol = titolMatch ? titolMatch[1].trim() : (topicInput || 'Formació manual');
 
   let dataStr = '';
   let estat = 'PENDENT';
@@ -2152,7 +2153,7 @@ async function carregarProgramacio() {
     list.innerHTML = items.map(item => `
       <div style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--bg);border:1px solid var(--border);border-radius:8px;margin-bottom:8px;">
         <div style="flex-shrink:0;">
-          <div style="font-family:'DM Mono',monospace;font-size:11px;color:${item.estat==='PUBLICADA'?'var(--text-muted)':'var(--accent)'};background:${item.estat==='PUBLICADA'?'var(--surface2)':'rgba(78,255,176,0.1)'};padding:4px 10px;border-radius:20px;">${item.estat==='CUA'?'📋 Cua':item.estat==='PUBLICADA'?'✓ Publicada':'📅 '+item.data}</div>
+          <div style="font-family:'DM Mono',monospace;font-size:11px;color:${item.estat==='PUBLICADA'?'var(--text-muted)':item.estat==='CUA'?'var(--accent2)':'var(--accent4)'};background:${item.estat==='PUBLICADA'?'var(--surface2)':item.estat==='CUA'?'rgba(110,157,255,0.1)':'rgba(255,209,102,0.1)'};padding:4px 10px;border-radius:20px;white-space:nowrap;">${item.estat==='CUA'?'📋 Cua':item.estat==='PUBLICADA'?'✓ Publicada':'📅 '+item.data}</div>
         </div>
         <div style="flex:1;">
           <div style="font-size:14px;font-weight:500;color:var(--text);">${item.titol}</div>
@@ -2183,8 +2184,9 @@ async function addFormacioManual() {
     estat = 'CUA';
     dataStr = '';
   } else {
-    const d = new Date(dataInput + 'T12:00:00');
-    dataStr = d.toLocaleDateString('ca-ES');
+    // Format date as dd/mm/yyyy
+    const parts = dataInput.split('-');
+    dataStr = parts[2] + '/' + parts[1] + '/' + parts[0];
     estat = 'PENDENT';
   }
 
