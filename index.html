@@ -323,9 +323,48 @@
 
   <!-- Nav -->
   <div class="nav-tabs">
+    <button class="nav-tab" onclick="showPage('formacio')">📚 Formació del dia</button>
     <button class="nav-tab active" onclick="showPage('generator')">⚡ Generador</button>
     <button class="nav-tab" onclick="showPage('quiz')">❓ Quiz del dia</button>
     <button class="nav-tab" onclick="showPage('gamification')">🏆 Ranking</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       PAGE 0: FORMACIÓ DEL DIA
+  ══════════════════════════════════════════ -->
+  <div class="page" id="page-formacio">
+    <div class="card" id="formacio-loading" style="text-align:center;padding:40px;">
+      <div style="font-size:32px;margin-bottom:12px;">⏳</div>
+      <div style="color:var(--text-muted);font-family:'DM Mono',monospace;font-size:13px;">Carregant la formació del dia...</div>
+    </div>
+
+    <div id="formacio-content" style="display:none;">
+      <!-- Header de la formació -->
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+        <div>
+          <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;" id="formacio-data"></div>
+          <div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--accent);margin-top:4px;" id="formacio-titol"></div>
+        </div>
+        <button onclick="imprimirFormacio()" style="padding:10px 20px;background:rgba(78,255,176,0.12);border:1px solid var(--accent);color:var(--accent);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">🖨 Imprimir / PDF</button>
+      </div>
+
+      <!-- Contingut formatiu -->
+      <div class="card" id="formacio-body" style="font-size:14px;line-height:1.8;"></div>
+
+      <!-- CTA Quiz -->
+      <div style="margin-top:16px;padding:20px;background:rgba(255,209,102,0.06);border:1px solid rgba(255,209,102,0.2);border-radius:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+        <div>
+          <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px;">Ja has llegit la formació?</div>
+          <div style="font-size:12px;color:var(--text-muted);">Posa a prova el que has après i suma punts al ranking</div>
+        </div>
+        <button onclick="goToQuizFromFormacio()" style="padding:14px 32px;background:var(--accent4);color:#1a0a00;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;">🎯 Fer el Quiz →</button>
+      </div>
+    </div>
+
+    <div id="formacio-error" style="display:none;text-align:center;padding:40px;color:var(--text-muted);">
+      <div style="font-size:32px;margin-bottom:12px;">📭</div>
+      <div style="font-size:14px;">No hi ha formació disponible avui encara.<br>Torna a les 10:00 o contacta amb el titular.</div>
+    </div>
   </div>
 
   <!-- ══════════════════════════════════════════
@@ -851,10 +890,58 @@ function showPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
-  const idx = ['generator','quiz','gamification'].indexOf(name);
-  document.querySelectorAll('.nav-tab')[idx].classList.add('active');
+  const idx = ['formacio','generator','quiz','gamification'].indexOf(name);
+  if (idx >= 0) document.querySelectorAll('.nav-tab')[idx].classList.add('active');
   if (name === 'gamification') renderAll();
   if (name === 'quiz') renderQuizParticipants();
+  if (name === 'formacio') carregarFormacioDelDia();
+}
+
+async function carregarFormacioDelDia() {
+  document.getElementById('formacio-loading').style.display = 'block';
+  document.getElementById('formacio-content').style.display = 'none';
+  document.getElementById('formacio-error').style.display = 'none';
+  try {
+    const data = await gsCall({ action: 'getFormacioAvui' });
+    if (!data.formacio || !data.formacio.contingut) {
+      document.getElementById('formacio-loading').style.display = 'none';
+      document.getElementById('formacio-error').style.display = 'block';
+      return;
+    }
+    const f = data.formacio;
+    document.getElementById('formacio-data').textContent = f.data || '';
+    document.getElementById('formacio-titol').textContent = f.titol || '';
+    // Store raw for quiz
+    document.getElementById('formacio-body').dataset.raw = f.contingut;
+    // Render without quiz
+    document.getElementById('formacio-body').innerHTML = renderOutput(f.contingut);
+    document.getElementById('formacio-loading').style.display = 'none';
+    document.getElementById('formacio-content').style.display = 'block';
+  } catch(e) {
+    document.getElementById('formacio-loading').style.display = 'none';
+    document.getElementById('formacio-error').style.display = 'block';
+  }
+}
+
+function goToQuizFromFormacio() {
+  const raw = document.getElementById('formacio-body').dataset.raw || '';
+  if (!raw) { showToast('No hi ha contingut per al quiz'); return; }
+  // Parse and load quiz
+  const parsed = parseQuizFromText(raw);
+  if (!parsed) { showToast('No s'han trobat preguntes al contingut'); return; }
+  currentQuizData = parsed;
+  quizAnswers = {};
+  showPage('quiz');
+  renderQuiz();
+}
+
+function imprimirFormacio() {
+  const raw = document.getElementById('formacio-body').dataset.raw || '';
+  if (!raw) { showToast('No hi ha contingut per imprimir'); return; }
+  // Reuse downloadPDF with the sheet content
+  const ob = document.getElementById('output-body');
+  ob.dataset.raw = raw;
+  downloadPDF();
 }
 
 // ══════════════════════════
@@ -1061,14 +1148,22 @@ async function loadClaudeResponse() {
   ob.dataset.raw = text;
   document.getElementById('output-container').style.display = 'block';
   document.getElementById('output-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  // Auto-save to Google Sheets
+
+  // Extract title
   const titleMatch = text.match(/^#\s+(.+)$/m);
   const titol = titleMatch ? titleMatch[1].trim() : 'Formació ' + new Date().toLocaleDateString('ca-ES');
+
+  // Save to Google Sheets + send team email
   try {
-    await gsPost('saveFormacio', { titol, contingut: text });
-    showToast('✓ Formació carregada i guardada a Google Sheets!');
+    showToast('⏳ Guardant i enviant mail a l\'equip...');
+    await gsPost('saveFormacioIEnviaMail', {
+      titol,
+      contingut: text,
+      url: 'https://farmaciadelaplatja-bot.github.io/formaciofarma/'
+    });
+    showToast('✓ Formació guardada i mail enviat a l\'equip!');
   } catch(e) {
-    showToast('✓ Formació carregada (no s\'ha pogut guardar al Sheet)');
+    showToast('✓ Formació carregada (error enviant mail: ' + e.message + ')');
   }
 }
 
@@ -1612,6 +1707,18 @@ function showToast(msg) {
 
 // Init
 loadState();
+
+// Si la URL te #quiz obre el quiz, sino obre formació del dia per defecte
+window.addEventListener('load', () => {
+  if (window.location.hash === '#quiz') {
+    showPage('quiz');
+  } else if (window.location.hash === '#ranking') {
+    showPage('gamification');
+  } else {
+    // Obre formació del dia per defecte
+    showPage('formacio');
+  }
+});
 </script>
 </body>
 </html>
