@@ -1921,9 +1921,9 @@ function showToast(msg) {
 // ══════════════════════════
 // MANUAL MODE
 // ══════════════════════════
-let manualPDFs = [];
-let manualPDFContents = [];
-let manualLoadedContent = '';
+window.manualPDFs = [];
+window.manualPDFContents = [];
+window.window.manualLoadedContent = '';
 
 function addUrlRow() {
   const container = document.getElementById('manual-urls');
@@ -1942,9 +1942,9 @@ function removeUrlRow(btn) {
 function handleManualPDFs(event) {
   Array.from(event.target.files).forEach(file => {
     if (!manualPDFs.find(f => f.name === file.name)) {
-      manualPDFs.push(file);
-      manualPDFContents.push({ name: file.name, size: file.size });
-      renderManualPDFList();
+      window.manualPDFs.push(file);
+      window.manualPDFContents.push({ name: file.name, size: file.size });
+      window.renderManualPDFList && renderManualPDFList();
     }
   });
 }
@@ -1956,8 +1956,8 @@ function renderManualPDFList() {
 }
 
 function removeManualPDF(i) {
-  manualPDFs.splice(i,1); manualPDFContents.splice(i,1);
-  renderManualPDFList();
+  window.manualPDFs.splice(i,1); window.manualPDFContents.splice(i,1);
+  window.renderManualPDFList && renderManualPDFList();
 }
 
 function setManualTab(tab) {
@@ -1976,7 +1976,7 @@ function buildManualPrompt() {
   const topic = document.getElementById('manual-topic').value.trim();
   const goal = document.getElementById('manual-goal').value.trim();
   const urls = Array.from(document.querySelectorAll('.manual-url')).map(i => i.value.trim()).filter(Boolean);
-  const pdfs = manualPDFs.map(f => f.name);
+  const pdfs = window.manualPDFs.map(f => f.name);
 
   let prompt = "";
 
@@ -2018,7 +2018,7 @@ function buildManualPrompt() {
 function copyManualPrompt() {
   const topic = document.getElementById('manual-topic').value.trim();
   const urls = Array.from(document.querySelectorAll('.manual-url')).map(i => i.value.trim()).filter(Boolean);
-  const pdfs = manualPDFs.map(f => f.name);
+  const pdfs = window.manualPDFs.map(f => f.name);
 
   if (!topic) { showToast('Cal posar un tema primer'); return; }
   if (urls.length === 0 && pdfs.length === 0) {
@@ -2068,21 +2068,27 @@ function onManualDirectInput() {
 function loadManualResponse() {
   const text = document.getElementById('manual-response').value.trim();
   if (!text) return;
-  manualLoadedContent = text;
+  window.manualLoadedContent = text;
   showManualPreview(text);
 }
 
 function loadDirectContent() {
   const text = document.getElementById('manual-direct-content').value.trim();
   if (!text) return;
-  manualLoadedContent = text;
+  window.manualLoadedContent = text;
   showManualPreview(text);
 }
 
 function showManualPreview(text) {
   const card = document.getElementById('manual-preview-card');
   const body = document.getElementById('manual-preview-body');
-  body.innerHTML = renderOutput(text);
+  // Try structured render first, fall back to plain text
+  try {
+    const rendered = renderOutput(text);
+    body.innerHTML = rendered || '<pre style="white-space:pre-wrap;font-size:13px;color:var(--text-muted);">' + text + '</pre>';
+  } catch(e) {
+    body.innerHTML = '<pre style="white-space:pre-wrap;font-size:13px;color:var(--text-muted);">' + text + '</pre>';
+  }
   card.style.display = 'block';
   card.scrollIntoView({ behavior: 'smooth', block: 'start' });
   showToast('Contingut carregat — tria quan publicar-lo');
@@ -2094,12 +2100,12 @@ function toggleManualDate() {
 }
 
 async function programarManual() {
-  if (!manualLoadedContent) { showToast('Cal carregar el contingut primer'); return; }
+  if (!window.manualLoadedContent) { showToast('Cal carregar el contingut primer'); return; }
   const tipus = document.getElementById('manual-pub-tipus').value;
   const dataInput = document.getElementById('manual-pub-data').value;
   if (tipus === 'data' && !dataInput) { showToast('Cal seleccionar una data'); return; }
 
-  const titolMatch = manualLoadedContent.match(/^#\s+(.+)$/m);
+  const titolMatch = window.manualLoadedContent.match(/^#\s+(.+)$/m);
   const titol = titolMatch ? titolMatch[1].trim() : document.getElementById('manual-topic').value.trim() || 'Formació manual';
 
   let dataStr = '';
@@ -2113,16 +2119,16 @@ async function programarManual() {
 
   try {
     showToast('Programant...');
-    await gsPost('addProgramacio', { data: dataStr, titol, contingut: manualLoadedContent, estat });
+    await gsPost('addProgramacio', { data: dataStr, titol, contingut: window.manualLoadedContent, estat });
     // Reset form
     document.getElementById('manual-topic').value = '';
     document.getElementById('manual-goal').value = '';
     document.getElementById('manual-response').value = '';
     document.getElementById('manual-direct-content').value = '';
     document.getElementById('manual-preview-card').style.display = 'none';
-    manualLoadedContent = '';
-    manualPDFs = []; manualPDFContents = [];
-    renderManualPDFList();
+    window.manualLoadedContent = '';
+    window.manualPDFs = []; window.manualPDFContents = [];
+    window.renderManualPDFList && renderManualPDFList();
     showToast('Formació programada!');
     showPage('programacio');
   } catch(e) {
