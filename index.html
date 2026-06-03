@@ -941,7 +941,7 @@ function goToQuizFromFormacio() {
   if (!raw) { showToast('No hi ha contingut per al quiz'); return; }
   // Parse and load quiz
   const parsed = parseQuizFromText(raw);
-  if (!parsed) { showToast('No s'han trobat preguntes al contingut'); return; }
+  if (!parsed) { showToast('No hi ha preguntes'); return; }
   currentQuizData = parsed;
   quizAnswers = {};
   showPage('quiz');
