@@ -323,8 +323,8 @@
 
   <!-- Nav -->
   <div class="nav-tabs">
-    <button class="nav-tab" onclick="showPage('formacio')">📚 Formació del dia</button>
-    <button class="nav-tab active" onclick="showPage('generator')">⚡ Generador</button>
+    <button class="nav-tab active" onclick="showPage('formacio')">📚 Formació del dia</button>
+    <button class="nav-tab" onclick="showPage('generator')">⚡ Generador</button>
     <button class="nav-tab" onclick="showPage('quiz')">❓ Quiz del dia</button>
     <button class="nav-tab" onclick="showPage('gamification')">🏆 Ranking</button>
   </div>
@@ -332,7 +332,7 @@
   <!-- ══════════════════════════════════════════
        PAGE 0: FORMACIÓ DEL DIA
   ══════════════════════════════════════════ -->
-  <div class="page" id="page-formacio">
+  <div class="page active" id="page-formacio">
     <div class="card" id="formacio-loading" style="text-align:center;padding:40px;">
       <div style="font-size:32px;margin-bottom:12px;">⏳</div>
       <div style="color:var(--text-muted);font-family:'DM Mono',monospace;font-size:13px;">Carregant la formació del dia...</div>
@@ -370,7 +370,7 @@
   <!-- ══════════════════════════════════════════
        PAGE 1: GENERATOR
   ══════════════════════════════════════════ -->
-  <div class="page active" id="page-generator">
+  <div class="page" id="page-generator">
 
     <div class="mode-tabs">
       <button class="mode-tab active" onclick="setMode('auto')">🤖 Automàtic (Farmatic)</button>
@@ -1708,15 +1708,14 @@ function showToast(msg) {
 // Init
 loadState();
 
-// Si la URL te #quiz obre el quiz, sino obre formació del dia per defecte
+// Gestiona navegació per hash
 window.addEventListener('load', () => {
   if (window.location.hash === '#quiz') {
     showPage('quiz');
   } else if (window.location.hash === '#ranking') {
     showPage('gamification');
   } else {
-    // Obre formació del dia per defecte
-    showPage('formacio');
+    carregarFormacioDelDia();
   }
 });
 </script>
