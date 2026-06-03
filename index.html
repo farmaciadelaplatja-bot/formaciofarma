@@ -903,11 +903,13 @@ async function carregarFormacioDelDia() {
   document.getElementById('formacio-error').style.display = 'none';
   try {
     // Llegeix directament el JSON de GitHub — instantani
-    const url = 'https://raw.githubusercontent.com/farmaciadelaplatja-bot/formaciofarma/main/formacio-avui.json?t=' + Date.now();
-    const resp = await fetch(url);
-    if (!resp.ok) throw new Error('No trobat');
-    const f = await resp.json();
+    const url = 'https://raw.githubusercontent.com/farmaciadelaplatja-bot/formaciofarma/main/formacio-avui.json';
+    const resp = await fetch(url, { cache: 'no-store' });
+    if (!resp.ok) throw new Error('No trobat: ' + resp.status);
+    const text = await resp.text();
+    const f = JSON.parse(text);
     if (!f.contingut) throw new Error('Contingut buit');
+    console.log('Formacio carregada:', f.titol);
 
     document.getElementById('formacio-data').textContent = f.data || '';
     document.getElementById('formacio-titol').textContent = f.titol || '';
