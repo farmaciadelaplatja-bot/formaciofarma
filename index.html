@@ -902,24 +902,35 @@ async function carregarFormacioDelDia() {
   document.getElementById('formacio-content').style.display = 'none';
   document.getElementById('formacio-error').style.display = 'none';
   try {
-    const data = await gsCall({ action: 'getFormacioAvui' });
-    if (!data.formacio || !data.formacio.contingut) {
-      document.getElementById('formacio-loading').style.display = 'none';
-      document.getElementById('formacio-error').style.display = 'block';
-      return;
-    }
-    const f = data.formacio;
+    // Llegeix directament el JSON de GitHub — instantani
+    const url = 'https://raw.githubusercontent.com/farmaciadelaplatja-bot/formaciofarma/main/formacio-avui.json?t=' + Date.now();
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error('No trobat');
+    const f = await resp.json();
+    if (!f.contingut) throw new Error('Contingut buit');
+
     document.getElementById('formacio-data').textContent = f.data || '';
     document.getElementById('formacio-titol').textContent = f.titol || '';
-    // Store raw for quiz
     document.getElementById('formacio-body').dataset.raw = f.contingut;
-    // Render without quiz
     document.getElementById('formacio-body').innerHTML = renderOutput(f.contingut);
     document.getElementById('formacio-loading').style.display = 'none';
     document.getElementById('formacio-content').style.display = 'block';
   } catch(e) {
-    document.getElementById('formacio-loading').style.display = 'none';
-    document.getElementById('formacio-error').style.display = 'block';
+    // Fallback: intenta llegir del Sheet
+    try {
+      const data = await gsCall({ action: 'getFormacioAvui' });
+      if (!data.formacio || !data.formacio.contingut) throw new Error('Buit');
+      const f = data.formacio;
+      document.getElementById('formacio-data').textContent = f.data || '';
+      document.getElementById('formacio-titol').textContent = f.titol || '';
+      document.getElementById('formacio-body').dataset.raw = f.contingut;
+      document.getElementById('formacio-body').innerHTML = renderOutput(f.contingut);
+      document.getElementById('formacio-loading').style.display = 'none';
+      document.getElementById('formacio-content').style.display = 'block';
+    } catch(e2) {
+      document.getElementById('formacio-loading').style.display = 'none';
+      document.getElementById('formacio-error').style.display = 'block';
+    }
   }
 }
 
