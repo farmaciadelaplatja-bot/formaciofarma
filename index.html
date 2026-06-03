@@ -938,7 +938,7 @@ async function carregarFormacioDelDia() {
 
 function goToQuizFromFormacio() {
   const raw = document.getElementById('formacio-body').dataset.raw || '';
-  if (!raw) { showToast('No hi ha contingut per al quiz'); return; }
+  if (!raw) { showToast("No hi ha contingut per al quiz"); return; }
   // Parse and load quiz
   const parsed = parseQuizFromText(raw);
   if (!parsed) { showToast('No hi ha preguntes'); return; }
@@ -950,7 +950,7 @@ function goToQuizFromFormacio() {
 
 function imprimirFormacio() {
   const raw = document.getElementById('formacio-body').dataset.raw || '';
-  if (!raw) { showToast('No hi ha contingut per imprimir'); return; }
+  if (!raw) { showToast("No hi ha contingut per imprimir"); return; }
   // Reuse downloadPDF with the sheet content
   const ob = document.getElementById('output-body');
   ob.dataset.raw = raw;
@@ -1115,20 +1115,102 @@ Usa un to proper i professional. Contingut específic per a farmàcia costanera 
 }
 
 function renderOutput(text) {
-  // Remove QUIZ section (keep TIP DE L'EXPERT)
-  let clean = text.replace(/## QUIZ[\s\S]*?(?=## TIP|$)/i, '');
-  return clean
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
-    .replace(/^# (.+)$/gm, '<h2>$1</h2>')
-    .replace(/^- (.+)$/gm, '<li>$1</li>')
-    .replace(/\n\n/g, '<br><br>');
+  // Remove h1 title (already shown above) and QUIZ section
+  let clean = text
+    .replace(/^#\s+.+$/m, '')
+    .replace(/## QUIZ[\s\S]*?(?=## TIP|$)/i, '');
+
+  const lines = clean.split('\n');
+  let html = '';
+  let inList = false;
+  let inTable = false;
+  let tableHtml = '';
+  let isFirstRow = true;
+  let afterSection = '';
+
+  const closeList = () => { if (inList) { html += '</ul>'; inList = false; } };
+  const closeTable = () => {
+    if (inTable) {
+      html += '<div style="overflow-x:auto;margin:8px 0 16px;"><table style="width:100%;border-collapse:collapse;font-size:13px;">' + tableHtml + '</tbody></table></div>';
+      tableHtml = ''; inTable = false; isFirstRow = true;
+    }
+  };
+
+  for (let i = 0; i < lines.length; i++) {
+    let line = lines[i].trim();
+    if (!line) { closeList(); closeTable(); continue; }
+
+    // Normalize ### to ##
+    line = line.replace(/^#{3,}\s+/, '## ');
+    line = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+    if (line.startsWith('# ')) {
+      closeList(); closeTable();
+      // skip - shown as title already
+
+    } else if (line.startsWith('## ')) {
+      closeList(); closeTable();
+      const sec = line.replace(/^##\s+/, '').trim().toUpperCase();
+      afterSection = sec;
+      const cfg = {
+        'OBJECTIU':           { icon: '🎯', color: 'var(--accent2)' },
+        'CONTINGUT PRINCIPAL':{ icon: '📋', color: 'var(--accent)' },
+        'ALERTA CLINICA':     { icon: '⚠️', color: 'var(--accent3)' },
+        'CONNEXIO ORTOPEDIA': { icon: '🦴', color: '#a78bfa' },
+        'TIP DE L EXPERT':    { icon: '💡', color: 'var(--accent4)' }
+      };
+      const c = cfg[sec] || { icon: '▸', color: 'var(--accent)' };
+      html += `<div style="display:flex;align-items:center;gap:8px;margin:24px 0 12px;padding-bottom:8px;border-bottom:2px solid ${c.color}40;">
+        <span style="font-size:18px;">${c.icon}</span>
+        <span style="font-family:'DM Mono',monospace;font-size:11px;color:${c.color};text-transform:uppercase;letter-spacing:2px;font-weight:700;">${sec}</span>
+      </div>`;
+
+    } else if (line.match(/^[-*]\s+/)) {
+      closeTable();
+      if (!inList) { html += '<ul style="padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;margin:0 0 8px;">'; inList = true; }
+      const item = line.replace(/^[-*]\s+/, '');
+      const bc = afterSection === 'ALERTA CLINICA' ? 'var(--accent3)' : 'var(--accent)';
+      html += `<li style="display:flex;gap:10px;align-items:flex-start;padding:10px 14px;background:var(--surface2);border-radius:8px;border-left:3px solid ${bc};font-size:13px;line-height:1.5;">
+        <span style="color:${bc};flex-shrink:0;font-size:10px;margin-top:3px;">●</span>
+        <span>${item}</span>
+      </li>`;
+
+    } else if (line.includes('|') && line.split('|').length >= 3) {
+      closeList();
+      if (line.match(/^\|[-\s|:]+\|$/)) continue;
+      const cells = line.split('|').map(c => c.trim()).filter((c,idx,arr) => idx > 0 && idx < arr.length - 1);
+      if (cells.length >= 2) {
+        if (!inTable) { inTable = true; isFirstRow = true; }
+        if (isFirstRow) {
+          tableHtml += `<thead><tr style="background:var(--surface2);">${cells.map(c =>
+            `<th style="padding:10px 12px;text-align:left;font-family:'DM Mono',monospace;font-size:10px;color:#a78bfa;text-transform:uppercase;letter-spacing:1px;border-bottom:2px solid #a78bfa40;">${c}</th>`
+          ).join('')}</tr></thead><tbody>`;
+          isFirstRow = false;
+        } else {
+          tableHtml += `<tr style="border-bottom:1px solid var(--border);">${cells.map(c =>
+            `<td style="padding:10px 12px;font-size:13px;color:var(--text-muted);">${c}</td>`
+          ).join('')}</tr>`;
+        }
+      }
+
+    } else {
+      closeList(); closeTable();
+      if (afterSection.includes('TIP')) {
+        html += `<div style="background:linear-gradient(135deg,rgba(255,209,102,0.08),rgba(255,209,102,0.03));border:1px solid rgba(255,209,102,0.25);border-radius:10px;padding:14px 18px;font-size:14px;line-height:1.7;color:var(--text);font-style:italic;">${line}</div>`;
+      } else {
+        html += `<p style="font-size:13px;line-height:1.7;color:var(--text-muted);margin:4px 0 8px;">${line}</p>`;
+      }
+    }
+  }
+
+  closeList(); closeTable();
+  return html;
 }
+
 
 function goToQuiz() {
   const raw = document.getElementById('output-body').dataset.raw || '';
-  if (!raw) { showToast('Primer carrega una formació'); return; }
+  if (!raw) { showToast("Primer carrega una formació"); return; }
   sendToQuiz();
   showPage('quiz');
 }
@@ -1214,7 +1296,7 @@ function downloadPDF() {
   const contingut = s['CONTINGUT PRINCIPAL'] || '';
   const alerta = s['ALERTA CLÍNICA'] || '';
   const ortopedia = s['CONNEXIÓ ORTOPÈDIA'] || '';
-  const tip = s["TIP DE L'EXPERT"] || s['TIP DE L\'EXPERT'] || '';
+  const tip = s['TIP DE L EXPERT'] || s['TIP'] || '';
   const today = new Date().toLocaleDateString('ca-ES', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
 
   // Parse bullet points
@@ -1468,7 +1550,7 @@ function parseQuizFromText(text) {
 function sendToQuiz() {
   const raw = document.getElementById('output-body').dataset.raw || '';
   const parsed = parseQuizFromText(raw);
-  if (!parsed) { showToast('⚠️ No s\'han trobat preguntes al contingut generat'); return; }
+  if (!parsed) { showToast('No hi ha preguntes'); return; }
   currentQuizData = parsed;
   quizAnswers = {};
   showPage('quiz');
