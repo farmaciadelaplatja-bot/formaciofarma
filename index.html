@@ -325,6 +325,7 @@
   <div class="nav-tabs">
     <button class="nav-tab active" onclick="showPage('formacio')">📚 Formació del dia</button>
     <button class="nav-tab" onclick="showPage('generator')">⚡ Generador</button>
+    <button class="nav-tab" onclick="showPage('programacio')">📅 Programació</button>
     <button class="nav-tab" onclick="showPage('quiz')">❓ Quiz del dia</button>
     <button class="nav-tab" onclick="showPage('gamification')">🏆 Ranking</button>
   </div>
@@ -586,6 +587,53 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       PAGE: PROGRAMACIÓ
+  ══════════════════════════════════════════ -->
+  <div class="page" id="page-programacio">
+
+    <!-- Formulari nova formació -->
+    <div class="card">
+      <div class="card-title">✏️ Nova formació manual</div>
+
+      <div class="grid-2">
+        <div>
+          <label>Data de publicació</label>
+          <input type="date" id="prog-data" style="margin:0;">
+        </div>
+        <div>
+          <label>O afegir a la cua (sense data)</label>
+          <select id="prog-tipus" style="margin:0;">
+            <option value="data">Data concreta</option>
+            <option value="cua">Afegir a la cua</option>
+          </select>
+        </div>
+      </div>
+
+      <label style="margin-top:12px;">Tema / Títol</label>
+      <input type="text" id="prog-titol" placeholder="ex: Peu diabètic, Al·lèrgies primaverals..." style="margin-bottom:12px;">
+
+      <label>Contingut formatiu</label>
+      <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;font-family:'DM Mono',monospace;">
+        Pots generar-lo al Generador i copiar-lo aquí, o pegar la resposta de Claude directament
+      </div>
+      <textarea id="prog-contingut" placeholder="Enganxa aquí el contingut formatiu complet (amb el format ## OBJECTIU, ## CONTINGUT PRINCIPAL, etc.)..." style="min-height:150px;"></textarea>
+
+      <button onclick="addFormacioManual()" style="width:100%;padding:14px;background:var(--accent);color:var(--bg);border:none;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;margin-top:4px;">
+        📅 Programar formació
+      </button>
+    </div>
+
+    <!-- Llista de formacions programades -->
+    <div class="card">
+      <div class="card-title">📋 Formacions programades</div>
+      <div id="prog-list">
+        <div style="text-align:center;padding:20px;color:var(--text-muted);font-size:13px;">Carregant...</div>
+      </div>
+    </div>
+
   </div>
 
   <!-- ══════════════════════════════════════════
@@ -890,11 +938,12 @@ function showPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
-  const idx = ['formacio','generator','quiz','gamification'].indexOf(name);
+  const idx = ['formacio','generator','programacio','quiz','gamification'].indexOf(name);
   if (idx >= 0) document.querySelectorAll('.nav-tab')[idx].classList.add('active');
   if (name === 'gamification') renderAll();
   if (name === 'quiz') renderQuizParticipants();
   if (name === 'formacio') carregarFormacioDelDia();
+  if (name === 'programacio') carregarProgramacio();
 }
 
 async function carregarFormacioDelDia() {
@@ -1798,6 +1847,82 @@ function showToast(msg) {
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ══════════════════════════
+// PROGRAMACIÓ
+// ══════════════════════════
+async function carregarProgramacio() {
+  const list = document.getElementById('prog-list');
+  list.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:13px;">Carregant...</div>';
+  try {
+    const data = await gsCall({ action: 'getProgramacio' });
+    const items = data.programacio || [];
+    if (items.length === 0) {
+      list.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:13px;">No hi ha formacions programades.</div>';
+      return;
+    }
+    list.innerHTML = items.map(item => `
+      <div style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--bg);border:1px solid var(--border);border-radius:8px;margin-bottom:8px;">
+        <div style="flex-shrink:0;">
+          <div style="font-family:'DM Mono',monospace;font-size:11px;color:${item.estat==='PUBLICADA'?'var(--text-muted)':'var(--accent)'};background:${item.estat==='PUBLICADA'?'var(--surface2)':'rgba(78,255,176,0.1)'};padding:4px 10px;border-radius:20px;">${item.estat==='CUA'?'📋 Cua':item.estat==='PUBLICADA'?'✓ Publicada':'📅 '+item.data}</div>
+        </div>
+        <div style="flex:1;">
+          <div style="font-size:14px;font-weight:500;color:var(--text);">${item.titol}</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">${item.contingut.substring(0,80)}...</div>
+        </div>
+        ${item.estat !== 'PUBLICADA' ? `<button onclick="eliminarFormacioManual(${item.rowIndex})" style="background:none;border:none;color:var(--accent3);cursor:pointer;font-size:18px;padding:0 4px;">×</button>` : ''}
+      </div>
+    `).join('');
+  } catch(e) {
+    list.innerHTML = '<div style="color:var(--accent3);font-size:13px;padding:10px;">Error carregant: ' + e.message + '</div>';
+  }
+}
+
+async function addFormacioManual() {
+  const titol = document.getElementById('prog-titol').value.trim();
+  const contingut = document.getElementById('prog-contingut').value.trim();
+  const tipus = document.getElementById('prog-tipus').value;
+  const dataInput = document.getElementById('prog-data').value;
+
+  if (!titol) { showToast('Cal posar un títol'); return; }
+  if (!contingut) { showToast('Cal posar el contingut'); return; }
+  if (tipus === 'data' && !dataInput) { showToast('Cal seleccionar una data'); return; }
+
+  // Format date for display
+  let dataStr = '';
+  let estat = 'PENDENT';
+  if (tipus === 'cua') {
+    estat = 'CUA';
+    dataStr = '';
+  } else {
+    const d = new Date(dataInput + 'T12:00:00');
+    dataStr = d.toLocaleDateString('ca-ES');
+    estat = 'PENDENT';
+  }
+
+  try {
+    showToast('Guardant...');
+    await gsPost('addProgramacio', { data: dataStr, titol, contingut, estat });
+    document.getElementById('prog-titol').value = '';
+    document.getElementById('prog-contingut').value = '';
+    document.getElementById('prog-data').value = '';
+    await carregarProgramacio();
+    showToast('Formació programada correctament!');
+  } catch(e) {
+    showToast('Error: ' + e.message);
+  }
+}
+
+async function eliminarFormacioManual(rowIndex) {
+  if (!confirm('Eliminar aquesta formació programada?')) return;
+  try {
+    await gsPost('deleteProgramacio', { rowIndex });
+    await carregarProgramacio();
+    showToast('Eliminada');
+  } catch(e) {
+    showToast('Error: ' + e.message);
+  }
 }
 
 // Init
