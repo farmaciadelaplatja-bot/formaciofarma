@@ -938,10 +938,10 @@ async function carregarFormacioDelDia() {
 
 function goToQuizFromFormacio() {
   const raw = document.getElementById('formacio-body').dataset.raw || '';
-  if (!raw) { showToast('No hi ha contingut per al quiz'); return; }
+  if (!raw) { showToast("No hi ha contingut per al quiz"); return; }
   // Parse and load quiz
   const parsed = parseQuizFromText(raw);
-  if (!parsed) { showToast('No s'han trobat preguntes al contingut'); return; }
+  if (!parsed) { showToast("No s'han trobat preguntes al contingut"); return; }
   currentQuizData = parsed;
   quizAnswers = {};
   showPage('quiz');
@@ -950,7 +950,7 @@ function goToQuizFromFormacio() {
 
 function imprimirFormacio() {
   const raw = document.getElementById('formacio-body').dataset.raw || '';
-  if (!raw) { showToast('No hi ha contingut per imprimir'); return; }
+  if (!raw) { showToast("No hi ha contingut per imprimir"); return; }
   // Reuse downloadPDF with the sheet content
   const ob = document.getElementById('output-body');
   ob.dataset.raw = raw;
@@ -1128,7 +1128,7 @@ function renderOutput(text) {
 
 function goToQuiz() {
   const raw = document.getElementById('output-body').dataset.raw || '';
-  if (!raw) { showToast('Primer carrega una formació'); return; }
+  if (!raw) { showToast("Primer carrega una formació"); return; }
   sendToQuiz();
   showPage('quiz');
 }
