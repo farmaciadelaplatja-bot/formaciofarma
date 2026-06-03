@@ -2140,6 +2140,21 @@ async function programarManual() {
 // ══════════════════════════
 // PROGRAMACIÓ
 // ══════════════════════════
+async function formatDataProg(data) {
+  if (!data) return '';
+  const s = data.toString();
+  // Already dd/mm/yyyy
+  if (s.match(/^\d{2}\/\d{2}\/\d{4}$/)) return s;
+  // ISO format YYYY-MM-DD
+  if (s.match(/^\d{4}-\d{2}-\d{2}/)) return s.substring(8,10)+'/'+s.substring(5,7)+'/'+s.substring(0,4);
+  // Date object string - extract day/month/year
+  try {
+    const d = new Date(s);
+    if (!isNaN(d)) return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear();
+  } catch(e) {}
+  return s;
+}
+
 async function carregarProgramacio() {
   const list = document.getElementById('prog-list');
   list.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:13px;">Carregant...</div>';
@@ -2153,7 +2168,7 @@ async function carregarProgramacio() {
     list.innerHTML = items.map(item => `
       <div style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--bg);border:1px solid var(--border);border-radius:8px;margin-bottom:8px;">
         <div style="flex-shrink:0;">
-          <div style="font-family:'DM Mono',monospace;font-size:11px;color:${item.estat==='PUBLICADA'?'var(--text-muted)':item.estat==='CUA'?'var(--accent2)':'var(--accent4)'};background:${item.estat==='PUBLICADA'?'var(--surface2)':item.estat==='CUA'?'rgba(110,157,255,0.1)':'rgba(255,209,102,0.1)'};padding:4px 10px;border-radius:20px;white-space:nowrap;">${item.estat==='CUA'?'📋 Cua':item.estat==='PUBLICADA'?'✓ Publicada':'📅 '+(item.data||'').toString().split('T')[0].split('-').reverse().join('/')}</div>
+          <div style="font-family:'DM Mono',monospace;font-size:11px;color:${item.estat==='PUBLICADA'?'var(--text-muted)':item.estat==='CUA'?'var(--accent2)':'var(--accent4)'};background:${item.estat==='PUBLICADA'?'var(--surface2)':item.estat==='CUA'?'rgba(110,157,255,0.1)':'rgba(255,209,102,0.1)'};padding:4px 10px;border-radius:20px;white-space:nowrap;">${item.estat==='CUA'?'📋 Cua':item.estat==='PUBLICADA'?'✓ Publicada':'📅 '+formatDataProg(item.data)}</div>
         </div>
         <div style="flex:1;">
           <div style="font-size:14px;font-weight:500;color:var(--text);">${item.titol}</div>
