@@ -1,24 +1,30 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="ca">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FormacióFarma — Generador de Contenido</title>
+<title>FormacióFarma — Farmàcia Ortopèdia Platja Cubelles</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=JetBrains+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap');
 
   :root {
-    --bg: #0e1117;
-    --surface: #161b27;
-    --surface2: #1e2535;
-    --border: #2a3348;
-    --accent: #4fffb0;
-    --accent2: #6e9dff;
-    --accent3: #ff6b6b;
-    --accent4: #ffd166;
-    --text: #e8ecf4;
-    --text-muted: #7a8ba6;
-    --radius: 12px;
+    --bg: #080c12;
+    --surface: #0f1520;
+    --surface2: #172030;
+    --surface3: #1e2a3d;
+    --border: #1f2d42;
+    --border2: #2a3d58;
+    --accent: #00e5a0;
+    --accent-dim: rgba(0,229,160,0.08);
+    --accent2: #4d8eff;
+    --accent3: #ff5a5a;
+    --accent4: #ffcc44;
+    --accent5: #b07fff; /* lila ortopèdia */
+    --text: #dce8f5;
+    --text-muted: #5e7a96;
+    --text-soft: #8fa8c2;
+    --radius: 14px;
+    --radius-sm: 8px;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -26,285 +32,402 @@
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Outfit', sans-serif;
     min-height: 100vh;
-    padding: 24px 16px;
+    padding: 28px 16px 60px;
   }
 
+  /* Fons atmosfèric: gradient radial verd molt suau al centre */
   body::before {
     content: '';
     position: fixed;
     inset: 0;
-    background-image:
-      linear-gradient(rgba(78,255,176,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(78,255,176,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0,229,160,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 30% at 80% 80%, rgba(77,142,255,0.04) 0%, transparent 50%);
     pointer-events: none;
     z-index: 0;
   }
 
-  .container { max-width: 900px; margin: 0 auto; position: relative; z-index: 1; }
+  /* Trama de punts subtil */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 28px 28px;
+    pointer-events: none;
+    z-index: 0;
+  }
 
-  header { margin-bottom: 28px; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  .container { max-width: 920px; margin: 0 auto; position: relative; z-index: 1; }
 
-  .logo { font-family: 'DM Serif Display', serif; font-size: 28px; color: var(--accent); letter-spacing: -0.5px; }
-  .logo span { color: var(--text-muted); font-style: italic; }
-  .subtitle { color: var(--text-muted); font-size: 13px; font-family: 'DM Mono', monospace; margin-top: 4px; letter-spacing: 0.5px; }
+  /* ── HEADER ── */
+  header {
+    margin-bottom: 32px;
+    display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    animation: fadeDown 0.5s ease both;
+  }
 
-  /* Nav tabs */
+  @keyframes fadeDown { from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:none; } }
+  @keyframes fadeUp   { from { opacity:0; transform:translateY(12px);  } to { opacity:1; transform:none; } }
+  @keyframes fadeIn   { from { opacity:0; } to { opacity:1; } }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px; font-weight: 900;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+    line-height: 1;
+  }
+  .logo em {
+    font-style: italic; font-weight: 400;
+    color: var(--text-muted);
+    font-size: 26px;
+  }
+  .subtitle {
+    color: var(--text-muted); font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+    margin-top: 6px; letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .subtitle::before { content: '// '; color: var(--border2); }
+
+  /* ── NAV ── */
   .nav-tabs {
-    display: flex; gap: 6px; background: var(--surface); padding: 5px;
-    border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 24px;
+    display: flex; gap: 4px; background: var(--surface);
+    padding: 5px; border-radius: var(--radius);
+    border: 1px solid var(--border); margin-bottom: 28px;
+    animation: fadeDown 0.5s 0.1s ease both;
   }
   .nav-tab {
-    flex: 1; padding: 9px 12px; border: none; border-radius: 8px; background: transparent;
-    color: var(--text-muted); font-family: 'DM Sans', sans-serif; font-size: 13px;
-    font-weight: 500; cursor: pointer; transition: all 0.2s; text-align: center;
+    flex: 1; padding: 10px 8px; border: none; border-radius: 10px; background: transparent;
+    color: var(--text-muted); font-family: 'Outfit', sans-serif; font-size: 12px;
+    font-weight: 500; cursor: pointer; transition: all 0.25s; text-align: center;
+    white-space: nowrap;
   }
-  .nav-tab.active { background: var(--surface2); color: var(--accent); border: 1px solid var(--border); }
+  .nav-tab:hover { color: var(--text-soft); background: var(--surface2); }
+  .nav-tab.active {
+    background: var(--surface3); color: var(--accent);
+    border: 1px solid var(--border2);
+    box-shadow: 0 0 0 1px rgba(0,229,160,0.15), inset 0 1px 0 rgba(255,255,255,0.04);
+  }
 
-  /* Mode selector */
+  /* ── MODE TABS ── */
   .mode-tabs {
-    display: flex; gap: 8px; margin-bottom: 24px; background: var(--surface);
-    padding: 6px; border-radius: var(--radius); border: 1px solid var(--border);
+    display: flex; gap: 6px; margin-bottom: 24px; background: var(--surface);
+    padding: 5px; border-radius: var(--radius); border: 1px solid var(--border);
   }
   .mode-tab {
-    flex: 1; padding: 10px 16px; border: none; border-radius: 8px; background: transparent;
-    color: var(--text-muted); font-family: 'DM Sans', sans-serif; font-size: 13px;
-    font-weight: 500; cursor: pointer; transition: all 0.2s; text-align: center;
+    flex: 1; padding: 10px 16px; border: none; border-radius: 10px; background: transparent;
+    color: var(--text-muted); font-family: 'Outfit', sans-serif; font-size: 13px;
+    font-weight: 500; cursor: pointer; transition: all 0.25s; text-align: center;
   }
-  .mode-tab.active { background: var(--surface2); color: var(--accent); border: 1px solid var(--border); }
+  .mode-tab.active { background: var(--surface3); color: var(--accent); border: 1px solid var(--border2); }
 
+  /* ── CARD ── */
   .card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 20px; margin-bottom: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 22px; margin-bottom: 16px;
+    transition: border-color 0.2s;
   }
+  .card:hover { border-color: var(--border2); }
   .card-title {
-    font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent);
-    text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 14px;
-    display: flex; align-items: center; gap: 8px;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--accent);
+    text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
   }
-  .card-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .card-title::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--border2), transparent); }
 
-  label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 6px; font-family: 'DM Mono', monospace; letter-spacing: 0.3px; }
+  label {
+    display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 6px;
+    font-family: 'JetBrains Mono', monospace; letter-spacing: 0.5px; text-transform: uppercase;
+  }
 
   input, select, textarea {
-    width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
-    color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px;
-    padding: 10px 14px; outline: none; transition: border-color 0.2s; margin-bottom: 14px;
+    width: 100%; background: var(--surface2); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); color: var(--text); font-family: 'Outfit', sans-serif;
+    font-size: 14px; padding: 11px 14px; outline: none; transition: border-color 0.2s, background 0.2s;
+    margin-bottom: 14px;
   }
-  input:focus, select:focus, textarea:focus { border-color: var(--accent); }
-  select option { background: var(--surface); }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent); background: var(--surface3);
+    box-shadow: 0 0 0 3px rgba(0,229,160,0.08);
+  }
+  select option { background: var(--surface2); }
   textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
 
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
 
+  /* ── TAGS ── */
   .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
   .tag {
-    padding: 5px 12px; border-radius: 20px; font-size: 12px; cursor: pointer;
-    border: 1px solid var(--border); background: transparent; color: var(--text-muted);
-    font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+    padding: 6px 14px; border-radius: 20px; font-size: 12px; cursor: pointer;
+    border: 1px solid var(--border2); background: transparent; color: var(--text-muted);
+    font-family: 'Outfit', sans-serif; transition: all 0.2s; font-weight: 500;
   }
-  .tag.selected { background: rgba(78,255,176,0.12); border-color: var(--accent); color: var(--accent); }
+  .tag:hover { border-color: var(--accent); color: var(--text-soft); }
+  .tag.selected { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
 
+  /* ── UPLOAD ── */
   .upload-zone {
-    border: 1px dashed var(--border); border-radius: 8px; padding: 20px; text-align: center;
-    color: var(--text-muted); font-size: 13px; cursor: pointer; transition: all 0.2s;
-    margin-bottom: 14px; position: relative;
+    border: 1px dashed var(--border2); border-radius: var(--radius-sm); padding: 22px;
+    text-align: center; color: var(--text-muted); font-size: 13px; cursor: pointer;
+    transition: all 0.2s; margin-bottom: 14px; position: relative;
   }
-  .upload-zone:hover { border-color: var(--accent); color: var(--accent); background: rgba(78,255,176,0.04); }
+  .upload-zone:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
   .upload-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; margin: 0; padding: 0; border: none; height: 100%; }
 
   .file-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
   .file-item {
     display: flex; align-items: center; justify-content: space-between;
-    background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
-    padding: 8px 12px; font-size: 12px; font-family: 'DM Mono', monospace; color: var(--text-muted);
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
+    padding: 8px 12px; font-size: 12px; font-family: 'JetBrains Mono', monospace; color: var(--text-muted);
   }
   .file-item .remove { background: none; border: none; color: var(--accent3); cursor: pointer; font-size: 14px; line-height: 1; padding: 0 2px; }
 
   .data-row { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 8px; align-items: end; margin-bottom: 8px; }
   .data-row input { margin-bottom: 0; }
 
+  /* ── BOTONS ── */
   .btn-icon {
     background: var(--surface2); border: 1px solid var(--border); color: var(--text-muted);
-    border-radius: 8px; width: 38px; height: 38px; cursor: pointer; font-size: 16px;
+    border-radius: var(--radius-sm); width: 40px; height: 40px; cursor: pointer; font-size: 16px;
     display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0;
   }
   .btn-icon:hover { border-color: var(--accent3); color: var(--accent3); }
   .btn-icon.add:hover { border-color: var(--accent); color: var(--accent); }
 
   .btn-generate {
-    width: 100%; padding: 16px; background: var(--accent); color: var(--bg); border: none;
-    border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 15px;
-    font-weight: 600; cursor: pointer; transition: all 0.2s; letter-spacing: 0.3px; margin-top: 8px;
+    width: 100%; padding: 16px; background: var(--accent); color: #000; border: none;
+    border-radius: var(--radius); font-family: 'Outfit', sans-serif; font-size: 15px;
+    font-weight: 600; cursor: pointer; transition: all 0.25s; letter-spacing: 0.3px; margin-top: 8px;
+    position: relative; overflow: hidden;
   }
-  .btn-generate:hover { background: #6bffbf; transform: translateY(-1px); }
-  .btn-generate:disabled { background: var(--border); color: var(--text-muted); transform: none; cursor: not-allowed; }
+  .btn-generate::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .btn-generate:hover { background: #00ffb3; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,229,160,0.25); }
+  .btn-generate:disabled { background: var(--border); color: var(--text-muted); transform: none; box-shadow: none; cursor: not-allowed; }
 
   .output-container { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-top: 24px; }
   .output-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--border); background: var(--surface2); }
-  .output-title { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; }
+  .output-title { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; }
   .output-actions { display: flex; gap: 8px; }
 
   .btn-small {
-    padding: 6px 14px; border-radius: 6px; font-size: 12px; font-family: 'DM Sans', sans-serif;
-    font-weight: 500; cursor: pointer; border: 1px solid var(--border); background: transparent;
+    padding: 7px 14px; border-radius: 6px; font-size: 12px; font-family: 'Outfit', sans-serif;
+    font-weight: 500; cursor: pointer; border: 1px solid var(--border2); background: transparent;
     color: var(--text-muted); transition: all 0.2s;
   }
   .btn-small:hover { border-color: var(--accent); color: var(--accent); }
-  .btn-small.primary { background: rgba(78,255,176,0.1); border-color: var(--accent); color: var(--accent); }
-  .btn-small.gold { background: rgba(255,209,102,0.1); border-color: var(--accent4); color: var(--accent4); }
+  .btn-small.primary { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+  .btn-small.gold { background: rgba(255,204,68,0.08); border-color: var(--accent4); color: var(--accent4); }
 
   .output-body {
-    padding: 24px; font-size: 14px; line-height: 1.8; color: var(--text);
-    white-space: pre-wrap; font-family: 'DM Sans', sans-serif; min-height: 200px;
+    padding: 28px; font-size: 14px; line-height: 1.8; color: var(--text);
+    white-space: pre-wrap; font-family: 'Outfit', sans-serif; min-height: 200px;
   }
-  .output-body.loading { display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-family: 'DM Mono', monospace; font-size: 13px; }
+  .output-body.loading { display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 13px; }
 
   .loader { display: inline-block; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; margin-right: 12px; animation: pulse 1s infinite; }
   @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.3; transform: scale(0.6); } }
 
   .prompt-preview {
     background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px;
-    font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-muted); line-height: 1.7;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted); line-height: 1.7;
     max-height: 200px; overflow-y: auto; margin-top: 8px; display: none;
   }
   .prompt-preview.visible { display: block; }
   .toggle-prompt {
     background: none; border: none; color: var(--text-muted); font-size: 12px; cursor: pointer;
-    font-family: 'DM Mono', monospace; padding: 0; margin-top: 8px; text-decoration: underline; text-underline-offset: 3px;
+    font-family: 'JetBrains Mono', monospace; padding: 0; margin-top: 8px; text-decoration: underline; text-underline-offset: 3px;
   }
   .toggle-prompt:hover { color: var(--accent2); }
 
-  .output-body h2 { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--accent); margin-bottom: 12px; margin-top: 20px; }
+  /* ══════════════════════════════════════
+     FORMACIÓ DEL DIA
+  ══════════════════════════════════════ */
+  .formacio-data-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px;
+    background: var(--surface2); border: 1px solid var(--border2);
+    padding: 5px 12px; border-radius: 20px; margin-bottom: 14px;
+  }
+  .formacio-data-badge::before {
+    content: ''; display: inline-block; width: 6px; height: 6px;
+    background: var(--accent); border-radius: 50%;
+    box-shadow: 0 0 8px var(--accent); animation: pulse 2s infinite;
+  }
+  .formacio-titol-gran {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(24px, 5vw, 36px); font-weight: 900;
+    color: var(--text); line-height: 1.15; letter-spacing: -0.5px;
+  }
+  .btn-print {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 20px; background: transparent;
+    border: 1px solid var(--border2); color: var(--text-soft);
+    border-radius: var(--radius-sm); font-family: 'Outfit', sans-serif;
+    font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s;
+  }
+  .btn-print:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+
+  .quiz-cta-banner {
+    background: linear-gradient(135deg, rgba(255,204,68,0.08), rgba(255,204,68,0.03));
+    border: 1px solid rgba(255,204,68,0.2); border-radius: var(--radius);
+    padding: 22px; display: flex; align-items: center;
+    justify-content: space-between; flex-wrap: wrap; gap: 16px;
+  }
+  .quiz-cta-text h3 { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .quiz-cta-text p { font-size: 13px; color: var(--text-muted); }
+  .btn-quiz-gran {
+    padding: 14px 32px; background: var(--accent4); color: #0a0800;
+    border: none; border-radius: var(--radius-sm); font-family: 'Outfit', sans-serif;
+    font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.25s;
+    white-space: nowrap; box-shadow: 0 4px 16px rgba(255,204,68,0.2);
+  }
+  .btn-quiz-gran:hover { background: #ffe066; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,204,68,0.35); }
+
+  /* output-body styles */
+  .output-body h2 {
+    font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700;
+    margin-bottom: 12px; margin-top: 22px;
+    display: flex; align-items: center; gap: 10px;
+  }
   .output-body h2:first-child { margin-top: 0; }
-  .output-body h3 { font-size: 11px; font-weight: 600; color: var(--accent2); margin-bottom: 8px; margin-top: 16px; font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: 1px; }
-  .output-body p { margin-bottom: 10px; }
-  .output-body ul { padding-left: 20px; margin-bottom: 10px; }
-  .output-body li { margin-bottom: 4px; }
+  .output-body p { margin-bottom: 10px; font-size: 14px; line-height: 1.75; }
+  .output-body ul { padding-left: 0; margin-bottom: 10px; list-style: none; }
+  .output-body li { margin-bottom: 6px; }
   .output-body strong { color: var(--accent); }
 
-  /* ── QUIZ INTERACTIVE ── */
-  .quiz-section { margin-top: 20px; border-top: 1px solid var(--border); padding-top: 20px; }
-  .quiz-header { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent4); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 16px; }
-  .quiz-question { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 12px; }
-  .quiz-question p { font-size: 14px; font-weight: 500; margin-bottom: 12px; color: var(--text); }
-  .quiz-options { display: flex; flex-direction: column; gap: 8px; }
-  .quiz-option {
-    padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border);
-    background: var(--bg); color: var(--text-muted); font-size: 13px; cursor: pointer;
-    transition: all 0.2s; text-align: left; font-family: 'DM Sans', sans-serif;
-  }
-  .quiz-option:hover:not(:disabled) { border-color: var(--accent2); color: var(--text); }
-  .quiz-option.correct { border-color: var(--accent); background: rgba(78,255,176,0.1); color: var(--accent); }
-  .quiz-option.wrong { border-color: var(--accent3); background: rgba(255,107,107,0.1); color: var(--accent3); }
-  .quiz-option:disabled { cursor: not-allowed; opacity: 0.7; }
-  .quiz-feedback { font-size: 12px; margin-top: 8px; padding: 8px 12px; border-radius: 6px; display: none; }
-  .quiz-feedback.show { display: block; }
-  .quiz-feedback.ok { background: rgba(78,255,176,0.08); color: var(--accent); }
-  .quiz-feedback.ko { background: rgba(255,107,107,0.08); color: var(--accent3); }
+  .output-body table { width:100%; border-collapse:collapse; margin:10px 0 16px; font-size:13px; border-radius:10px; overflow:hidden; }
+  .output-body th { background:rgba(176,127,255,0.1); color:var(--accent5); font-family:'JetBrains Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:1.5px; padding:10px 14px; text-align:left; border-bottom:1px solid rgba(176,127,255,0.2); }
+  .output-body td { padding:10px 14px; border-bottom:1px solid var(--border); color:var(--text); vertical-align:top; }
+  .output-body tr:last-child td { border-bottom:none; }
+  .output-body tr:hover td { background:rgba(176,127,255,0.04); }
 
-  /* Participant selector for quiz */
-  .participant-select {
-    display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
-    padding: 12px 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+  .alerta-box { background:rgba(255,90,90,0.06); border:1px solid rgba(255,90,90,0.2); border-left:3px solid var(--accent3); border-radius:var(--radius-sm); padding:14px 18px; margin:8px 0 14px; }
+  .alerta-box p { margin:0; color:var(--text); font-size:13.5px; line-height:1.7; }
+  .tip-box { background:rgba(255,204,68,0.06); border:1px solid rgba(255,204,68,0.2); border-left:3px solid var(--accent4); border-radius:var(--radius-sm); padding:14px 18px; margin:8px 0 14px; }
+  .tip-box p { margin:0; color:var(--text); font-size:13.5px; line-height:1.7; font-style:italic; }
+
+  /* ══════════════════════════════════════
+     QUIZ
+  ══════════════════════════════════════ */
+  .quiz-section { margin-top: 20px; border-top: 1px solid var(--border); padding-top: 24px; }
+  .quiz-header { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--accent4); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; }
+
+  .quiz-question { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 14px; transition: border-color 0.2s; }
+  .quiz-question:hover { border-color: var(--border2); }
+  .quiz-q-num { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
+  .quiz-question p { font-size: 15px; font-weight: 500; margin-bottom: 16px; color: var(--text); line-height: 1.5; }
+  .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+
+  .quiz-option {
+    padding: 13px 18px; border-radius: 10px; border: 1px solid var(--border2);
+    background: var(--surface3); color: var(--text-soft);
+    font-size: 14px; cursor: pointer; transition: all 0.2s;
+    text-align: left; font-family: 'Outfit', sans-serif;
+    display: flex; align-items: center; gap: 12px;
   }
-  .participant-select label { margin: 0; white-space: nowrap; }
+  .quiz-option::before {
+    content: attr(data-letter); width: 26px; height: 26px; border-radius: 6px;
+    background: var(--surface2); border: 1px solid var(--border2);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--text-muted); flex-shrink: 0; transition: all 0.2s;
+  }
+  .quiz-option:hover:not(:disabled) { border-color: var(--accent2); color: var(--text); background: rgba(77,142,255,0.06); }
+  .quiz-option:hover:not(:disabled)::before { background: rgba(77,142,255,0.12); border-color: var(--accent2); color: var(--accent2); }
+  .quiz-option.correct { border-color: var(--accent); background: rgba(0,229,160,0.08); color: var(--accent); }
+  .quiz-option.correct::before { background: rgba(0,229,160,0.15); border-color: var(--accent); color: var(--accent); }
+  .quiz-option.wrong { border-color: var(--accent3); background: rgba(255,90,90,0.08); color: var(--accent3); }
+  .quiz-option.wrong::before { background: rgba(255,90,90,0.15); border-color: var(--accent3); color: var(--accent3); }
+  .quiz-option:disabled { cursor: not-allowed; opacity: 0.75; }
+
+  .quiz-feedback { font-size: 13px; margin-top: 10px; padding: 10px 14px; border-radius: 8px; display: none; }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.ok { background: rgba(0,229,160,0.08); color: var(--accent); border: 1px solid rgba(0,229,160,0.2); }
+  .quiz-feedback.ko { background: rgba(255,90,90,0.08); color: var(--accent3); border: 1px solid rgba(255,90,90,0.2); }
+
+  .participant-select { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; padding: 14px 18px; background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius-sm); }
+  .participant-select label { margin: 0; white-space: nowrap; font-size: 11px; }
   .participant-select select { margin: 0; flex: 1; }
 
-  /* ── GAMIFICATION PANEL ── */
+  /* ══════════════════════════════════════
+     GAMIFICACIÓ
+  ══════════════════════════════════════ */
   #panel-gamification { display: none; }
-
   .ranking-container { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
-  .podium {
-    display: flex; align-items: flex-end; justify-content: center;
-    gap: 8px; height: 120px; margin-bottom: 20px;
-  }
-  .podium-place {
-    display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-    gap: 6px; flex: 1;
-  }
-  .podium-name { font-size: 11px; color: var(--text-muted); font-family: 'DM Mono', monospace; text-align: center; }
-  .podium-score { font-size: 12px; font-weight: 600; font-family: 'DM Mono', monospace; }
-  .podium-bar {
-    width: 100%; border-radius: 6px 6px 0 0; display: flex; align-items: center;
-    justify-content: center; font-size: 18px;
-  }
-  .podium-bar.p1 { background: linear-gradient(180deg, #ffd166, #e6a800); height: 80px; }
-  .podium-bar.p2 { background: linear-gradient(180deg, #9ba4b4, #6b7685); height: 60px; }
-  .podium-bar.p3 { background: linear-gradient(180deg, #cd7f32, #a05c1a); height: 45px; }
+  .podium { display: flex; align-items: flex-end; justify-content: center; gap: 10px; height: 130px; margin-bottom: 24px; padding: 0 8px; }
+  .podium-place { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 6px; flex: 1; }
+  .podium-name { font-size: 11px; color: var(--text-soft); font-family: 'Outfit', sans-serif; text-align: center; font-weight: 500; }
+  .podium-score { font-size: 12px; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+  .podium-bar { width: 100%; border-radius: 8px 8px 0 0; display: flex; align-items: center; justify-content: center; font-size: 20px; position: relative; overflow: hidden; }
+  .podium-bar::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 50%); }
+  .podium-bar.p1 { background: linear-gradient(180deg, #ffd700, #b8860b); height: 90px; box-shadow: 0 -4px 20px rgba(255,215,0,0.25); }
+  .podium-bar.p2 { background: linear-gradient(180deg, #9eb3c8, #5a7a96); height: 65px; }
+  .podium-bar.p3 { background: linear-gradient(180deg, #cd7f32, #7a4510); height: 50px; }
 
   .ranking-list { display: flex; flex-direction: column; gap: 8px; }
-  .ranking-item {
-    display: flex; align-items: center; gap: 12px; padding: 12px 14px;
-    background: var(--bg); border: 1px solid var(--border); border-radius: 8px; transition: all 0.2s;
-  }
-  .ranking-item:hover { border-color: var(--border); background: var(--surface2); }
-  .ranking-pos { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text-muted); width: 20px; text-align: center; }
-  .ranking-name { flex: 1; font-size: 14px; font-weight: 500; }
-  .ranking-pts { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--accent); }
-  .ranking-streak { font-size: 11px; color: var(--accent4); }
-  .ranking-badges { display: flex; gap: 4px; }
-  .badge { font-size: 14px; title: attr(data-label); cursor: default; }
+  .ranking-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); transition: all 0.2s; }
+  .ranking-item:hover { border-color: var(--border2); background: var(--surface3); transform: translateX(2px); }
+  .ranking-item.rank-1 { border-color: rgba(255,215,0,0.25); background: rgba(255,215,0,0.04); }
+  .ranking-pos { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-muted); width: 22px; text-align: center; }
+  .ranking-name { flex: 1; font-size: 14px; font-weight: 600; }
+  .ranking-pts { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--accent); font-weight: 700; }
+  .ranking-streak { font-size: 11px; color: var(--accent4); margin-left: 4px; }
+  .ranking-badges { display: flex; gap: 3px; margin-left: 4px; }
+  .badge { font-size: 14px; cursor: default; }
 
-  .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
-  .stat-box {
-    background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
-    padding: 14px; text-align: center;
-  }
-  .stat-val { font-family: 'DM Serif Display', serif; font-size: 26px; color: var(--accent); }
-  .stat-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+  .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+  .stat-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; text-align: center; transition: border-color 0.2s; }
+  .stat-box:hover { border-color: var(--border2); }
+  .stat-val { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 900; color: var(--accent); line-height: 1; }
+  .stat-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 6px; }
 
-  /* Player management */
   .player-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
-  .player-item {
-    display: flex; align-items: center; gap: 10px; padding: 10px 14px;
-    background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
-  }
-  .player-item .player-name { flex: 1; font-size: 14px; }
-  .player-item .player-pts { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--accent); margin-right: 8px; }
-  .player-item .remove { background: none; border: none; color: var(--accent3); cursor: pointer; font-size: 16px; }
+  .player-item { display: flex; align-items: center; gap: 10px; padding: 11px 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); }
+  .player-item .player-name { flex: 1; font-size: 14px; font-weight: 500; }
+  .player-item .player-pts { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent); margin-right: 8px; }
+  .player-item .remove { background: none; border: none; color: var(--accent3); cursor: pointer; font-size: 16px; opacity: 0.6; transition: opacity 0.2s; }
+  .player-item .remove:hover { opacity: 1; }
 
   .add-player-row { display: flex; gap: 8px; }
   .add-player-row input { margin: 0; flex: 1; }
-  .btn-add { padding: 10px 18px; background: rgba(78,255,176,0.1); border: 1px solid var(--accent); color: var(--accent); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
-  .btn-add:hover { background: rgba(78,255,176,0.2); }
+  .btn-add { padding: 11px 18px; background: var(--accent-dim); border: 1px solid var(--accent); color: var(--accent); border-radius: var(--radius-sm); font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
+  .btn-add:hover { background: rgba(0,229,160,0.15); }
 
-  /* History */
   .history-list { display: flex; flex-direction: column; gap: 8px; }
-  .history-item {
-    padding: 12px 14px; background: var(--bg); border: 1px solid var(--border);
-    border-radius: 8px; font-size: 13px;
-  }
-  .history-date { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text-muted); margin-bottom: 4px; }
-  .history-topic { font-weight: 500; margin-bottom: 4px; }
+  .history-item { padding: 13px 16px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; }
+  .history-date { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-muted); margin-bottom: 5px; letter-spacing: 0.5px; }
+  .history-topic { font-weight: 600; margin-bottom: 6px; color: var(--text); }
   .history-scores { display: flex; gap: 8px; flex-wrap: wrap; }
-  .history-score { font-size: 11px; padding: 3px 8px; background: var(--surface2); border-radius: 4px; font-family: 'DM Mono', monospace; }
+  .history-score { font-size: 11px; padding: 3px 10px; background: var(--surface3); border-radius: 4px; font-family: 'JetBrains Mono', monospace; color: var(--text-muted); }
 
   /* Toast */
-  .toast {
-    position: fixed; bottom: 24px; right: 24px; background: var(--surface2);
-    border: 1px solid var(--accent); color: var(--accent); padding: 12px 20px;
-    border-radius: 10px; font-size: 13px; font-family: 'DM Mono', monospace;
-    z-index: 999; transform: translateY(80px); opacity: 0; transition: all 0.3s;
-  }
+  .toast { position: fixed; bottom: 28px; right: 24px; background: var(--surface2); border: 1px solid var(--accent); color: var(--accent); padding: 12px 22px; border-radius: var(--radius-sm); font-size: 13px; font-family: 'JetBrains Mono', monospace; z-index: 999; transform: translateY(80px); opacity: 0; transition: all 0.3s; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
   .toast.show { transform: translateY(0); opacity: 1; }
 
-  /* Page sections */
   .page { display: none; }
-  .page.active { display: block; }
+  .page.active { display: block; animation: fadeIn 0.3s ease; }
 
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
 
   @media (max-width: 600px) {
     .grid-2, .grid-3, .ranking-container { grid-template-columns: 1fr; }
     .stats-grid { grid-template-columns: 1fr 1fr; }
     .data-row { grid-template-columns: 1fr 1fr auto; }
+    .nav-tab { font-size: 11px; padding: 9px 6px; }
   }
 </style>
 </head>
@@ -313,10 +436,10 @@
 
   <header>
     <div>
-      <div class="logo">Formació<span>Farma</span></div>
-      <div class="subtitle">// farmàcia ortopèdia platja cubelles</div>
+      <div class="logo">Formació<em>Farma</em></div>
+      <div class="subtitle">farmàcia ortopèdia platja cubelles</div>
     </div>
-    <div id="conn-status" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-muted);cursor:pointer;" onclick="loadState()" title="Clica per refrescar">
+    <div id="conn-status" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);cursor:pointer;" onclick="loadState()" title="Clica per refrescar">
       <span style="color:var(--text-muted)">⏳ Connectant...</span>
     </div>
   </header>
@@ -336,29 +459,29 @@
   <div class="page active" id="page-formacio">
     <div class="card" id="formacio-loading" style="text-align:center;padding:40px;">
       <div style="font-size:32px;margin-bottom:12px;">⏳</div>
-      <div style="color:var(--text-muted);font-family:'DM Mono',monospace;font-size:13px;">Carregant la formació del dia...</div>
+      <div style="color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:13px;">Carregant la formació del dia...</div>
     </div>
 
     <div id="formacio-content" style="display:none;">
       <!-- Header de la formació -->
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
         <div>
-          <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;" id="formacio-data"></div>
-          <div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--accent);margin-top:4px;" id="formacio-titol"></div>
+          <div class="formacio-data-badge" id="formacio-data"></div>
+          <div class="formacio-titol-gran" id="formacio-titol"></div>
         </div>
-        <button onclick="imprimirFormacio()" style="padding:10px 20px;background:rgba(78,255,176,0.12);border:1px solid var(--accent);color:var(--accent);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">🖨 Imprimir / PDF</button>
+        <button onclick="imprimirFormacio()" class="btn-print">🖨 Imprimir / PDF</button>
       </div>
 
       <!-- Contingut formatiu -->
       <div class="card" id="formacio-body" style="font-size:14px;line-height:1.8;"></div>
 
       <!-- CTA Quiz -->
-      <div style="margin-top:16px;padding:20px;background:rgba(255,209,102,0.06);border:1px solid rgba(255,209,102,0.2);border-radius:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
-        <div>
-          <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px;">Ja has llegit la formació?</div>
-          <div style="font-size:12px;color:var(--text-muted);">Posa a prova el que has après i suma punts al ranking</div>
+      <div class="quiz-cta-banner" style="margin-top:16px;">
+        <div class="quiz-cta-text">
+          <h3>Ja has llegit la formació?</h3>
+          <p>Posa a prova el que has après i suma punts al ranking</p>
         </div>
-        <button onclick="goToQuizFromFormacio()" style="padding:14px 32px;background:var(--accent4);color:#1a0a00;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;">🎯 Fer el Quiz →</button>
+        <button onclick="goToQuizFromFormacio()" class="btn-quiz-gran">🎯 Fer el Quiz →</button>
       </div>
     </div>
 
@@ -371,87 +494,93 @@
   <!-- ══════════════════════════════════════════
        PAGE 1: GENERATOR
   ══════════════════════════════════════════ -->
-  <div class="page" id="page-generator">
+  <!-- PAGE: GENERADOR -->
+  <div id="page-generator" class="page">
 
     <div class="mode-tabs">
-      <button class="mode-tab active" onclick="setMode('auto')">🤖 Automàtic (Farmatic)</button>
-      <button class="mode-tab" onclick="setMode('manual')">✏️ Manual</button>
+      <button class="mode-tab active" id="tab-auto" onclick="setMode('auto')">⚡ Automàtic</button>
+      <button class="mode-tab" id="tab-manual" onclick="setMode('manual')">✏️ Manual</button>
     </div>
 
+    <!-- MODE AUTOMÀTIC -->
     <div id="mode-auto">
+      <div class="card" style="background:linear-gradient(135deg,rgba(0,229,160,0.05),rgba(0,229,160,0.02));border-color:rgba(0,229,160,0.2);">
+        <div class="card-title">Generació automàtica</div>
+        <p style="font-size:13px;color:var(--text-soft);line-height:1.7;margin-bottom:16px;">
+          El sistema genera formació cada dia a les <strong>10:00</strong> a partir de les dades del Google Sheet.
+          Configura aquí les prioritats que Gemini tindrà en compte.
+        </p>
+
+        <!-- Prioritat principal -->
+        <label>Prioritat principal avui</label>
+        <div class="tags" id="auto-prioritat" style="margin-bottom:16px;">
+          <button class="tag selected" onclick="togglePrioritat(this)" data-val="rotacio">📊 Més venuts</button>
+          <button class="tag" onclick="togglePrioritat(this)" data-val="caducitat">⏳ Caducitats</button>
+          <button class="tag" onclick="togglePrioritat(this)" data-val="estacionalitat">🌿 Estacionalitat</button>
+          <button class="tag" onclick="togglePrioritat(this)" data-val="adherencia">💊 Adherència crònics</button>
+          <button class="tag" onclick="togglePrioritat(this)" data-val="ortopedia">🦴 Connexió ortopèdia</button>
+          <button class="tag" onclick="togglePrioritat(this)" data-val="interaccions">⚠️ Interaccions</button>
+        </div>
+
+        <!-- Estació activa -->
+        <label>Estació / context estacional</label>
+        <div class="tags" id="auto-estacio" style="margin-bottom:16px;">
+          <button class="tag selected" onclick="toggleTag(this)">Primavera</button>
+          <button class="tag" onclick="toggleTag(this)">Estiu</button>
+          <button class="tag" onclick="toggleTag(this)">Tardor</button>
+          <button class="tag" onclick="toggleTag(this)">Hivern</button>
+          <button class="tag" onclick="toggleTag(this)">Al·lèrgies</button>
+          <button class="tag" onclick="toggleTag(this)">Grip</button>
+          <button class="tag" onclick="toggleTag(this)">Sol</button>
+          <button class="tag" onclick="toggleTag(this)">Diabetis</button>
+          <button class="tag" onclick="toggleTag(this)">Ortopèdia</button>
+        </div>
+
+        <!-- Nivell equip -->
+        <label>Nivell de l'equip</label>
+        <select id="auto-nivell" style="margin-bottom:16px;">
+          <option value="mixto">Mixt (farmacèutic + auxiliars)</option>
+          <option value="farmaceutico">Farmacèutic/a</option>
+          <option value="auxiliar">Auxiliar sense titulació universitària</option>
+        </select>
+
+        <!-- Nota addicional opcional -->
+        <label>Nota per a la generació d'avui (opcional)</label>
+        <input type="text" id="auto-nota" placeholder="ex: posa èmfasi en el peu diabètic, tenim molts pacients hipertensos...">
+
+        <!-- Info fonts -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:16px 0;">
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center;">
+            <div style="font-size:18px;margin-bottom:4px;">📊</div>
+            <div style="font-size:10px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;">Vendes Farmatic</div>
+          </div>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center;">
+            <div style="font-size:18px;margin-bottom:4px;">⏳</div>
+            <div style="font-size:10px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;">Caducitats</div>
+          </div>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center;">
+            <div style="font-size:18px;margin-bottom:4px;">📚</div>
+            <div style="font-size:10px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;">Bibliografia</div>
+          </div>
+        </div>
+
+        <button onclick="forcarGeneracio()" class="btn-generate">⚡ Forçar generació ara</button>
+      </div>
+    </div>
+
+    <!-- MODE MANUAL -->
+    <div id="mode-manual" style="display:none;">
+
       <div class="card">
-        <div class="card-title">Dades Farmatic (exportació Excel)</div>
-
-        <!-- Excel upload zone -->
-        <div id="excel-upload-zone" style="border:1px dashed var(--border);border-radius:8px;padding:20px;text-align:center;color:var(--text-muted);font-size:13px;cursor:pointer;transition:all 0.2s;margin-bottom:12px;position:relative;">
-          <input type="file" accept=".xlsx,.xls,.csv" onchange="handleExcel(event)" style="position:absolute;inset:0;opacity:0;cursor:pointer;margin:0;padding:0;border:none;height:100%;">
-          <div style="font-size:28px;margin-bottom:6px;">📊</div>
-          <strong style="color:var(--text);">Carrega l'Excel de Farmatic</strong><br>
-          <span style="font-size:11px;">Formats acceptats: .xlsx · .xls · .csv</span>
-        </div>
-
-        <!-- Column mapping (hidden until file loaded) -->
-        <div id="excel-mapping" style="display:none;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:12px;">
-          <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">Assigna les columnes del teu Excel</div>
-          <div class="grid-3" style="gap:10px;">
-            <div>
-              <label>Columna: Nom producte</label>
-              <select id="col-name" style="margin:0;font-size:12px;padding:7px 10px;"></select>
-            </div>
-            <div>
-              <label>Columna: Unitats venudes</label>
-              <select id="col-units" style="margin:0;font-size:12px;padding:7px 10px;"></select>
-            </div>
-            <div>
-              <label>Columna: Caducitat (opcional)</label>
-              <select id="col-exp" style="margin:0;font-size:12px;padding:7px 10px;"></select>
-            </div>
-          </div>
-          <div style="margin-top:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-            <div>
-              <label style="margin-bottom:4px;">Màx. productes a importar</label>
-              <select id="excel-max-rows" style="margin:0;font-size:12px;padding:7px 10px;width:auto;">
-                <option value="10">Top 10</option>
-                <option value="20" selected>Top 20</option>
-                <option value="50">Top 50</option>
-                <option value="999">Tots</option>
-              </select>
-            </div>
-            <div style="flex:1;"></div>
-            <button onclick="importExcelData()" style="padding:9px 20px;background:rgba(78,255,176,0.12);border:1px solid var(--accent);color:var(--accent);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">↓ Importar dades</button>
-          </div>
-        </div>
-
-        <!-- Excel preview table -->
-        <div id="excel-preview" style="display:none;margin-bottom:12px;">
-          <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;" id="excel-preview-label"></div>
-          <div style="overflow-x:auto;max-height:180px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;">
-            <table id="excel-table" style="width:100%;border-collapse:collapse;font-size:12px;"></table>
-          </div>
-          <button onclick="clearExcel()" style="margin-top:8px;background:none;border:none;color:var(--accent3);font-size:12px;cursor:pointer;font-family:'DM Mono',monospace;text-decoration:underline;">× Esborrar i tornar a carregar</button>
-        </div>
-
-        <!-- Divider -->
-        <div style="display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--text-muted);font-size:11px;font-family:'DM Mono',monospace;">
-          <div style="flex:1;height:1px;background:var(--border);"></div>
-          O afegeix productes manualment
-          <div style="flex:1;height:1px;background:var(--border);"></div>
-        </div>
-
-        <label>Productes addicionals (vendes / caducitats)</label>
-        <div id="farmatic-rows">
-          <div class="data-row">
-            <input type="text" placeholder="Nom producte" class="prod-name">
-            <input type="number" placeholder="Unitats" class="prod-units" min="0">
-            <input type="text" placeholder="Caducitat (mm/aa)" class="prod-exp">
-            <button class="btn-icon" onclick="removeRow(this)">×</button>
-          </div>
-        </div>
-        <button class="btn-icon add" onclick="addRow()" style="width:100%;border-radius:8px;height:36px;font-size:13px;font-family:'DM Sans',sans-serif;gap:6px;">+ afegir producte</button>
+        <div class="card-title">Tema de la formació</div>
+        <label>Tema / patologia</label>
+        <input type="text" id="manual-topic" placeholder="ex: peu diabètic, MPOC, antihistamínics...">
+        <label>Objectiu d'aprenentatge (opcional)</label>
+        <input type="text" id="manual-goal" placeholder="ex: saber detectar un peu diabètic de risc al mostrador">
       </div>
 
       <div class="card">
-        <div class="card-title">Variables estratègiques</div>
+        <div class="card-title">Variables</div>
         <label>Estacionalitat activa</label>
         <div class="tags" id="season-tags">
           <button class="tag selected" onclick="toggleTag(this)">Primavera</button>
@@ -464,92 +593,52 @@
           <button class="tag" onclick="toggleTag(this)">Diabetis</button>
           <button class="tag" onclick="toggleTag(this)">Ortopèdia</button>
         </div>
-        <label>Enfocament prioritari avui</label>
-        <select id="auto-focus">
-          <option value="rotacion">Producte més venut</option>
-          <option value="caducidad">Caducitat pròxima</option>
-          <option value="estacionalidad">Estacionalitat</option>
-          <option value="interacciones">Interaccions freqüents</option>
-          <option value="ortopedia">Connexió farmàcia-ortopèdia</option>
-          <option value="adherencia">Adherència en crònics</option>
+        <label>Nivell de l'equip</label>
+        <select id="team-level">
+          <option value="mixto">Mixt (farmacèutic + auxiliars)</option>
+          <option value="farmaceutico">Farmacèutic/a</option>
+          <option value="auxiliar">Auxiliar sense titulació universitària</option>
         </select>
+        <label>Format de sortida</label>
+        <div class="tags" id="format-tags">
+          <button class="tag selected" onclick="toggleTag(this)">📋 Fitxa formativa</button>
+          <button class="tag selected" onclick="toggleTag(this)">❓ Quiz (3 preguntes)</button>
+          <button class="tag" onclick="toggleTag(this)">🧠 Cas clínic</button>
+          <button class="tag" onclick="toggleTag(this)">⚠️ Alertes i senyals d'alarma</button>
+          <button class="tag" onclick="toggleTag(this)">🔗 Connexió ortopèdia</button>
+        </div>
       </div>
-    </div>
 
-    <div id="mode-manual" style="display:none">
+      <div style="display:flex;gap:10px;margin-bottom:12px;">
+        <button class="btn-generate" onclick="copyPromptToClipboard()" style="flex:1;">📋 Copiar prompt per a Claude</button>
+        <a href="https://claude.ai" target="_blank" style="display:flex;align-items:center;padding:0 20px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);color:var(--text-muted);font-size:13px;font-family:'Outfit',sans-serif;text-decoration:none;white-space:nowrap;">Obrir Claude.ai ↗</a>
+      </div>
 
-      <!-- STEP 1: Tema i fonts -->
-      <div class="card">
-        <div class="card-title">1 · Tema i fonts</div>
-        <label>Tema / patologia</label>
-        <input type="text" id="manual-topic" placeholder="ex: peu diabètic, MPOC, antihistamínics...">
-        <label>Objectiu d'aprenentatge (opcional)</label>
-        <input type="text" id="manual-goal" placeholder="ex: saber detectar un peu diabètic de risc en mostrador">
-
-        <!-- URLs -->
-        <label style="margin-top:4px;">URLs de referència</label>
-        <div id="manual-urls">
-          <div class="data-row" style="grid-template-columns:1fr auto;margin-bottom:8px;">
-            <input type="url" placeholder="https://..." class="manual-url" style="margin:0;">
-            <button class="btn-icon" onclick="removeUrlRow(this)">×</button>
+      <div id="prompt-box" style="display:none;margin-bottom:16px;">
+        <div style="background:var(--bg);border:1px solid var(--accent);border-radius:10px;overflow:hidden;">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:rgba(0,229,160,0.06);border-bottom:1px solid var(--border);">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);text-transform:uppercase;letter-spacing:1px;">✓ Prompt copiat</span>
+            <button onclick="copyPromptToClipboard()" style="background:none;border:1px solid var(--accent);color:var(--accent);border-radius:6px;padding:4px 12px;font-size:11px;cursor:pointer;font-family:'JetBrains Mono',monospace;">Tornar a copiar</button>
           </div>
+          <div id="prompt-preview-text" style="padding:16px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);line-height:1.7;max-height:180px;overflow-y:auto;white-space:pre-wrap;"></div>
         </div>
-        <button class="btn-icon add" onclick="addUrlRow()" style="width:100%;border-radius:8px;height:34px;font-size:12px;font-family:'DM Sans',sans-serif;">+ afegir URL</button>
-
-        <!-- PDFs -->
-        <label style="margin-top:14px;">Documents PDF de referència</label>
-        <div class="upload-zone" style="margin-bottom:8px;">
-          <input type="file" multiple accept=".pdf" onchange="handleManualPDFs(event)">
-          📎 Adjunta PDFs (seran llegits per Claude al Projecte)
-        </div>
-        <div class="file-list" id="manual-pdf-list"></div>
       </div>
 
-      <!-- STEP 2: Genera contingut -->
       <div class="card">
-        <div class="card-title">2 · Genera el contingut</div>
-
-        <!-- Sub-tabs -->
-        <div style="display:flex;gap:8px;margin-bottom:16px;background:var(--bg);padding:5px;border-radius:8px;border:1px solid var(--border);">
-          <button id="manual-tab-prompt" onclick="setManualTab('prompt')" style="flex:1;padding:8px;border:1px solid var(--accent);background:rgba(78,255,176,0.1);color:var(--accent);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;">
-            📋 Genera prompt → Claude
-          </button>
-          <button id="manual-tab-direct" onclick="setManualTab('direct')" style="flex:1;padding:8px;border:1px solid var(--border);background:transparent;color:var(--text-muted);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;">
-            ✏️ Enganxa contingut directament
-          </button>
-        </div>
-
-        <!-- Prompt mode -->
-        <div id="manual-prompt-mode">
-          <div style="display:flex;gap:10px;margin-bottom:12px;">
-            <button onclick="copyManualPrompt()" style="flex:1;padding:12px;background:var(--accent);color:var(--bg);border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">📋 Copiar prompt per a Claude</button>
-            <a href="https://claude.ai" target="_blank" style="display:flex;align-items:center;padding:0 16px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text-muted);font-size:12px;font-family:'DM Sans',sans-serif;text-decoration:none;white-space:nowrap;">Obrir Claude ↗</a>
-          </div>
-          <div id="manual-prompt-box" style="display:none;background:var(--bg);border:1px solid var(--accent);border-radius:8px;padding:12px;font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);line-height:1.6;max-height:150px;overflow-y:auto;margin-bottom:12px;white-space:pre-wrap;"></div>
-          <label>Enganxa la resposta de Claude</label>
-          <textarea id="manual-response" placeholder="Copia la resposta de Claude i enganxa-la aquí..." style="min-height:120px;" oninput="onManualResponseInput()"></textarea>
-          <button id="manual-load-btn" onclick="loadManualResponse()" disabled style="width:100%;padding:12px;background:var(--accent4);color:#1a0a00;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;opacity:0.5;">→ Carregar contingut</button>
-        </div>
-
-        <!-- Direct mode -->
-        <div id="manual-direct-mode" style="display:none;">
-          <label>Enganxa o escriu el contingut formatiu</label>
-          <textarea id="manual-direct-content" placeholder="Escriu o enganxa qualsevol contingut formatiu. Pot ser text lliure o amb el format estructurat (## OBJECTIU, ## CONTINGUT PRINCIPAL, etc.)" style="min-height:200px;" oninput="onManualDirectInput()"></textarea>
-          <button id="manual-direct-btn" onclick="loadDirectContent()" disabled style="width:100%;padding:12px;background:var(--accent4);color:#1a0a00;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;opacity:0.5;">→ Carregar contingut</button>
-        </div>
+        <div class="card-title">Enganxa la resposta de Claude</div>
+        <textarea id="manual-response" placeholder="Copia la resposta de Claude i enganxa-la aquí..." style="min-height:120px;" oninput="onManualResponseInput()"></textarea>
+        <button id="manual-load-btn" onclick="loadManualResponse()" disabled style="width:100%;padding:12px;background:var(--accent4);color:#1a0a00;border:none;border-radius:var(--radius-sm);font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;opacity:0.5;">→ Carregar i previsualitzar</button>
       </div>
 
-      <!-- STEP 3: Previsualització i programació -->
       <div class="card" id="manual-preview-card" style="display:none;">
-        <div class="card-title">3 · Previsualitza i programa</div>
+        <div class="card-title">Previsualitza i programa</div>
         <div id="manual-preview-body" style="font-size:13px;line-height:1.7;margin-bottom:16px;"></div>
-
         <div style="border-top:1px solid var(--border);padding-top:16px;">
           <div class="grid-2" style="margin-bottom:12px;">
             <div>
               <label>Quan publicar?</label>
               <select id="manual-pub-tipus" style="margin:0;" onchange="toggleManualDate()">
-                <option value="cua">Afegir a la cua (proper dia disponible)</option>
+                <option value="cua">Proper dia disponible</option>
                 <option value="data">Data concreta</option>
               </select>
             </div>
@@ -558,109 +647,13 @@
               <input type="date" id="manual-pub-data" style="margin:0;">
             </div>
           </div>
-          <button onclick="programarManual()" style="width:100%;padding:14px;background:var(--accent);color:var(--bg);border:none;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;">
-            📅 Programar formació
-          </button>
+          <button onclick="programarManual()" class="btn-generate">📅 Programar formació</button>
         </div>
       </div>
 
-    </div>
-
-    <div class="card">
-      <div class="card-title">Fonts d'informació</div>
-      <label>Documents de referència (PDFs, fitxes tècniques, protocols)</label>
-      <div class="upload-zone">
-        <input type="file" multiple accept=".pdf,.txt,.docx" onchange="handleFiles(event)">
-        📎 Arrossega o clica per adjuntar fitxers
-      </div>
-      <div class="file-list" id="file-list"></div>
-      <label>Notes de Bot Plus / fitxa farmacològica</label>
-      <textarea id="botplus-text" placeholder="Enganxa aquí el text de la fitxa tècnica de Bot Plus, prospecte o qualsevol referència farmacològica..."></textarea>
-      <label>Instruccions addicionals (opcional)</label>
-      <textarea id="extra-instructions" placeholder="ex: posa èmfasi en interaccions amb anticoagulants, inclou un exemple clínic real..." style="min-height:60px;"></textarea>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Format de sortida</div>
-      <div class="tags" id="format-tags">
-        <button class="tag selected" onclick="toggleTag(this)">📋 Fitxa formativa</button>
-        <button class="tag selected" onclick="toggleTag(this)">❓ Quiz (3 preguntes)</button>
-        <button class="tag" onclick="toggleTag(this)">🧠 Cas clínic</button>
-        <button class="tag" onclick="toggleTag(this)">⚠️ Alertes i senyals d'alarma</button>
-        <button class="tag" onclick="toggleTag(this)">🔗 Connexió ortopèdia</button>
-      </div>
-      <label>Nivell de l'equip</label>
-      <select id="team-level">
-        <option value="mixto">Mixt (farmacèutic + auxiliars)</option>
-        <option value="farmaceutico">Farmacèutic/a</option>
-        <option value="auxiliar">Auxiliar sense titulació universitària</option>
-      </select>
-    </div>
-
-    <!-- STEP 1: Generate prompt -->
-    <div style="display:flex;align-items:center;gap:10px;margin:16px 0 10px;color:var(--text-muted);font-size:11px;font-family:'DM Mono',monospace;">
-      <div style="width:20px;height:20px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;">1</div>
-      Genera el prompt i enganxa'l a Claude.ai
-    </div>
-    <div style="display:flex;gap:10px;">
-      <button class="btn-generate" onclick="copyPromptToClipboard()" style="flex:1;">
-        📋 Copiar prompt per a Claude
-      </button>
-      <a href="https://claude.ai" target="_blank" style="display:flex;align-items:center;padding:0 20px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);color:var(--text-muted);font-size:13px;font-family:'DM Sans',sans-serif;text-decoration:none;white-space:nowrap;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--accent2)';this.style.color='var(--accent2)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">
-        Obrir Claude.ai ↗
-      </a>
-    </div>
-
-    <!-- Prompt preview box -->
-    <div id="prompt-box" style="display:none;margin-top:12px;">
-      <div style="background:var(--bg);border:1px solid var(--accent);border-radius:10px;overflow:hidden;">
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:rgba(78,255,176,0.06);border-bottom:1px solid var(--border);">
-          <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);text-transform:uppercase;letter-spacing:1px;">✓ Prompt copiat — enganxa'l a Claude.ai</span>
-          <button onclick="copyPromptToClipboard()" style="background:none;border:1px solid var(--accent);color:var(--accent);border-radius:6px;padding:4px 12px;font-size:11px;cursor:pointer;font-family:'DM Mono',monospace;">Tornar a copiar</button>
-        </div>
-        <div id="prompt-preview-text" style="padding:16px;font-family:'DM Mono',monospace;font-size:11px;color:var(--text-muted);line-height:1.7;max-height:180px;overflow-y:auto;white-space:pre-wrap;"></div>
-      </div>
-    </div>
-
-    <!-- STEP 2: Paste Claude response -->
-    <div style="margin-top:16px;">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;color:var(--text-muted);font-size:11px;font-family:'DM Mono',monospace;">
-        <div style="width:20px;height:20px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;">2</div>
-        Enganxa aquí la resposta de Claude
-      </div>
-      <textarea id="claude-response-input" placeholder="1. Ves a Claude.ai&#10;2. Enganxa el prompt&#10;3. Copia la resposta completa&#10;4. Enganxa-la aquí..." style="min-height:140px;border-color:var(--border);font-size:13px;" oninput="onResponseInput()"></textarea>
-      <button class="btn-generate" id="btn-load-response" onclick="loadClaudeResponse()" disabled>
-        → Carregar formació i generar Quiz
-      </button>
-    </div>
-
-    <!-- Output -->
-    <div class="output-container" id="output-container" style="display:none;margin-top:16px;">
-      <div class="output-header">
-        <div class="output-title">📚 Formació del dia</div>
-        <div class="output-actions">
-          <button class="btn-small primary" onclick="downloadPDF()">🖨 Imprimir / PDF</button>
-        </div>
-      </div>
-      <div class="output-body" id="output-body"></div>
-      <!-- Quiz CTA -->
-      <div id="quiz-cta" style="margin:0;padding:20px;border-top:1px solid var(--border);background:rgba(255,209,102,0.04);">
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
-          <div>
-            <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;">Ja has llegit la formació?</div>
-            <div style="font-size:12px;color:var(--text-muted);">Posa a prova el que has après i suma punts al ranking</div>
-          </div>
-          <button onclick="goToQuiz()" style="padding:12px 28px;background:var(--accent4);color:#1a0a00;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.background='#ffe08a'" onmouseout="this.style.background='var(--accent4)'">
-            🎯 Fer el Quiz →
-          </button>
-        </div>
-      </div>
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════
-       PAGE: PROGRAMACIÓ
-  ══════════════════════════════════════════ -->
   <div class="page" id="page-programacio">
 
     <!-- Formulari nova formació -->
@@ -685,12 +678,12 @@
       <input type="text" id="prog-titol" placeholder="ex: Peu diabètic, Al·lèrgies primaverals..." style="margin-bottom:12px;">
 
       <label>Contingut formatiu</label>
-      <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;font-family:'DM Mono',monospace;">
+      <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;font-family:'JetBrains Mono',monospace;">
         Pots generar-lo al Generador i copiar-lo aquí, o pegar la resposta de Claude directament
       </div>
       <textarea id="prog-contingut" placeholder="Enganxa aquí el contingut formatiu complet (amb el format ## OBJECTIU, ## CONTINGUT PRINCIPAL, etc.)..." style="min-height:150px;"></textarea>
 
-      <button onclick="addFormacioManual()" style="width:100%;padding:14px;background:var(--accent);color:var(--bg);border:none;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;margin-top:4px;">
+      <button onclick="addFormacioManual()" style="width:100%;padding:14px;background:var(--accent);color:var(--bg);border:none;border-radius:var(--radius);font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;cursor:pointer;margin-top:4px;">
         📅 Programar formació
       </button>
     </div>
@@ -725,7 +718,7 @@
           <select id="quiz-participant"></select>
         </div>
 
-        <div id="quiz-topic-label" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-muted);margin-bottom:16px;"></div>
+        <div id="quiz-topic-label" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);margin-bottom:16px;"></div>
 
         <div class="quiz-section">
           <div class="quiz-header">🎮 Preguntes</div>
@@ -850,12 +843,12 @@ function showConnectionStatus(status) {
   const el = document.getElementById('conn-status');
   if (!el) return;
   const map = {
-    loading: ['⏳', '#ffd166', 'Connectant amb Google Sheets...'],
-    ok:      ['✓', '#4fffb0', 'Google Sheets connectat'],
-    error:   ['✗', '#ff6b6b', 'Error de connexió']
+    loading: ['⏳', 'var(--accent4)', 'Connectant...'],
+    ok:      ['●', 'var(--accent)',  'Connectat'],
+    error:   ['✗', 'var(--accent3)', 'Error connexió']
   };
   const [icon, color, text] = map[status];
-  el.innerHTML = `<span style="color:${color};font-family:'DM Mono',monospace;font-size:11px;">${icon} ${text}</span>`;
+  el.innerHTML = `<span style="color:${color};font-family:'JetBrains Mono',monospace;font-size:11px;">${icon} ${text}</span>`;
 }
 
 async function loadState() {
@@ -892,6 +885,32 @@ async function saveState() { /* saved per-action */ }
 // ══════════════════════════
 let excelRawData = [];
 let excelHeaders = [];
+let tipusExcel = 'vendes'; // 'vendes' o 'caducitats'
+
+// ── Selector de tipus ──────────────────────────────
+function setTipusExcel(tipus) {
+  tipusExcel = tipus;
+  const isVendes = tipus === 'vendes';
+
+  const baseStyle = 'flex:1;padding:12px;border-radius:10px;cursor:pointer;transition:all 0.2s;font-family:Outfit,sans-serif;font-size:13px;font-weight:';
+  document.getElementById('tipus-vendes').style.cssText = baseStyle +
+    (isVendes ? '600;border:1px solid var(--accent);background:rgba(0,229,160,0.1);color:var(--accent);' :
+                '500;border:1px solid var(--border2);background:transparent;color:var(--text-muted);');
+  document.getElementById('tipus-caducitats').style.cssText = baseStyle +
+    (!isVendes ? '600;border:1px solid var(--accent4);background:rgba(255,204,68,0.1);color:var(--accent4);' :
+                 '500;border:1px solid var(--border2);background:transparent;color:var(--text-muted);');
+
+  // Descripció
+  document.getElementById('tipus-desc').textContent = isVendes
+    ? 'Columnes esperades: Codi CN · Descripció · Unitats venudes'
+    : 'Columnes esperades: Codi · Descripció · Stk. Actual · Caducitat (MM/AA)';
+
+  document.getElementById('excel-card-title').textContent = isVendes
+    ? 'Vendes Farmatic' : 'Caducitats pròximes';
+
+  // Reset si hi ha dades carregades
+  if (excelRawData.length > 0) clearExcel();
+}
 
 function loadSheetJS(cb) {
   if (window.XLSX) { cb(); return; }
@@ -910,79 +929,188 @@ function handleExcel(event) {
       try {
         const wb = XLSX.read(e.target.result, { type: 'binary' });
         const ws = wb.Sheets[wb.SheetNames[0]];
-        const json = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+        const json = XLSX.utils.sheet_to_json(ws, { header: 1, defval: ''  });
         if (json.length < 2) { showToast('⚠️ El fitxer sembla buit'); return; }
 
-        excelHeaders = json[0].map(h => String(h).trim());
-        excelRawData = json.slice(1).filter(row => row.some(c => c !== ''));
+        // Detecta si la primera fila és capçalera
+        const primeraCela = String(json[0][0] || '').toLowerCase();
+        const teCapcalera = isNaN(primeraCela) || primeraCela === '';
+        excelHeaders = teCapcalera ? json[0].map(h => String(h).trim()) : json[0].map((_,i) => 'Col ' + (i+1));
+        excelRawData = (teCapcalera ? json.slice(1) : json).filter(row => row.some(c => c !== ''));
 
-        const opts = ['(cap)', ...excelHeaders].map((h, i) =>
-          `<option value="${i-1}">${h}</option>`).join('');
-        ['col-name','col-units','col-exp'].forEach(id =>
-          document.getElementById(id).innerHTML = opts);
-
-        // Auto-detect columns
-        const detect = (kws) => excelHeaders.findIndex(h => kws.some(k => h.toLowerCase().includes(k)));
-        const ni = detect(['nom','nombre','descripci','product','articul']);
-        const ui = detect(['unitat','unidad','vendes','ventas','quantitat','cantidad','total']);
-        const ei = detect(['caduc','expir','vencim']);
-        if (ni >= 0) document.getElementById('col-name').value = ni;
-        if (ui >= 0) document.getElementById('col-units').value = ui;
-        if (ei >= 0) document.getElementById('col-exp').value = ei;
+        renderColMapping();
 
         document.getElementById('excel-mapping').style.display = 'block';
         document.getElementById('excel-upload-zone').style.display = 'none';
-        showToast(`✓ ${file.name} — ${excelRawData.length} files detectades`);
+        showToast('✓ ' + file.name + '— ' + excelRawData.length + ' files');
       } catch(err) { showToast('⚠️ Error: ' + err.message); }
     };
     reader.readAsBinaryString(file);
   });
 }
 
+function renderColMapping() {
+  const grid = document.getElementById('col-mapping-grid');
+  const opts = ['(cap)', ...excelHeaders].map((h, i) => `<option value="${i-1}">${h}</option>`).join('');
+  const detect = (kws) => excelHeaders.findIndex(h => kws.some(k => String(h).toLowerCase().includes(k)));
+
+  if (tipusExcel === 'vendes') {
+    const ni = detect(['descripci','nombre','nom','product','articul']);
+    const ui = detect(['uni','unidad','unitat','vendes','ventas','stk','total']);
+    const ci = detect(['codi','codigo','cn','cod.']);
+    grid.innerHTML = `
+      <div><label>Columna: Codi CN</label>
+        <select id="col-cn" style="margin:0;font-size:12px;padding:7px 10px;">${opts}</select></div>
+      <div><label>Columna: Descripció</label>
+        <select id="col-name" style="margin:0;font-size:12px;padding:7px 10px;">${opts}</select></div>
+      <div><label>Columna: Unitats venudes</label>
+        <select id="col-units" style="margin:0;font-size:12px;padding:7px 10px;">${opts}</select></div>
+      <div><label>Columna: Caducitat (opcional)</label>
+        <select id="col-exp" style="margin:0;font-size:12px;padding:7px 10px;">${opts}</select></div>`;
+    if (ci >= 0) document.getElementById('col-cn').value = ci;
+    if (ni >= 0) document.getElementById('col-name').value = ni;
+    if (ui >= 0) document.getElementById('col-units').value = ui;
+  } else {
+    // caducitats
+    const ci = detect(['codi','codigo','cn','cod.']);
+    const ni = detect(['descripci','nombre','nom','product','articul']);
+    const si = detect(['stk','stock','estoc','actual','existencia']);
+    const ei = detect(['caduc','expir','vencim']);
+    grid.innerHTML = `
+      <div><label>Columna: Codi CN</label>
+        <select id="col-cn" style="margin:0;font-size:12px;padding:7px 10px;">${opts}</select></div>
+      <div><label>Columna: Descripció</label>
+        <select id="col-name" style="margin:0;font-size:12px;padding:7px 10px;">${opts}</select></div>
+      <div><label>Columna: Estoc actual</label>
+        <select id="col-units" style="margin:0;font-size:12px;padding:7px 10px;">${opts}</select></div>
+      <div><label>Columna: Data caducitat</label>
+        <select id="col-exp" style="margin:0;font-size:12px;padding:7px 10px;">${opts}</select></div>`;
+    if (ci >= 0) document.getElementById('col-cn').value = ci;
+    if (ni >= 0) document.getElementById('col-name').value = ni;
+    if (si >= 0) document.getElementById('col-units').value = si;
+    if (ei >= 0) document.getElementById('col-exp').value = ei;
+  }
+}
+
+// Converteix "06/26" o "06/2026" a mesos des d'avui
+function mesosFinsCaducitat(cadStr) {
+  if (!cadStr) return 99;
+  const s = String(cadStr).trim();
+  let mes, any;
+  // Format MM/AA o MM/AAAA
+  const m = s.match(/^(\d{1,2})[\/-](\d{2,4})$/);
+  if (m) {
+    mes = parseInt(m[1]) - 1; // 0-indexed
+    any = parseInt(m[2]);
+    if (any < 100) any += 2000;
+  } else {
+    const d = new Date(s);
+    if (isNaN(d)) return 99;
+    mes = d.getMonth(); any = d.getFullYear();
+  }
+  const ara = new Date();
+  return (any - ara.getFullYear()) * 12 + (mes - ara.getMonth());
+}
+
 function importExcelData() {
+  const cc = parseInt((document.getElementById('col-cn') || {value:'-1'}).value);
   const nc = parseInt(document.getElementById('col-name').value);
   const uc = parseInt(document.getElementById('col-units').value);
   const ec = parseInt(document.getElementById('col-exp').value);
   const max = parseInt(document.getElementById('excel-max-rows').value);
-  if (nc < 0) { showToast('⚠️ Selecciona la columna de nom'); return; }
-
-  let rows = [...excelRawData];
-  if (uc >= 0) rows.sort((a,b) => (parseFloat(String(b[uc]).replace(',','.')) || 0) - (parseFloat(String(a[uc]).replace(',','.')) || 0));
-  rows = rows.slice(0, max).filter(r => String(r[nc]||'').trim());
+  if (nc < 0) { showToast('⚠️ Selecciona la columna de descripció'); return; }
 
   const container = document.getElementById('farmatic-rows');
   container.innerHTML = '';
-  rows.forEach(row => {
-    const div = document.createElement('div');
-    div.className = 'data-row';
-    div.innerHTML = `
-      <input type="text" class="prod-name" value="${String(row[nc]||'').trim().replace(/"/g,'&quot;')}">
-      <input type="number" class="prod-units" value="${uc>=0?String(row[uc]||'').trim():''}" min="0">
-      <input type="text" class="prod-exp" value="${ec>=0?String(row[ec]||'').trim():''}">
-      <button class="btn-icon" onclick="removeRow(this)">×</button>`;
-    container.appendChild(div);
-  });
+  let rows = [...excelRawData];
 
-  renderExcelPreview(rows, nc, uc, ec);
+  function makeCN(row) { return cc >= 0 ? String(row[cc] || '').trim().replace(/\D/g,'') : ''; }
+  function makeVal(row, col) { return col >= 0 ? String(row[col] || '').trim() : ''; }
+  function safeStr(v) { return String(v || '').trim().replace(/"/g, '&quot;'); }
+
+  function appendRow(div) { container.appendChild(div); }
+
+  if (tipusExcel === 'vendes') {
+    if (uc >= 0) rows.sort((a,b) => (parseFloat(String(b[uc]).replace(',','.')) || 0) - (parseFloat(String(a[uc]).replace(',','.')) || 0));
+    rows = rows.slice(0, max).filter(r => String(r[nc] || '').trim());
+
+    rows.forEach(function(row) {
+      const div = document.createElement('div');
+      div.className = 'data-row';
+      div.dataset.cn = makeCN(row);
+      div.dataset.tipus = 'venda';
+      const nameInput = document.createElement('input');
+      nameInput.type = 'text'; nameInput.className = 'prod-name'; nameInput.value = safeStr(row[nc]);
+      const unitsInput = document.createElement('input');
+      unitsInput.type = 'number'; unitsInput.className = 'prod-units'; unitsInput.min = '0';
+      unitsInput.value = makeVal(row, uc);
+      const expInput = document.createElement('input');
+      expInput.type = 'text'; expInput.className = 'prod-exp'; expInput.value = makeVal(row, ec);
+      const btn = document.createElement('button');
+      btn.className = 'btn-icon'; btn.textContent = '×'; btn.onclick = function() { removeRow(this); };
+      div.appendChild(nameInput); div.appendChild(unitsInput); div.appendChild(expInput); div.appendChild(btn);
+      appendRow(div);
+    });
+    document.getElementById('excel-preview-label').textContent = rows.length + ' productes · ordenats per unitats venudes';
+
+  } else {
+    rows = rows.filter(function(r) { return String(r[nc] || '').trim(); });
+    rows = rows.map(function(row) {
+      const mesos = ec >= 0 ? mesosFinsCaducitat(row[ec]) : 99;
+      const estoc = uc >= 0 ? (parseFloat(String(row[uc]).replace(',','.')) || 0) : 0;
+      const urgencia = Math.max(0, 7 - mesos);
+      const prioritat = (urgencia * 3) + Math.min(estoc, 30);
+      return { row: row, mesos: mesos, estoc: estoc, prioritat: prioritat };
+    })
+    .filter(function(r) { return r.mesos >= 0 && r.mesos <= 6; })
+    .sort(function(a,b) { return b.prioritat - a.prioritat; })
+    .slice(0, max);
+
+    rows.forEach(function(item) {
+      const row = item.row; const mesos = item.mesos; const estoc = item.estoc;
+      const urgent = mesos <= 1 ? '🔴 ' : mesos <= 3 ? '🟡 ' : '🟢 ';
+      const div = document.createElement('div');
+      div.className = 'data-row';
+      div.dataset.cn = makeCN(row);
+      div.dataset.tipus = 'caducitat';
+      div.dataset.mesos = mesos;
+      const nameInput = document.createElement('input');
+      nameInput.type = 'text'; nameInput.className = 'prod-name';
+      nameInput.value = urgent + safeStr(row[nc]);
+      const unitsInput = document.createElement('input');
+      unitsInput.type = 'number'; unitsInput.className = 'prod-units'; unitsInput.min = '0';
+      unitsInput.value = estoc; unitsInput.title = 'Estoc actual';
+      const expInput = document.createElement('input');
+      expInput.type = 'text'; expInput.className = 'prod-exp'; expInput.value = makeVal(row, ec);
+      const btn = document.createElement('button');
+      btn.className = 'btn-icon'; btn.textContent = '×'; btn.onclick = function() { removeRow(this); };
+      div.appendChild(nameInput); div.appendChild(unitsInput); div.appendChild(expInput); div.appendChild(btn);
+      appendRow(div);
+    });
+    document.getElementById('excel-preview-label').textContent =
+      rows.length + ' productes amb caducitat en \u22646 mesos \u00B7 ordenats per prioritat';
+  }
+
+  const previewRows = tipusExcel === 'caducitats' ? rows.map(function(r) { return r.row; }) : rows;
+  renderExcelPreview(previewRows, cc, nc, uc, ec);
   document.getElementById('excel-mapping').style.display = 'none';
   document.getElementById('excel-preview').style.display = 'block';
-  document.getElementById('excel-preview-label').textContent = `${rows.length} productes importats · ordenats per vendes`;
-  showToast(`✓ ${rows.length} productes importats`);
+  showToast('✓ ' + document.getElementById('excel-preview-label').textContent);
 }
 
-function renderExcelPreview(rows, nc, uc, ec) {
-  const cols = [nc, uc, ec].filter(c => c >= 0);
+function renderExcelPreview(rows, cc, nc, uc, ec) {
+  const cols = [cc, nc, uc, ec].filter(c => c >= 0);
   const table = document.getElementById('excel-table');
   table.innerHTML = `
     <thead><tr style="background:var(--surface2)">
-      ${cols.map(c => `<th style="padding:8px 12px;text-align:left;font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);text-transform:uppercase;border-bottom:1px solid var(--border)">${excelHeaders[c]||'Col '+(c+1)}</th>`).join('')}
+      ${cols.map(c => `<th style="padding:8px 12px;text-align:left;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);text-transform:uppercase;border-bottom:1px solid var(--border)">${excelHeaders[c]||('Col ' + (c+1))}</th>`).join('')}
     </tr></thead>
     <tbody>
       ${rows.slice(0,15).map((row,i) => `
         <tr style="border-bottom:1px solid var(--border);${i%2?'background:rgba(255,255,255,0.02)':''}">
-          ${cols.map(c => `<td style="padding:7px 12px;font-size:12px;color:var(--text-muted)">${row[c]||'—'}</td>`).join('')}
+          ${cols.map(c => `<td style="padding:7px 12px;font-size:12px;color:var(--text-muted)">${(row[c]||'—')}</td>`).join('')}
         </tr>`).join('')}
-      ${rows.length>15?`<tr><td colspan="${cols.length}" style="padding:8px 12px;font-size:11px;color:var(--text-muted);font-family:'DM Mono',monospace;text-align:center">... i ${rows.length-15} productes més</td></tr>`:''}
+      ${rows.length>15?`<tr><td colspan="${cols.length}" style="padding:8px 12px;font-size:11px;color:var(--text-muted);text-align:center">... i ${rows.length-15} productes més</td></tr>`:''}
     </tbody>`;
 }
 
@@ -998,7 +1126,11 @@ function clearExcel() {
       <input type="text" placeholder="Caducitat (mm/aa)" class="prod-exp">
       <button class="btn-icon" onclick="removeRow(this)">×</button>
     </div>`;
+  // Reseteja l'input de fitxer
+  const inp = document.querySelector('#excel-upload-zone input[type=file]');
+  if (inp) inp.value = '';
 }
+
 
 // ══════════════════════════
 // NAVIGATION
@@ -1080,11 +1212,53 @@ function imprimirFormacio() {
 // ══════════════════════════
 function setMode(mode) {
   currentMode = mode;
-  document.querySelectorAll('.mode-tab').forEach((t,i) => {
-    t.classList.toggle('active', (mode==='auto'&&i===0)||(mode==='manual'&&i===1));
-  });
-  document.getElementById('mode-auto').style.display = mode==='auto' ? 'block' : 'none';
-  document.getElementById('mode-manual').style.display = mode==='manual' ? 'block' : 'none';
+  document.getElementById('mode-auto').style.display = mode === 'auto' ? 'block' : 'none';
+  document.getElementById('mode-manual').style.display = mode === 'manual' ? 'block' : 'none';
+  const tabAuto = document.getElementById('tab-auto');
+  const tabManual = document.getElementById('tab-manual');
+  if (tabAuto) tabAuto.classList.toggle('active', mode === 'auto');
+  if (tabManual) tabManual.classList.toggle('active', mode === 'manual');
+}
+
+function togglePrioritat(el) {
+  // Selecció única — deselecciona les altres
+  document.querySelectorAll('#auto-prioritat .tag').forEach(t => t.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function getAutoPrioritats() {
+  const prioritat = document.querySelector('#auto-prioritat .tag.selected');
+  const estacio = Array.from(document.querySelectorAll('#auto-estacio .tag.selected')).map(t => t.textContent.trim());
+  const nivell = document.getElementById('auto-nivell') ? document.getElementById('auto-nivell').value : 'mixto';
+  const nota = document.getElementById('auto-nota') ? document.getElementById('auto-nota').value.trim() : '';
+  return {
+    prioritat: prioritat ? prioritat.dataset.val : 'rotacio',
+    estacio: estacio.join(', ') || 'General',
+    nivell,
+    nota
+  };
+}
+
+async function forcarGeneracio() {
+  const btn = document.querySelector('[onclick="forcarGeneracio()"]');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Generant...'; }
+  const p = getAutoPrioritats();
+  showToast('⏳ Generant amb prioritat: ' + p.prioritat + '...');
+  try {
+    await gsCall({
+      action: 'generarFormacio',
+      prioritat: p.prioritat,
+      estacio: p.estacio,
+      nivell: p.nivell,
+      nota: p.nota
+    });
+    showToast('✓ Generació completada');
+    setTimeout(() => showPage('formacio'), 1500);
+  } catch(e) {
+    showToast('⚠️ Error: ' + e.message);
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '⚡ Forçar generació ara'; }
+  }
 }
 
 function toggleTag(el) { el.classList.toggle('selected'); }
@@ -1131,9 +1305,12 @@ function removeFile(i) { uploadedFiles.splice(i,1); fileContents.splice(i,1); re
 
 function getFarmaticData() {
   return Array.from(document.querySelectorAll('.data-row')).map(row => ({
-    name: row.querySelector('.prod-name').value.trim(),
+    cn:    row.dataset.cn || '',
+    tipus: row.dataset.tipus || 'venda',
+    mesos: row.dataset.mesos ? parseInt(row.dataset.mesos) : null,
+    name:  row.querySelector('.prod-name').value.trim(),
     units: row.querySelector('.prod-units').value.trim() || 'N/D',
-    exp: row.querySelector('.prod-exp').value.trim() || 'N/D'
+    exp:   row.querySelector('.prod-exp').value.trim() || 'N/D'
   })).filter(p => p.name);
 }
 
@@ -1157,22 +1334,13 @@ function buildPrompt() {
 
   let contextBlock = '';
   if (currentMode === 'auto') {
-    const data = getFarmaticData();
-    const focusMap = {
-      rotacion:'productes amb més rotació', caducidad:'productes amb caducitat pròxima',
-      estacionalidad:'productes rellevants per l\'estacionalitat', interacciones:'interaccions farmacològiques freqüents',
-      ortopedia:'connexió clínica farmàcia-ortopèdia', adherencia:'adherència terapèutica en crònics'
-    };
-    contextBlock = `
-## DADES FARMATIC
-${data.length > 0 ? data.map(p=>`- ${p.name} | Unitats: ${p.units} | Caducitat: ${p.exp}`).join('\n') : '(sense dades — genera contingut rellevant genèric)'}
-## ENFOCAMENT: ${focusMap[document.getElementById('auto-focus').value]}
-## ESTACIONALITAT: ${seasons.join(', ') || 'General'}`;
+    contextBlock = `## MODE: AUTOMÀTIC (les dades vénen del Google Sheet — vendes, caducitats, bibliografia)`;
   } else {
+    const seasons = getSelectedTags('season-tags');
     contextBlock = `
 ## TEMA: ${document.getElementById('manual-topic').value.trim() || 'No especificat'}
-## DIA: ${document.getElementById('manual-day').value}
-## OBJECTIU: ${document.getElementById('manual-goal').value.trim() || 'No especificat'}`;
+## OBJECTIU: ${document.getElementById('manual-goal') ? document.getElementById('manual-goal').value.trim() : ''}
+## ESTACIONALITAT: ${seasons.join(', ') || 'General'}`;
   }
 
   return `Ets un expert en formació per a equips de farmàcia comunitària i ortopèdia. La farmàcia és Farmàcia Ortopèdia Platja Cubelles, referència de salut a la seva població.
@@ -1233,7 +1401,6 @@ Usa un to proper i professional. Contingut específic per a farmàcia costanera 
 }
 
 function renderOutput(text) {
-  // Remove h1 title (already shown above) and QUIZ section
   let clean = text
     .replace(/^#\s+.+$/m, '')
     .replace(/## QUIZ[\s\S]*?(?=## TIP|$)/i, '');
@@ -1249,47 +1416,52 @@ function renderOutput(text) {
   const closeList = () => { if (inList) { html += '</ul>'; inList = false; } };
   const closeTable = () => {
     if (inTable) {
-      html += '<div style="overflow-x:auto;margin:8px 0 16px;"><table style="width:100%;border-collapse:collapse;font-size:13px;">' + tableHtml + '</tbody></table></div>';
+      html += '<div style="overflow-x:auto;margin:8px 0 16px;"><table>' + tableHtml + '</tbody></table></div>';
       tableHtml = ''; inTable = false; isFirstRow = true;
     }
+  };
+
+  const SEC_CFG = {
+    'OBJECTIU':            { icon: '🎯', color: 'var(--accent2)'  },
+    'CONTINGUT PRINCIPAL': { icon: '📋', color: 'var(--accent)'   },
+    'ALERTA CLINICA':      { icon: '⚠️', color: 'var(--accent3)'  },
+    'ALERTA CL\u00CDNICA':{ icon: '⚠️', color: 'var(--accent3)'  },
+    'CONNEXIO ORTOPEDIA':  { icon: '🦴', color: 'var(--accent5)'  },
+    'CONNEXI\u00D3 ORTOP\u00C8DIA':{ icon: '🦴', color: 'var(--accent5)' },
+    'TIP DE L EXPERT':     { icon: '💡', color: 'var(--accent4)'  },
+    "TIP DE L'EXPERT":    { icon: '💡', color: 'var(--accent4)'  },
   };
 
   for (let i = 0; i < lines.length; i++) {
     let line = lines[i].trim();
     if (!line) { closeList(); closeTable(); continue; }
 
-    // Normalize ### to ##
     line = line.replace(/^#{3,}\s+/, '## ');
     line = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
 
     if (line.startsWith('# ')) {
       closeList(); closeTable();
-      // skip - shown as title already
 
     } else if (line.startsWith('## ')) {
       closeList(); closeTable();
-      const sec = line.replace(/^##\s+/, '').trim().toUpperCase();
-      afterSection = sec;
-      const cfg = {
-        'OBJECTIU':           { icon: '🎯', color: 'var(--accent2)' },
-        'CONTINGUT PRINCIPAL':{ icon: '📋', color: 'var(--accent)' },
-        'ALERTA CLINICA':     { icon: '⚠️', color: 'var(--accent3)' },
-        'CONNEXIO ORTOPEDIA': { icon: '🦴', color: '#a78bfa' },
-        'TIP DE L EXPERT':    { icon: '💡', color: 'var(--accent4)' }
-      };
-      const c = cfg[sec] || { icon: '▸', color: 'var(--accent)' };
-      html += `<div style="display:flex;align-items:center;gap:8px;margin:24px 0 12px;padding-bottom:8px;border-bottom:2px solid ${c.color}40;">
-        <span style="font-size:18px;">${c.icon}</span>
-        <span style="font-family:'DM Mono',monospace;font-size:11px;color:${c.color};text-transform:uppercase;letter-spacing:2px;font-weight:700;">${sec}</span>
+      const sec = line.replace(/^##\s+/, '').trim();
+      const secKey = sec.toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+      afterSection = secKey;
+      const c = SEC_CFG[sec] || SEC_CFG[secKey] || { icon: '\u25B8', color: 'var(--accent)' };
+      html += `<div style="display:flex;align-items:center;gap:10px;margin:24px 0 14px;padding-bottom:10px;border-bottom:1px solid ${c.color}30;">
+        <div style="width:30px;height:30px;border-radius:8px;background:${c.color}15;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">${c.icon}</div>
+        <span style="font-family:\'JetBrains Mono\',monospace;font-size:10px;color:${c.color};text-transform:uppercase;letter-spacing:2px;font-weight:500;">${sec}</span>
       </div>`;
 
     } else if (line.match(/^[-*]\s+/)) {
       closeTable();
-      if (!inList) { html += '<ul style="padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;margin:0 0 8px;">'; inList = true; }
+      if (!inList) { html += '<ul style="padding:0;list-style:none;display:flex;flex-direction:column;gap:7px;margin:0 0 10px;">'; inList = true; }
       const item = line.replace(/^[-*]\s+/, '');
-      const bc = afterSection === 'ALERTA CLINICA' ? 'var(--accent3)' : 'var(--accent)';
-      html += `<li style="display:flex;gap:10px;align-items:flex-start;padding:10px 14px;background:var(--surface2);border-radius:8px;border-left:3px solid ${bc};font-size:13px;line-height:1.5;">
-        <span style="color:${bc};flex-shrink:0;font-size:10px;margin-top:3px;">●</span>
+      const isAlerta = afterSection.includes('ALERTA');
+      const bc = isAlerta ? 'var(--accent3)' : 'var(--accent)';
+      const bg = isAlerta ? 'rgba(255,90,90,0.05)' : 'var(--surface2)';
+      html += `<li style="display:flex;gap:10px;align-items:flex-start;padding:11px 15px;background:${bg};border-radius:10px;border-left:3px solid ${bc};font-size:13.5px;line-height:1.55;">
+        <span style="color:${bc};flex-shrink:0;font-size:8px;margin-top:5px;">◆</span>
         <span>${item}</span>
       </li>`;
 
@@ -1300,23 +1472,24 @@ function renderOutput(text) {
       if (cells.length >= 2) {
         if (!inTable) { inTable = true; isFirstRow = true; }
         if (isFirstRow) {
-          tableHtml += `<thead><tr style="background:var(--surface2);">${cells.map(c =>
-            `<th style="padding:10px 12px;text-align:left;font-family:'DM Mono',monospace;font-size:10px;color:#a78bfa;text-transform:uppercase;letter-spacing:1px;border-bottom:2px solid #a78bfa40;">${c}</th>`
-          ).join('')}</tr></thead><tbody>`;
+          tableHtml += `<thead><tr>${cells.map(c => `<th>${c}</th>`).join('')}</tr></thead><tbody>`;
           isFirstRow = false;
         } else {
-          tableHtml += `<tr style="border-bottom:1px solid var(--border);">${cells.map(c =>
-            `<td style="padding:10px 12px;font-size:13px;color:var(--text-muted);">${c}</td>`
-          ).join('')}</tr>`;
+          tableHtml += `<tr>${cells.map(c => `<td>${c}</td>`).join('')}</tr>`;
         }
       }
 
     } else {
       closeList(); closeTable();
-      if (afterSection.includes('TIP')) {
-        html += `<div style="background:linear-gradient(135deg,rgba(255,209,102,0.08),rgba(255,209,102,0.03));border:1px solid rgba(255,209,102,0.25);border-radius:10px;padding:14px 18px;font-size:14px;line-height:1.7;color:var(--text);font-style:italic;">${line}</div>`;
+      const s = afterSection;
+      if (s.includes('TIP')) {
+        html += `<div class="tip-box"><p>${line}</p></div>`;
+      } else if (s.includes('ALERTA')) {
+        html += `<div class="alerta-box"><p>${line}</p></div>`;
+      } else if (s === 'OBJECTIU') {
+        html += `<p style="font-size:14.5px;line-height:1.75;color:var(--text);background:rgba(77,142,255,0.06);border-radius:8px;padding:12px 16px;margin:4px 0 8px;">${line}</p>`;
       } else {
-        html += `<p style="font-size:13px;line-height:1.7;color:var(--text-muted);margin:4px 0 8px;">${line}</p>`;
+        html += `<p style="font-size:13.5px;line-height:1.75;color:var(--text-soft);margin:4px 0 8px;">${line}</p>`;
       }
     }
   }
@@ -1324,6 +1497,7 @@ function renderOutput(text) {
   closeList(); closeTable();
   return html;
 }
+
 
 
 function goToQuiz() {
@@ -1386,21 +1560,48 @@ function copyOutput() {
 }
 
 function parseContentSections(raw) {
-  // Extract sections excluding QUIZ and after
   const sections = {};
   const lines = raw.split('\n');
   let current = null;
   let buf = [];
-  for (const line of lines) {
-    if (line.match(/^## QUIZ/i)) break; // stop before quiz
-    if (line.match(/^# (.+)/)) { sections['_title'] = line.replace(/^# /, '').trim(); current = null; }
-    else if (line.match(/^## (.+)/)) {
-      if (current) sections[current] = buf.join('\n').trim();
-      current = line.replace(/^## /, '').trim();
-      buf = [];
-    } else if (current) { buf.push(line); }
+  let inQuiz = false;
+
+  function normalitzaClau(k) {
+    return k.normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+      .replace(/[\u2018\u2019\u02BC]/g,"'")
+      .replace(/\s+/g,' ').trim().toUpperCase();
   }
-  if (current) sections[current] = buf.join('\n').trim();
+
+  const CANONIQUES = {
+    'OBJECTIU':                 'OBJECTIU',
+    'CONTINGUT PRINCIPAL':      'CONTINGUT PRINCIPAL',
+    'ALERTA CLINICA':           'ALERTA CLINICA',
+    "ALERTA CL'INICA":          'ALERTA CLINICA',
+    'CONNEXIO ORTOPEDIA':       'CONNEXIO ORTOPEDIA',
+    "CONNEXIO ORTOP'EDIA":      'CONNEXIO ORTOPEDIA',
+    'CONNEXIO AMB ORTOPEDIA':   'CONNEXIO ORTOPEDIA',
+    "TIP DE L'EXPERT":          'TIP',
+    'TIP DE LEXPERT':           'TIP',
+    'TIP DE L EXPERT':          'TIP',
+    'TIP':                      'TIP',
+  };
+
+  for (const line of lines) {
+    if (line.match(/^# (.+)/)) {
+      sections['_title'] = line.replace(/^# /, '').trim();
+      current = null; inQuiz = false;
+    } else if (line.match(/^## (.+)/)) {
+      if (current && !inQuiz) sections[current] = buf.join('\n').trim();
+      const rawKey = line.replace(/^## /, '').trim();
+      const normKey = normalitzaClau(rawKey);
+      inQuiz = normKey === 'QUIZ';
+      current = inQuiz ? null : (CANONIQUES[normKey] || normKey);
+      buf = [];
+    } else if (current && !inQuiz) {
+      buf.push(line);
+    }
+  }
+  if (current && !inQuiz) sections[current] = buf.join('\n').trim();
   return sections;
 }
 
@@ -1409,13 +1610,13 @@ function downloadPDF() {
   if (!raw) { showToast('⚠️ Primer carrega una formació'); return; }
 
   const s = parseContentSections(raw);
-  const title = s['_title'] || 'Formació del dia';
-  const objectiu = s['OBJECTIU'] || '';
-  const contingut = s['CONTINGUT PRINCIPAL'] || '';
-  const alerta = s['ALERTA CLÍNICA'] || '';
-  const ortopedia = s['CONNEXIÓ ORTOPÈDIA'] || '';
-  const tip = s['TIP DE L EXPERT'] || s['TIP'] || '';
-  const today = new Date().toLocaleDateString('ca-ES', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+  const title    = s['_title']              || 'Formació del dia';
+  const objectiu = s['OBJECTIU']            || '';
+  const contingut= s['CONTINGUT PRINCIPAL'] || '';
+  const alerta   = s['ALERTA CLINICA']      || '';
+  const ortopedia= s['CONNEXIO ORTOPEDIA']  || '';
+  const tip      = s['TIP']                 || '';
+  const today    = new Date().toLocaleDateString('ca-ES', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
 
   // Parse bullet points
   function toBullets(text) {
@@ -1459,7 +1660,7 @@ function downloadPDF() {
   /* Header */
   .header {
     display: flex; align-items: center; justify-content: space-between;
-    padding-bottom: 8px; border-bottom: 3px solid #4fffb0; margin-bottom: 14px;
+    padding-bottom: 8px; border-bottom: 3px solid var(--accent); margin-bottom: 14px;
   }
   .header-left .farmacia { font-size: 10px; color: #7a8ba6; letter-spacing: 1px; text-transform: uppercase; }
   .header-left .session-title {
@@ -1468,7 +1669,7 @@ function downloadPDF() {
   }
   .header-right { text-align: right; }
   .header-right .pill {
-    background: #4fffb0; color: #0e1117; font-size: 9px; font-weight: 700;
+    background: var(--accent); color: #0e1117; font-size: 9px; font-weight: 700;
     padding: 4px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;
     display: inline-block; margin-bottom: 4px;
   }
@@ -1481,7 +1682,7 @@ function downloadPDF() {
   /* Sections */
   .section {
     background: #f8fafb; border-radius: 10px; padding: 12px 14px;
-    border-left: 4px solid #4fffb0;
+    border-left: 4px solid var(--accent);
   }
   .section.blue { border-left-color: #6e9dff; }
   .section.red { border-left-color: #ff6b6b; background: #fff8f8; }
@@ -1492,7 +1693,7 @@ function downloadPDF() {
     font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
     color: #7a8ba6; margin-bottom: 6px; display: flex; align-items: center; gap: 5px;
   }
-  .section-label .dot { width: 6px; height: 6px; border-radius: 50%; background: #4fffb0; flex-shrink: 0; }
+  .section-label .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
   .section.blue .dot { background: #6e9dff; }
   .section.red .dot { background: #ff6b6b; }
   .section.gold .dot { background: #ffd166; }
@@ -1511,12 +1712,12 @@ function downloadPDF() {
     display: flex; align-items: center; gap: 12px;
   }
   .objectiu-icon { font-size: 24px; flex-shrink: 0; }
-  .objectiu-label { font-size: 8px; color: #4fffb0; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; margin-bottom: 3px; }
+  .objectiu-label { font-size: 8px; color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; margin-bottom: 3px; }
   .objectiu-text { font-size: 12px; line-height: 1.4; color: #e8ecf4; }
 
   /* Table */
   table { width: 100%; border-collapse: collapse; font-size: 10px; }
-  th { background: #1e2535; color: #4fffb0; padding: 6px 8px; text-align: left; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; }
+  th { background: #1e2535; color: var(--accent); padding: 6px 8px; text-align: left; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; }
   td { padding: 5px 8px; border-bottom: 1px solid #e8ecf4; color: #3a4560; }
   tr:last-child td { border-bottom: none; }
 
@@ -1537,7 +1738,7 @@ function downloadPDF() {
   }
   .footer-left { font-size: 8px; color: #aab; }
   .footer-badge {
-    background: #0e1117; color: #4fffb0; font-size: 8px; font-weight: 700;
+    background: #0e1117; color: var(--accent); font-size: 8px; font-weight: 700;
     padding: 3px 10px; border-radius: 20px; letter-spacing: 0.5px;
   }
 
@@ -1702,7 +1903,7 @@ function renderQuiz() {
       <div class="quiz-options">
         ${q.options.map((opt, oi) => `
           <button class="quiz-option" onclick="selectAnswer(${qi}, ${oi})" id="qo-${qi}-${oi}">
-            <span style="font-family:'DM Mono',monospace;color:var(--accent2);margin-right:8px;">${String.fromCharCode(65+oi)})</span>${opt}
+            <span style="font-family:'JetBrains Mono',monospace;color:var(--accent2);margin-right:8px;">${String.fromCharCode(65+oi)})</span>${opt}
           </button>
         `).join('')}
       </div>
@@ -1965,11 +2166,11 @@ function setManualTab(tab) {
   document.getElementById('manual-prompt-mode').style.display = isPrompt ? 'block' : 'none';
   document.getElementById('manual-direct-mode').style.display = isPrompt ? 'none' : 'block';
   document.getElementById('manual-tab-prompt').style.cssText = isPrompt
-    ? 'flex:1;padding:8px;border:1px solid var(--accent);background:rgba(78,255,176,0.1);color:var(--accent);border-radius:6px;font-family:"DM Sans",sans-serif;font-size:12px;font-weight:600;cursor:pointer;'
-    : 'flex:1;padding:8px;border:1px solid var(--border);background:transparent;color:var(--text-muted);border-radius:6px;font-family:"DM Sans",sans-serif;font-size:12px;cursor:pointer;';
+    ? 'flex:1;padding:8px;border:1px solid var(--accent);background:rgba(0,229,160,0.08);color:var(--accent);border-radius:6px;font-family:"Outfit",sans-serif;font-size:12px;font-weight:600;cursor:pointer;'
+    : 'flex:1;padding:8px;border:1px solid var(--border);background:transparent;color:var(--text-muted);border-radius:6px;font-family:"Outfit",sans-serif;font-size:12px;cursor:pointer;';
   document.getElementById('manual-tab-direct').style.cssText = isPrompt
-    ? 'flex:1;padding:8px;border:1px solid var(--border);background:transparent;color:var(--text-muted);border-radius:6px;font-family:"DM Sans",sans-serif;font-size:12px;cursor:pointer;'
-    : 'flex:1;padding:8px;border:1px solid var(--accent4);background:rgba(255,209,102,0.1);color:var(--accent4);border-radius:6px;font-family:"DM Sans",sans-serif;font-size:12px;font-weight:600;cursor:pointer;';
+    ? 'flex:1;padding:8px;border:1px solid var(--border);background:transparent;color:var(--text-muted);border-radius:6px;font-family:"Outfit",sans-serif;font-size:12px;cursor:pointer;'
+    : 'flex:1;padding:8px;border:1px solid var(--accent4);background:rgba(255,209,102,0.1);color:var(--accent4);border-radius:6px;font-family:"Outfit",sans-serif;font-size:12px;font-weight:600;cursor:pointer;';
 }
 
 function buildManualPrompt() {
@@ -2168,7 +2369,7 @@ async function carregarProgramacio() {
     list.innerHTML = items.map(item => `
       <div style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--bg);border:1px solid var(--border);border-radius:8px;margin-bottom:8px;">
         <div style="flex-shrink:0;">
-          <div style="font-family:'DM Mono',monospace;font-size:11px;color:${item.estat==='PUBLICADA'?'var(--text-muted)':item.estat==='CUA'?'var(--accent2)':'var(--accent4)'};background:${item.estat==='PUBLICADA'?'var(--surface2)':item.estat==='CUA'?'rgba(110,157,255,0.1)':'rgba(255,209,102,0.1)'};padding:4px 10px;border-radius:20px;white-space:nowrap;">${item.estat==='CUA'?'📋 Cua':item.estat==='PUBLICADA'?'✓ Publicada':'📅 '+formatDataProg(item.data)}</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:${item.estat==='PUBLICADA'?'var(--text-muted)':item.estat==='CUA'?'var(--accent2)':'var(--accent4)'};background:${item.estat==='PUBLICADA'?'var(--surface2)':item.estat==='CUA'?'rgba(110,157,255,0.1)':'rgba(255,209,102,0.1)'};padding:4px 10px;border-radius:20px;white-space:nowrap;">${item.estat==='CUA'?'📋 Cua':item.estat==='PUBLICADA'?'✓ Publicada':'📅 '+formatDataProg(item.data)}</div>
         </div>
         <div style="flex:1;">
           <div style="font-size:14px;font-weight:500;color:var(--text);">${item.titol}</div>
@@ -2231,8 +2432,72 @@ async function eliminarFormacioManual(rowIndex) {
   }
 }
 
+// ── Persistència de prioritats automàtiques ────────
+const PREFS_KEY = 'formaciofarma_prefs';
+
+function guardarPrioritats() {
+  const prioritat = document.querySelector('#auto-prioritat .tag.selected');
+  const estacio   = Array.from(document.querySelectorAll('#auto-estacio .tag.selected')).map(t => t.textContent.trim());
+  const nivell    = document.getElementById('auto-nivell') ? document.getElementById('auto-nivell').value : 'mixto';
+  const nota      = document.getElementById('auto-nota')   ? document.getElementById('auto-nota').value.trim() : '';
+  const prefs = {
+    prioritat: prioritat ? prioritat.dataset.val : 'rotacio',
+    estacio,
+    nivell,
+    nota
+  };
+  try { localStorage.setItem(PREFS_KEY, JSON.stringify(prefs)); } catch(e) {}
+}
+
+function carregarPrioritats() {
+  let prefs = {};
+  try { prefs = JSON.parse(localStorage.getItem(PREFS_KEY) || '{}'); } catch(e) {}
+  if (!prefs.prioritat) return; // res guardat, deixa els valors per defecte
+
+  // Prioritat principal
+  document.querySelectorAll('#auto-prioritat .tag').forEach(t => {
+    t.classList.toggle('selected', t.dataset.val === prefs.prioritat);
+  });
+
+  // Estació
+  if (prefs.estacio && prefs.estacio.length > 0) {
+    document.querySelectorAll('#auto-estacio .tag').forEach(t => {
+      t.classList.toggle('selected', prefs.estacio.includes(t.textContent.trim()));
+    });
+  }
+
+  // Nivell
+  if (prefs.nivell && document.getElementById('auto-nivell')) {
+    document.getElementById('auto-nivell').value = prefs.nivell;
+  }
+
+  // Nota
+  if (prefs.nota && document.getElementById('auto-nota')) {
+    document.getElementById('auto-nota').value = prefs.nota;
+  }
+}
+
+// Sobreescriu togglePrioritat per guardar automàticament
+function togglePrioritat(el) {
+  document.querySelectorAll('#auto-prioritat .tag').forEach(t => t.classList.remove('selected'));
+  el.classList.add('selected');
+  guardarPrioritats();
+}
+
+// Guarda quan canvia qualsevol opció del mode auto
+document.addEventListener('change', function(e) {
+  if (e.target.id === 'auto-nivell') guardarPrioritats();
+});
+document.addEventListener('input', function(e) {
+  if (e.target.id === 'auto-nota') guardarPrioritats();
+});
+document.addEventListener('click', function(e) {
+  if (e.target.closest('#auto-estacio')) guardarPrioritats();
+});
+
 // Init
 loadState();
+carregarPrioritats();
 
 // Gestiona navegació per hash
 window.addEventListener('load', () => {
