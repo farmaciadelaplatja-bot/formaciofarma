@@ -1437,7 +1437,11 @@ function renderOutput(text) {
     if (!line) { closeList(); closeTable(); continue; }
 
     line = line.replace(/^#{3,}\s+/, '## ');
+    // Neteja markdown: negreta, cursiva, ** solts
     line = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    line = line.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    // Elimina ** o * solts que no s'han tancat (evita que trenquin el render)
+    line = line.replace(/\*\*/g, '').replace(/(?<![a-zA-Z])\*(?![a-zA-Z])/g, '');
 
     if (line.startsWith('# ')) {
       closeList(); closeTable();
