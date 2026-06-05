@@ -624,6 +624,21 @@
 
         <button onclick="forcarGeneracio()" class="btn-generate">⚡ Forçar generació ara</button>
       </div>
+
+      <!-- Biblioteca de documents -->
+      <div class="card">
+        <div class="card-title">Biblioteca de documents</div>
+        <p style="font-size:13px;color:var(--text-soft);line-height:1.7;margin-bottom:14px;">
+          Els PDFs, Words i PowerPoints de la carpeta <strong>PDFs_Formació</strong> de Drive s'indexen aquí
+          perquè Gemini els pugui usar com a base clínica. Indexa'ls un cop i quedaran disponibles per sempre.
+        </p>
+        <div id="biblio-estat" style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-muted);margin-bottom:12px;">
+          Comprovant estat...
+        </div>
+        <button onclick="indexarBiblioteca()" class="btn-small primary" id="btn-indexar" style="padding:10px 18px;font-size:13px;">
+          📚 Indexar documents nous
+        </button>
+      </div>
     </div>
 
     <!-- MODE MANUAL -->
@@ -1317,6 +1332,45 @@ async function forcarGeneracio() {
 }
 
 function toggleTag(el) { el.classList.toggle('selected'); }
+
+async function actualitzaEstatBiblioteca() {
+  const el = document.getElementById('biblio-estat');
+  if (!el) return;
+  try {
+    const r = await gsCall({ action: 'estatBiblioteca' });
+    const d = r.data || r;
+    if (d.pendents > 0) {
+      el.innerHTML = `📚 ${d.indexats} de ${d.total} documents indexats · <span style="color:var(--accent4)">${d.pendents} pendents</span>`;
+    } else {
+      el.innerHTML = `✓ ${d.indexats} documents indexats · tot al dia`;
+    }
+  } catch(e) {
+    el.textContent = 'No s\'ha pogut comprovar l\'estat';
+  }
+}
+
+async function indexarBiblioteca() {
+  const btn = document.getElementById('btn-indexar');
+  const el = document.getElementById('biblio-estat');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Indexant...'; }
+  showToast('⏳ Indexant documents (pot trigar 1-2 min)...');
+  try {
+    const r = await gsCall({ action: 'indexarBiblioteca' });
+    const d = r.data || r;
+    showToast('✓ ' + (d.missatge || 'Indexació feta'));
+    if (el) el.textContent = d.missatge || '';
+    // Si queden pendents, ofereix continuar
+    if (d.restants > 0) {
+      if (btn) { btn.disabled = false; btn.textContent = '📚 Indexar ' + d.restants + ' restants'; }
+    } else {
+      if (btn) { btn.disabled = false; btn.textContent = '📚 Indexar documents nous'; }
+      actualitzaEstatBiblioteca();
+    }
+  } catch(e) {
+    showToast('⚠️ Error: ' + e.message);
+    if (btn) { btn.disabled = false; btn.textContent = '📚 Indexar documents nous'; }
+  }
+}
 
 function addRow() {
   const c = document.getElementById('farmatic-rows');
@@ -2658,6 +2712,7 @@ document.addEventListener('click', function(e) {
 // Init
 loadState();
 carregarPrioritats();
+actualitzaEstatBiblioteca();
 
 // Gestiona navegació per hash
 window.addEventListener('load', () => {
