@@ -1458,6 +1458,8 @@ function renderOutput(text) {
 
   const SEC_CFG = {
     'OBJECTIU':            { icon: '🎯', color: 'var(--accent2)'  },
+    'CONTEXT CLINIC':      { icon: '🩺', color: 'var(--accent2)'  },
+    'CONTEXT CLÍNIC':      { icon: '🩺', color: 'var(--accent2)'  },
     'CONTINGUT PRINCIPAL': { icon: '📋', color: 'var(--accent)'   },
     'ALERTA CLINICA':      { icon: '⚠️', color: 'var(--accent3)'  },
     'ALERTA CL\u00CDNICA':{ icon: '⚠️', color: 'var(--accent3)'  },
@@ -1563,6 +1565,8 @@ function renderOutput(text) {
         html += `<div class="alerta-box"><p>${line}</p></div>`;
       } else if (s === 'OBJECTIU') {
         html += `<p style="font-size:14.5px;line-height:1.75;color:var(--text);background:rgba(77,142,255,0.06);border-radius:8px;padding:12px 16px;margin:4px 0 8px;">${line}</p>`;
+      } else if (s === 'CONTEXT CLINIC') {
+        html += `<p style="font-size:13.5px;line-height:1.75;color:var(--text-soft);background:rgba(77,142,255,0.04);border-radius:8px;padding:11px 15px;margin:4px 0 6px;border:1px solid rgba(77,142,255,0.1);">${line}</p>`;
       } else if (s === 'FONTS') {
         const fontLine = line.replace(/^\[(\d{1,2})\]/, '<strong style="color:var(--accent2);">[$1]</strong>');
         html += `<p style="font-size:11px;line-height:1.6;color:var(--text-muted);margin:2px 0;padding-left:8px;">${fontLine}</p>`;
@@ -1652,6 +1656,8 @@ function parseContentSections(raw) {
 
   const CANONIQUES = {
     'OBJECTIU':                 'OBJECTIU',
+    'CONTEXT CLINIC':           'CONTEXT CLINIC',
+    'CONTEXT CLINIC':           'CONTEXT CLINIC',
     'CONTINGUT PRINCIPAL':      'CONTINGUT PRINCIPAL',
     'ALERTA CLINICA':           'ALERTA CLINICA',
     "ALERTA CL'INICA":          'ALERTA CLINICA',
