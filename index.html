@@ -306,16 +306,51 @@
   .output-body li { margin-bottom: 6px; }
   .output-body strong { color: var(--accent); }
 
-  .output-body table { width:100%; border-collapse:collapse; margin:10px 0 16px; font-size:13px; border-radius:10px; overflow:hidden; }
-  .output-body th { background:rgba(176,127,255,0.1); color:var(--accent5); font-family:'JetBrains Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:1.5px; padding:10px 14px; text-align:left; border-bottom:1px solid rgba(176,127,255,0.2); }
-  .output-body td { padding:10px 14px; border-bottom:1px solid var(--border); color:var(--text); vertical-align:top; }
+  .output-body table { width:100%; border-collapse:collapse; margin:10px 0 16px; font-size:13px; border-radius:10px; overflow:hidden; table-layout:fixed; }
+  .output-body th { background:rgba(176,127,255,0.1); color:var(--accent5); font-family:'JetBrains Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:1.5px; padding:10px 14px; text-align:left; border-bottom:1px solid rgba(176,127,255,0.2); word-wrap:break-word; }
+  .output-body td { padding:10px 14px; border-bottom:1px solid var(--border); color:var(--text); vertical-align:top; word-wrap:break-word; line-height:1.55; }
   .output-body tr:last-child td { border-bottom:none; }
   .output-body tr:hover td { background:rgba(176,127,255,0.04); }
+  .output-body th:nth-child(1), .output-body td:nth-child(1) { width:22%; }
+  .output-body th:nth-child(2), .output-body td:nth-child(2) { width:25%; }
+  .output-body th:nth-child(3), .output-body td:nth-child(3) { width:53%; }
 
   .alerta-box { background:rgba(255,90,90,0.06); border:1px solid rgba(255,90,90,0.2); border-left:3px solid var(--accent3); border-radius:var(--radius-sm); padding:14px 18px; margin:8px 0 14px; }
   .alerta-box p { margin:0; color:var(--text); font-size:13.5px; line-height:1.7; }
   .tip-box { background:rgba(255,204,68,0.06); border:1px solid rgba(255,204,68,0.2); border-left:3px solid var(--accent4); border-radius:var(--radius-sm); padding:14px 18px; margin:8px 0 14px; }
   .tip-box p { margin:0; color:var(--text); font-size:13.5px; line-height:1.7; font-style:italic; }
+
+  /* Consell directe al pacient */
+  .consell-pacient {
+    background: rgba(0,229,160,0.05);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 8px;
+    padding: 10px 16px 10px 14px;
+    margin: -2px 0 10px 28px;
+    font-size: 13px; line-height: 1.65; color: var(--text-soft);
+  }
+  .consell-pacient-label {
+    font-size: 9px; font-family: 'JetBrains Mono', monospace;
+    color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px;
+    display: block; margin-bottom: 5px; font-weight: 600;
+  }
+
+  /* Sub-capçalera dins del contingut (Interaccions, etc.) */
+  .sub-header {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: var(--accent2); text-transform: uppercase; letter-spacing: 1.5px;
+    margin: 16px 0 8px; padding: 0; font-weight: 600;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .sub-header::after { content: ''; flex:1; height:1px; background: rgba(77,142,255,0.15); }
+
+  /* Ítem de fàrmac dins del contingut (Omeprazol: text) */
+  .farmac-item {
+    padding: 9px 14px; background: var(--surface2);
+    border-radius: 8px; font-size: 13px; line-height: 1.6;
+    margin: 4px 0; color: var(--text-soft);
+    border-left: 2px solid var(--border2);
+  }
 
   /* ══════════════════════════════════════
      QUIZ
@@ -1466,15 +1501,21 @@ function renderOutput(text) {
 
     } else if (line.match(/^[-*]\s+/)) {
       closeTable();
-      if (!inList) { html += '<ul style="padding:0;list-style:none;display:flex;flex-direction:column;gap:7px;margin:0 0 10px;">'; inList = true; }
+      if (!inList) { html += '<ul style="padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;margin:0 0 4px;">'; inList = true; }
       const item = line.replace(/^[-*]\s+/, '');
       const isAlerta = afterSection.includes('ALERTA');
       const bc = isAlerta ? 'var(--accent3)' : 'var(--accent)';
       const bg = isAlerta ? 'rgba(255,90,90,0.05)' : 'var(--surface2)';
-      html += `<li style="display:flex;gap:10px;align-items:flex-start;padding:11px 15px;background:${bg};border-radius:10px;border-left:3px solid ${bc};font-size:13.5px;line-height:1.55;">
-        <span style="color:${bc};flex-shrink:0;font-size:8px;margin-top:5px;">◆</span>
-        <span>${item}</span>
-      </li>`;
+      // Si l'ítem acaba amb ':' és una sub-capçalera disfressada de bullet
+      if (item.match(/^[^:]{3,40}:$/) && !isAlerta) {
+        closeList();
+        html += `<div class="sub-header">${item.replace(/:$/, '')}</div>`;
+      } else {
+        html += `<li style="display:flex;gap:10px;align-items:flex-start;padding:13px 16px;background:${bg};border-radius:10px;border-left:3px solid ${bc};font-size:13.5px;line-height:1.6;">
+          <span style="color:${bc};flex-shrink:0;font-size:8px;margin-top:6px;">◆</span>
+          <span style="flex:1;">${item}</span>
+        </li>`;
+      }
 
     } else if (line.includes('|') && line.split('|').length >= 3) {
       closeList();
@@ -1493,7 +1534,30 @@ function renderOutput(text) {
     } else {
       closeList(); closeTable();
       const s = afterSection;
-      if (s.includes('TIP')) {
+
+      // ── Consell directe al pacient ──────────────────
+      if (line.match(/^consell directe al pacient\s*:/i) ||
+          line.match(/^consell al pacient\s*:/i) ||
+          line.match(/^consell\s*:/i)) {
+        const text = line.replace(/^[^:]+:\s*/i, '');
+        html += `<div class="consell-pacient">
+          <span class="consell-pacient-label">💬 Consell directe al pacient</span>
+          ${text}
+        </div>`;
+
+      // ── Sub-capçalera (ex: "Interaccions i Precaucions:") ──
+      } else if (s === 'CONTINGUT PRINCIPAL' && line.match(/^[A-Z\u00C0-\u00FF][^:]{3,50}:\s*$/) && line.length < 60) {
+        html += `<div class="sub-header">${line.replace(/:$/, '')}</div>`;
+
+      // ── Ítem de fàrmac (ex: "Omeprazol: Pot reduir...") ──
+      } else if (s === 'CONTINGUT PRINCIPAL' && line.match(/^[A-Z][a-zÀ-ÿ]+[^.]{0,30}:\s+\S/)) {
+        const colonIdx = line.indexOf(':');
+        const nom = line.substring(0, colonIdx);
+        const desc = line.substring(colonIdx + 1).trim();
+        html += `<div class="farmac-item"><strong style="color:var(--text);">${nom}:</strong> ${desc}</div>`;
+
+      // ── Seccions especials ──────────────────────────
+      } else if (s.includes('TIP')) {
         html += `<div class="tip-box"><p>${line}</p></div>`;
       } else if (s.includes('ALERTA')) {
         html += `<div class="alerta-box"><p>${line}</p></div>`;
