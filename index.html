@@ -352,6 +352,29 @@
     border-left: 2px solid var(--border2);
   }
 
+  /* Targeta de cas d'ortopèdia */
+  .orto-card {
+    background: rgba(176,127,255,0.05);
+    border: 1px solid rgba(176,127,255,0.18);
+    border-radius: 12px; padding: 16px 18px; margin: 10px 0;
+  }
+  .orto-card-titol {
+    font-size: 14px; font-weight: 600; color: var(--accent5);
+    margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+  }
+  .orto-card-titol::before { content: '🦴'; font-size: 14px; }
+  .orto-camp { display: flex; gap: 8px; margin: 6px 0; font-size: 13px; line-height: 1.55; }
+  .orto-camp-label {
+    flex-shrink: 0; font-family: 'JetBrains Mono', monospace; font-size: 9px;
+    text-transform: uppercase; letter-spacing: 1px; font-weight: 600;
+    padding: 2px 8px; border-radius: 4px; height: fit-content; margin-top: 2px;
+    min-width: 70px; text-align: center;
+  }
+  .orto-camp-label.detectar { background: rgba(77,142,255,0.12); color: var(--accent2); }
+  .orto-camp-label.solucio  { background: rgba(0,229,160,0.1); color: var(--accent); }
+  .orto-camp-label.consell  { background: rgba(255,204,68,0.1); color: var(--accent4); }
+  .orto-camp-text { color: var(--text-soft); flex: 1; }
+
   /* ══════════════════════════════════════
      QUIZ
   ══════════════════════════════════════ */
@@ -1447,6 +1470,7 @@ function renderOutput(text) {
   let tableHtml = '';
   let isFirstRow = true;
   let afterSection = '';
+  let ortoOpen = false;
 
   const closeList = () => { if (inList) { html += '</ul>'; inList = false; } };
   const closeTable = () => {
@@ -1537,6 +1561,26 @@ function renderOutput(text) {
       closeList(); closeTable();
       const s = afterSection;
 
+      // ── Targetes d'ortopèdia (CAS/DETECTAR/SOLUCIO/CONSELL) ──
+      if (s.includes('ORTOPEDIA') && line.match(/^(CAS|DETECTAR|SOLUCIO|SOLUCIÓ|CONSELL)\s*:/i)) {
+        const m = line.match(/^(CAS|DETECTAR|SOLUCIO|SOLUCIÓ|CONSELL)\s*:\s*(.*)$/i);
+        const camp = m[1].toUpperCase().replace('Ó','O');
+        const text = m[2].trim();
+        if (camp === 'CAS') {
+          // Tanca targeta anterior si n'hi ha
+          if (ortoOpen) html += '</div>';
+          html += `<div class="orto-card"><div class="orto-card-titol">${text}</div>`;
+          ortoOpen = true;
+        } else {
+          const cls = camp === 'DETECTAR' ? 'detectar' : camp === 'SOLUCIO' ? 'solucio' : 'consell';
+          const lbl = camp === 'DETECTAR' ? 'Detectar' : camp === 'SOLUCIO' ? 'Solució' : 'Consell';
+          html += `<div class="orto-camp"><span class="orto-camp-label ${cls}">${lbl}</span><span class="orto-camp-text">${text}</span></div>`;
+        }
+        continue;
+      }
+      // Si sortim de la secció ortopèdia, tanca la targeta oberta
+      if (ortoOpen && !s.includes('ORTOPEDIA')) { html += '</div>'; ortoOpen = false; }
+
       // ── Consell directe al pacient ──────────────────
       if (line.match(/^consell directe al pacient\s*:/i) ||
           line.match(/^consell al pacient\s*:/i) ||
@@ -1577,6 +1621,7 @@ function renderOutput(text) {
   }
 
   closeList(); closeTable();
+  if (ortoOpen) html += '</div>';
   return html;
 }
 
@@ -1726,6 +1771,28 @@ function downloadPDF() {
       return `<tr>${tds}</tr>`;
     }).join('');
     return `<table><thead><tr>${ths}</tr></thead><tbody>${trs}</tbody></table>`;
+  }
+
+  // Parse orthopedia cards (CAS/DETECTAR/SOLUCIO/CONSELL)
+  function toOrtoCards(text) {
+    const lines = text.split('\n').filter(l => l.trim());
+    let out = ''; let intro = ''; let cardOpen = false;
+    lines.forEach(l => {
+      const m = l.match(/^(CAS|DETECTAR|SOLUCIO|SOLUCIÓ|CONSELL)\s*:\s*(.*)$/i);
+      if (!m) { if (!cardOpen) intro += l + ' '; return; }
+      const camp = m[1].toUpperCase().replace('Ó','O');
+      const val = m[2].trim();
+      if (camp === 'CAS') {
+        if (cardOpen) out += '</div>';
+        out += `<div style="border:1px solid #d8c5f5;border-radius:8px;padding:8px 10px;margin:6px 0;background:#faf7ff;"><div style="font-weight:700;color:#7a4fc0;font-size:11px;margin-bottom:4px;">🦴 ${val}</div>`;
+        cardOpen = true;
+      } else {
+        const lbl = camp === 'DETECTAR' ? 'Detectar' : camp === 'SOLUCIO' ? 'Solució' : 'Consell';
+        out += `<div style="font-size:10px;margin:2px 0;"><strong>${lbl}:</strong> ${val}</div>`;
+      }
+    });
+    if (cardOpen) out += '</div>';
+    return (intro ? `<p style="margin-bottom:6px;">${intro.trim()}</p>` : '') + out;
   }
 
   const html = `<!DOCTYPE html>
@@ -1881,7 +1948,7 @@ function downloadPDF() {
     <!-- Ortopèdia full width -->
     <div class="section blue full">
       <div class="section-label"><span class="dot"></span>🔗 Connexió ortopèdia</div>
-      ${ortopedia.includes('|') ? toTable(ortopedia) : `<ul>${toBullets(ortopedia)}</ul>`}
+      ${ortopedia.match(/^(CAS|DETECTAR|SOLUCIO)\s*:/im) ? toOrtoCards(ortopedia) : (ortopedia.includes('|') ? toTable(ortopedia) : `<ul>${toBullets(ortopedia)}</ul>`)}
     </div>
   </div>
 
