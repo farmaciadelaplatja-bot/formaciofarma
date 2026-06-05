@@ -1337,38 +1337,39 @@ async function actualitzaEstatBiblioteca() {
   const el = document.getElementById('biblio-estat');
   if (!el) return;
   try {
-    const r = await gsCall({ action: 'estatBiblioteca' });
-    const d = r.data || r;
+    const d = await gsCall({ action: 'estatBiblioteca' });
     if (d.pendents > 0) {
       el.innerHTML = `📚 ${d.indexats} de ${d.total} documents indexats · <span style="color:var(--accent4)">${d.pendents} pendents</span>`;
     } else {
       el.innerHTML = `✓ ${d.indexats} documents indexats · tot al dia`;
     }
   } catch(e) {
-    el.textContent = 'No s\'ha pogut comprovar l\'estat';
+    el.textContent = 'No s\'ha pogut comprovar l\'estat (revisa el desplegament)';
   }
 }
 
 async function indexarBiblioteca() {
   const btn = document.getElementById('btn-indexar');
   const el = document.getElementById('biblio-estat');
-  if (btn) { btn.disabled = true; btn.textContent = '⏳ Indexant...'; }
-  showToast('⏳ Indexant documents (pot trigar 1-2 min)...');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Indexant... (espera)'; }
+  if (el) el.textContent = '⏳ Processant documents, no tanquis la pàgina...';
+  showToast('⏳ Indexant 2 documents (pot trigar 1 min)...');
   try {
-    const r = await gsCall({ action: 'indexarBiblioteca' });
-    const d = r.data || r;
+    const d = await gsCall({ action: 'indexarBiblioteca' });
     showToast('✓ ' + (d.missatge || 'Indexació feta'));
-    if (el) el.textContent = d.missatge || '';
-    // Si queden pendents, ofereix continuar
+    // Sempre refresca l'estat real des del servidor
+    await actualitzaEstatBiblioteca();
     if (d.restants > 0) {
-      if (btn) { btn.disabled = false; btn.textContent = '📚 Indexar ' + d.restants + ' restants'; }
+      if (btn) { btn.disabled = false; btn.textContent = '📚 Continuar (' + d.restants + ' restants)'; }
     } else {
       if (btn) { btn.disabled = false; btn.textContent = '📚 Indexar documents nous'; }
-      actualitzaEstatBiblioteca();
     }
   } catch(e) {
-    showToast('⚠️ Error: ' + e.message);
-    if (btn) { btn.disabled = false; btn.textContent = '📚 Indexar documents nous'; }
+    showToast('⚠️ Error o temps esgotat: ' + e.message);
+    if (el) el.textContent = '⚠️ Hi ha hagut un error. Torna a provar.';
+    // Refresca igualment — potser ha indexat algun abans de tallar
+    setTimeout(actualitzaEstatBiblioteca, 1000);
+    if (btn) { btn.disabled = false; btn.textContent = '📚 Tornar a intentar'; }
   }
 }
 
