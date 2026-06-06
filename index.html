@@ -8,21 +8,21 @@
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=JetBrains+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap');
 
   :root {
-    --bg: #080c12;
-    --surface: #0f1520;
-    --surface2: #172030;
-    --surface3: #1e2a3d;
-    --border: #1f2d42;
-    --border2: #2a3d58;
-    --accent: #00e5a0;
-    --accent-dim: rgba(0,229,160,0.08);
-    --accent2: #4d8eff;
-    --accent3: #ff5a5a;
-    --accent4: #ffcc44;
-    --accent5: #b07fff; /* lila ortopèdia */
-    --text: #dce8f5;
-    --text-muted: #5e7a96;
-    --text-soft: #8fa8c2;
+    --bg: #f4f6f9;
+    --surface: #ffffff;
+    --surface2: #eef1f6;
+    --surface3: #e4e9f2;
+    --border: #d5dce8;
+    --border2: #b8c4d8;
+    --accent: #0077cc;
+    --accent-dim: rgba(0,119,204,0.08);
+    --accent2: #1a5fb4;
+    --accent3: #c0392b;
+    --accent4: #d68910;
+    --accent5: #7b4fbf; /* lila ortopèdia */
+    --text: #1a2333;
+    --text-muted: #5a6e87;
+    --text-soft: #3d5470;
     --radius: 14px;
     --radius-sm: 8px;
   }
@@ -37,28 +37,8 @@
     padding: 28px 16px 60px;
   }
 
-  /* Fons atmosfèric: gradient radial verd molt suau al centre */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0,229,160,0.06) 0%, transparent 60%),
-      radial-gradient(ellipse 40% 30% at 80% 80%, rgba(77,142,255,0.04) 0%, transparent 50%);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  /* Trama de punts subtil */
-  body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: radial-gradient(circle, rgba(255,255,255,0.025) 1px, transparent 1px);
-    background-size: 28px 28px;
-    pointer-events: none;
-    z-index: 0;
-  }
+  body::before { display: none; }
+  body::after  { display: none; }
 
   .container { max-width: 920px; margin: 0 auto; position: relative; z-index: 1; }
 
@@ -110,7 +90,7 @@
   .nav-tab.active {
     background: var(--surface3); color: var(--accent);
     border: 1px solid var(--border2);
-    box-shadow: 0 0 0 1px rgba(0,229,160,0.15), inset 0 1px 0 rgba(255,255,255,0.04);
+    box-shadow: 0 0 0 1px rgba(0,119,204,0.15), inset 0 1px 0 rgba(255,255,255,0.04);
   }
 
   /* ── MODE TABS ── */
@@ -153,7 +133,7 @@
   }
   input:focus, select:focus, textarea:focus {
     border-color: var(--accent); background: var(--surface3);
-    box-shadow: 0 0 0 3px rgba(0,229,160,0.08);
+    box-shadow: 0 0 0 3px rgba(0,119,204,0.12);
   }
   select option { background: var(--surface2); }
   textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
@@ -211,7 +191,7 @@
     background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
     pointer-events: none;
   }
-  .btn-generate:hover { background: #00ffb3; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,229,160,0.25); }
+  .btn-generate:hover { background: #0066bb; color: #fff; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,119,204,0.25); }
   .btn-generate:disabled { background: var(--border); color: var(--text-muted); transform: none; box-shadow: none; cursor: not-allowed; }
 
   .output-container { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-top: 24px; }
@@ -322,7 +302,7 @@
 
   /* Consell directe al pacient */
   .consell-pacient {
-    background: rgba(0,229,160,0.05);
+    background: rgba(0,119,204,0.05);
     border-left: 3px solid var(--accent);
     border-radius: 0 8px 8px 8px;
     padding: 10px 16px 10px 14px;
@@ -371,7 +351,7 @@
     min-width: 70px; text-align: center;
   }
   .orto-camp-label.detectar { background: rgba(77,142,255,0.12); color: var(--accent2); }
-  .orto-camp-label.solucio  { background: rgba(0,229,160,0.1); color: var(--accent); }
+  .orto-camp-label.solucio  { background: rgba(0,119,204,0.10); color: var(--accent); }
   .orto-camp-label.consell  { background: rgba(255,204,68,0.1); color: var(--accent4); }
   .orto-camp-text { color: var(--text-soft); flex: 1; }
 
@@ -403,15 +383,15 @@
   }
   .quiz-option:hover:not(:disabled) { border-color: var(--accent2); color: var(--text); background: rgba(77,142,255,0.06); }
   .quiz-option:hover:not(:disabled)::before { background: rgba(77,142,255,0.12); border-color: var(--accent2); color: var(--accent2); }
-  .quiz-option.correct { border-color: var(--accent); background: rgba(0,229,160,0.08); color: var(--accent); }
-  .quiz-option.correct::before { background: rgba(0,229,160,0.15); border-color: var(--accent); color: var(--accent); }
+  .quiz-option.correct { border-color: var(--accent); background: rgba(0,119,204,0.08); color: var(--accent); }
+  .quiz-option.correct::before { background: rgba(0,119,204,0.15); border-color: var(--accent); color: var(--accent); }
   .quiz-option.wrong { border-color: var(--accent3); background: rgba(255,90,90,0.08); color: var(--accent3); }
   .quiz-option.wrong::before { background: rgba(255,90,90,0.15); border-color: var(--accent3); color: var(--accent3); }
   .quiz-option:disabled { cursor: not-allowed; opacity: 0.75; }
 
   .quiz-feedback { font-size: 13px; margin-top: 10px; padding: 10px 14px; border-radius: 8px; display: none; }
   .quiz-feedback.show { display: block; }
-  .quiz-feedback.ok { background: rgba(0,229,160,0.08); color: var(--accent); border: 1px solid rgba(0,229,160,0.2); }
+  .quiz-feedback.ok { background: rgba(0,119,204,0.08); color: var(--accent); border: 1px solid rgba(0,119,204,0.20); }
   .quiz-feedback.ko { background: rgba(255,90,90,0.08); color: var(--accent3); border: 1px solid rgba(255,90,90,0.2); }
 
   .participant-select { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; padding: 14px 18px; background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius-sm); }
@@ -461,7 +441,7 @@
   .add-player-row { display: flex; gap: 8px; }
   .add-player-row input { margin: 0; flex: 1; }
   .btn-add { padding: 11px 18px; background: var(--accent-dim); border: 1px solid var(--accent); color: var(--accent); border-radius: var(--radius-sm); font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
-  .btn-add:hover { background: rgba(0,229,160,0.15); }
+  .btn-add:hover { background: rgba(0,119,204,0.15); }
 
   .history-list { display: flex; flex-direction: column; gap: 8px; }
   .history-item { padding: 13px 16px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; }
@@ -562,7 +542,7 @@
 
     <!-- MODE AUTOMÀTIC -->
     <div id="mode-auto">
-      <div class="card" style="background:linear-gradient(135deg,rgba(0,229,160,0.05),rgba(0,229,160,0.02));border-color:rgba(0,229,160,0.2);">
+      <div class="card" style="background:linear-gradient(135deg,rgba(0,119,204,0.05),rgba(0,119,204,0.02));border-color:rgba(0,119,204,0.20);">
         <div class="card-title">Generació automàtica</div>
         <p style="font-size:13px;color:var(--text-soft);line-height:1.7;margin-bottom:16px;">
           El sistema genera formació cada dia a les <strong>10:00</strong> a partir de les dades del Google Sheet.
@@ -689,7 +669,7 @@
 
       <div id="prompt-box" style="display:none;margin-bottom:16px;">
         <div style="background:var(--bg);border:1px solid var(--accent);border-radius:10px;overflow:hidden;">
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:rgba(0,229,160,0.06);border-bottom:1px solid var(--border);">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:rgba(0,119,204,0.06);border-bottom:1px solid var(--border);">
             <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);text-transform:uppercase;letter-spacing:1px;">✓ Prompt copiat</span>
             <button onclick="copyPromptToClipboard()" style="background:none;border:1px solid var(--accent);color:var(--accent);border-radius:6px;padding:4px 12px;font-size:11px;cursor:pointer;font-family:'JetBrains Mono',monospace;">Tornar a copiar</button>
           </div>
@@ -967,7 +947,7 @@ function setTipusExcel(tipus) {
 
   const baseStyle = 'flex:1;padding:12px;border-radius:10px;cursor:pointer;transition:all 0.2s;font-family:Outfit,sans-serif;font-size:13px;font-weight:';
   document.getElementById('tipus-vendes').style.cssText = baseStyle +
-    (isVendes ? '600;border:1px solid var(--accent);background:rgba(0,229,160,0.1);color:var(--accent);' :
+    (isVendes ? '600;border:1px solid var(--accent);background:rgba(0,119,204,0.10);color:var(--accent);' :
                 '500;border:1px solid var(--border2);background:transparent;color:var(--text-muted);');
   document.getElementById('tipus-caducitats').style.cssText = baseStyle +
     (!isVendes ? '600;border:1px solid var(--accent4);background:rgba(255,204,68,0.1);color:var(--accent4);' :
@@ -2381,7 +2361,7 @@ function setManualTab(tab) {
   document.getElementById('manual-prompt-mode').style.display = isPrompt ? 'block' : 'none';
   document.getElementById('manual-direct-mode').style.display = isPrompt ? 'none' : 'block';
   document.getElementById('manual-tab-prompt').style.cssText = isPrompt
-    ? 'flex:1;padding:8px;border:1px solid var(--accent);background:rgba(0,229,160,0.08);color:var(--accent);border-radius:6px;font-family:"Outfit",sans-serif;font-size:12px;font-weight:600;cursor:pointer;'
+    ? 'flex:1;padding:8px;border:1px solid var(--accent);background:rgba(0,119,204,0.08);color:var(--accent);border-radius:6px;font-family:"Outfit",sans-serif;font-size:12px;font-weight:600;cursor:pointer;'
     : 'flex:1;padding:8px;border:1px solid var(--border);background:transparent;color:var(--text-muted);border-radius:6px;font-family:"Outfit",sans-serif;font-size:12px;cursor:pointer;';
   document.getElementById('manual-tab-direct').style.cssText = isPrompt
     ? 'flex:1;padding:8px;border:1px solid var(--border);background:transparent;color:var(--text-muted);border-radius:6px;font-family:"Outfit",sans-serif;font-size:12px;cursor:pointer;'
