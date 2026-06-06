@@ -8,23 +8,25 @@
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=JetBrains+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap');
 
   :root {
-    --bg: #f4f6f9;
+    --bg: #eef1f0;
     --surface: #ffffff;
-    --surface2: #eef1f6;
-    --surface3: #e4e9f2;
-    --border: #d5dce8;
-    --border2: #b8c4d8;
-    --accent: #0077cc;
-    --accent-dim: rgba(0,119,204,0.08);
-    --accent2: #1a5fb4;
-    --accent3: #c0392b;
-    --accent4: #d68910;
-    --accent5: #7b4fbf; /* lila ortopèdia */
-    --text: #1a2333;
-    --text-muted: #5a6e87;
-    --text-soft: #3d5470;
+    --surface2: #f4f6f7;
+    --surface3: #eceff1;
+    --border: #e0e5e6;
+    --border2: #cdd5d6;
+    --accent: #00a878;
+    --accent-dim: rgba(0,168,120,0.10);
+    --accent2: #2b6cd4;
+    --accent3: #e0556b;
+    --accent4: #e09b1f;
+    --accent5: #8b5cf6; /* lila ortopèdia */
+    --text: #1c2b2a;
+    --text-muted: #6b7d80;
+    --text-soft: #44585a;
     --radius: 14px;
     --radius-sm: 8px;
+    --shadow-sm: 0 1px 3px rgba(28,43,42,0.06), 0 1px 2px rgba(28,43,42,0.04);
+    --shadow-md: 0 4px 16px rgba(28,43,42,0.08), 0 2px 4px rgba(28,43,42,0.04);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -37,8 +39,28 @@
     padding: 28px 16px 60px;
   }
 
-  body::before { display: none; }
-  body::after  { display: none; }
+  /* Fons atmosfèric: gradient radial verd molt suau al centre */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0,168,120,0.07) 0%, transparent 55%),
+      radial-gradient(ellipse 40% 30% at 85% 90%, rgba(43,108,212,0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Trama de punts subtil */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(28,43,42,0.035) 1px, transparent 1px);
+    background-size: 28px 28px;
+    pointer-events: none;
+    z-index: 0;
+  }
 
   .container { max-width: 920px; margin: 0 auto; position: relative; z-index: 1; }
 
@@ -88,9 +110,9 @@
   }
   .nav-tab:hover { color: var(--text-soft); background: var(--surface2); }
   .nav-tab.active {
-    background: var(--surface3); color: var(--accent);
+    background: var(--surface); color: var(--accent);
     border: 1px solid var(--border2);
-    box-shadow: 0 0 0 1px rgba(0,119,204,0.15), inset 0 1px 0 rgba(255,255,255,0.04);
+    box-shadow: 0 0 0 1px rgba(0,168,120,0.12), var(--shadow-sm);
   }
 
   /* ── MODE TABS ── */
@@ -110,9 +132,9 @@
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius); padding: 22px; margin-bottom: 16px;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s; box-shadow: var(--shadow-sm);
   }
-  .card:hover { border-color: var(--border2); }
+  .card:hover { border-color: var(--border2); box-shadow: var(--shadow-md); }
   .card-title {
     font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--accent);
     text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px;
@@ -133,7 +155,7 @@
   }
   input:focus, select:focus, textarea:focus {
     border-color: var(--accent); background: var(--surface3);
-    box-shadow: 0 0 0 3px rgba(0,119,204,0.12);
+    box-shadow: 0 0 0 3px rgba(0,168,120,0.08);
   }
   select option { background: var(--surface2); }
   textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
@@ -181,20 +203,20 @@
   .btn-icon.add:hover { border-color: var(--accent); color: var(--accent); }
 
   .btn-generate {
-    width: 100%; padding: 16px; background: var(--accent); color: #000; border: none;
+    width: 100%; padding: 16px; background: var(--accent); color: #fff; border: none;
     border-radius: var(--radius); font-family: 'Outfit', sans-serif; font-size: 15px;
     font-weight: 600; cursor: pointer; transition: all 0.25s; letter-spacing: 0.3px; margin-top: 8px;
-    position: relative; overflow: hidden;
+    position: relative; overflow: hidden; box-shadow: var(--shadow-sm);
   }
   .btn-generate::after {
     content: ''; position: absolute; inset: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+    background: linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 60%);
     pointer-events: none;
   }
-  .btn-generate:hover { background: #0066bb; color: #fff; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,119,204,0.25); }
+  .btn-generate:hover { background: #008f66; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,168,120,0.30); }
   .btn-generate:disabled { background: var(--border); color: var(--text-muted); transform: none; box-shadow: none; cursor: not-allowed; }
 
-  .output-container { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-top: 24px; }
+  .output-container { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-top: 24px; box-shadow: var(--shadow-md); }
   .output-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--border); background: var(--surface2); }
   .output-title { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; }
   .output-actions { display: flex; gap: 8px; }
@@ -206,7 +228,7 @@
   }
   .btn-small:hover { border-color: var(--accent); color: var(--accent); }
   .btn-small.primary { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
-  .btn-small.gold { background: rgba(255,204,68,0.08); border-color: var(--accent4); color: var(--accent4); }
+  .btn-small.gold { background: rgba(224,155,31,0.08); border-color: var(--accent4); color: var(--accent4); }
 
   .output-body {
     padding: 28px; font-size: 14px; line-height: 1.8; color: var(--text);
@@ -259,8 +281,8 @@
   .btn-print:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
 
   .quiz-cta-banner {
-    background: linear-gradient(135deg, rgba(255,204,68,0.08), rgba(255,204,68,0.03));
-    border: 1px solid rgba(255,204,68,0.2); border-radius: var(--radius);
+    background: linear-gradient(135deg, rgba(224,155,31,0.08), rgba(224,155,31,0.03));
+    border: 1px solid rgba(224,155,31,0.2); border-radius: var(--radius);
     padding: 22px; display: flex; align-items: center;
     justify-content: space-between; flex-wrap: wrap; gap: 16px;
   }
@@ -270,9 +292,9 @@
     padding: 14px 32px; background: var(--accent4); color: #0a0800;
     border: none; border-radius: var(--radius-sm); font-family: 'Outfit', sans-serif;
     font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.25s;
-    white-space: nowrap; box-shadow: 0 4px 16px rgba(255,204,68,0.2);
+    white-space: nowrap; box-shadow: 0 4px 16px rgba(224,155,31,0.2);
   }
-  .btn-quiz-gran:hover { background: #ffe066; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,204,68,0.35); }
+  .btn-quiz-gran:hover { background: #ffe066; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(224,155,31,0.35); }
 
   /* output-body styles */
   .output-body h2 {
@@ -287,22 +309,22 @@
   .output-body strong { color: var(--accent); }
 
   .output-body table { width:100%; border-collapse:collapse; margin:10px 0 16px; font-size:13px; border-radius:10px; overflow:hidden; table-layout:fixed; }
-  .output-body th { background:rgba(176,127,255,0.1); color:var(--accent5); font-family:'JetBrains Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:1.5px; padding:10px 14px; text-align:left; border-bottom:1px solid rgba(176,127,255,0.2); word-wrap:break-word; }
+  .output-body th { background:rgba(139,92,246,0.1); color:var(--accent5); font-family:'JetBrains Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:1.5px; padding:10px 14px; text-align:left; border-bottom:1px solid rgba(139,92,246,0.2); word-wrap:break-word; }
   .output-body td { padding:10px 14px; border-bottom:1px solid var(--border); color:var(--text); vertical-align:top; word-wrap:break-word; line-height:1.55; }
   .output-body tr:last-child td { border-bottom:none; }
-  .output-body tr:hover td { background:rgba(176,127,255,0.04); }
+  .output-body tr:hover td { background:rgba(139,92,246,0.04); }
   .output-body th:nth-child(1), .output-body td:nth-child(1) { width:22%; }
   .output-body th:nth-child(2), .output-body td:nth-child(2) { width:25%; }
   .output-body th:nth-child(3), .output-body td:nth-child(3) { width:53%; }
 
-  .alerta-box { background:rgba(255,90,90,0.06); border:1px solid rgba(255,90,90,0.2); border-left:3px solid var(--accent3); border-radius:var(--radius-sm); padding:14px 18px; margin:8px 0 14px; }
+  .alerta-box { background:rgba(224,85,107,0.06); border:1px solid rgba(224,85,107,0.2); border-left:3px solid var(--accent3); border-radius:var(--radius-sm); padding:14px 18px; margin:8px 0 14px; }
   .alerta-box p { margin:0; color:var(--text); font-size:13.5px; line-height:1.7; }
-  .tip-box { background:rgba(255,204,68,0.06); border:1px solid rgba(255,204,68,0.2); border-left:3px solid var(--accent4); border-radius:var(--radius-sm); padding:14px 18px; margin:8px 0 14px; }
+  .tip-box { background:rgba(224,155,31,0.06); border:1px solid rgba(224,155,31,0.2); border-left:3px solid var(--accent4); border-radius:var(--radius-sm); padding:14px 18px; margin:8px 0 14px; }
   .tip-box p { margin:0; color:var(--text); font-size:13.5px; line-height:1.7; font-style:italic; }
 
   /* Consell directe al pacient */
   .consell-pacient {
-    background: rgba(0,119,204,0.05);
+    background: rgba(0,168,120,0.05);
     border-left: 3px solid var(--accent);
     border-radius: 0 8px 8px 8px;
     padding: 10px 16px 10px 14px;
@@ -322,7 +344,7 @@
     margin: 16px 0 8px; padding: 0; font-weight: 600;
     display: flex; align-items: center; gap: 8px;
   }
-  .sub-header::after { content: ''; flex:1; height:1px; background: rgba(77,142,255,0.15); }
+  .sub-header::after { content: ''; flex:1; height:1px; background: rgba(43,108,212,0.15); }
 
   /* Ítem de fàrmac dins del contingut (Omeprazol: text) */
   .farmac-item {
@@ -334,8 +356,8 @@
 
   /* Targeta de cas d'ortopèdia */
   .orto-card {
-    background: rgba(176,127,255,0.05);
-    border: 1px solid rgba(176,127,255,0.18);
+    background: rgba(139,92,246,0.05);
+    border: 1px solid rgba(139,92,246,0.18);
     border-radius: 12px; padding: 16px 18px; margin: 10px 0;
   }
   .orto-card-titol {
@@ -350,9 +372,9 @@
     padding: 2px 8px; border-radius: 4px; height: fit-content; margin-top: 2px;
     min-width: 70px; text-align: center;
   }
-  .orto-camp-label.detectar { background: rgba(77,142,255,0.12); color: var(--accent2); }
-  .orto-camp-label.solucio  { background: rgba(0,119,204,0.10); color: var(--accent); }
-  .orto-camp-label.consell  { background: rgba(255,204,68,0.1); color: var(--accent4); }
+  .orto-camp-label.detectar { background: rgba(43,108,212,0.12); color: var(--accent2); }
+  .orto-camp-label.solucio  { background: rgba(0,168,120,0.1); color: var(--accent); }
+  .orto-camp-label.consell  { background: rgba(224,155,31,0.1); color: var(--accent4); }
   .orto-camp-text { color: var(--text-soft); flex: 1; }
 
   /* ══════════════════════════════════════
@@ -381,18 +403,18 @@
     font-family: 'JetBrains Mono', monospace; font-size: 11px;
     color: var(--text-muted); flex-shrink: 0; transition: all 0.2s;
   }
-  .quiz-option:hover:not(:disabled) { border-color: var(--accent2); color: var(--text); background: rgba(77,142,255,0.06); }
-  .quiz-option:hover:not(:disabled)::before { background: rgba(77,142,255,0.12); border-color: var(--accent2); color: var(--accent2); }
-  .quiz-option.correct { border-color: var(--accent); background: rgba(0,119,204,0.08); color: var(--accent); }
-  .quiz-option.correct::before { background: rgba(0,119,204,0.15); border-color: var(--accent); color: var(--accent); }
-  .quiz-option.wrong { border-color: var(--accent3); background: rgba(255,90,90,0.08); color: var(--accent3); }
-  .quiz-option.wrong::before { background: rgba(255,90,90,0.15); border-color: var(--accent3); color: var(--accent3); }
+  .quiz-option:hover:not(:disabled) { border-color: var(--accent2); color: var(--text); background: rgba(43,108,212,0.06); }
+  .quiz-option:hover:not(:disabled)::before { background: rgba(43,108,212,0.12); border-color: var(--accent2); color: var(--accent2); }
+  .quiz-option.correct { border-color: var(--accent); background: rgba(0,168,120,0.08); color: var(--accent); }
+  .quiz-option.correct::before { background: rgba(0,168,120,0.15); border-color: var(--accent); color: var(--accent); }
+  .quiz-option.wrong { border-color: var(--accent3); background: rgba(224,85,107,0.08); color: var(--accent3); }
+  .quiz-option.wrong::before { background: rgba(224,85,107,0.15); border-color: var(--accent3); color: var(--accent3); }
   .quiz-option:disabled { cursor: not-allowed; opacity: 0.75; }
 
   .quiz-feedback { font-size: 13px; margin-top: 10px; padding: 10px 14px; border-radius: 8px; display: none; }
   .quiz-feedback.show { display: block; }
-  .quiz-feedback.ok { background: rgba(0,119,204,0.08); color: var(--accent); border: 1px solid rgba(0,119,204,0.20); }
-  .quiz-feedback.ko { background: rgba(255,90,90,0.08); color: var(--accent3); border: 1px solid rgba(255,90,90,0.2); }
+  .quiz-feedback.ok { background: rgba(0,168,120,0.08); color: var(--accent); border: 1px solid rgba(0,168,120,0.2); }
+  .quiz-feedback.ko { background: rgba(224,85,107,0.08); color: var(--accent3); border: 1px solid rgba(224,85,107,0.2); }
 
   .participant-select { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; padding: 14px 18px; background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius-sm); }
   .participant-select label { margin: 0; white-space: nowrap; font-size: 11px; }
@@ -441,7 +463,7 @@
   .add-player-row { display: flex; gap: 8px; }
   .add-player-row input { margin: 0; flex: 1; }
   .btn-add { padding: 11px 18px; background: var(--accent-dim); border: 1px solid var(--accent); color: var(--accent); border-radius: var(--radius-sm); font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
-  .btn-add:hover { background: rgba(0,119,204,0.15); }
+  .btn-add:hover { background: rgba(0,168,120,0.15); }
 
   .history-list { display: flex; flex-direction: column; gap: 8px; }
   .history-item { padding: 13px 16px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; }
@@ -542,7 +564,7 @@
 
     <!-- MODE AUTOMÀTIC -->
     <div id="mode-auto">
-      <div class="card" style="background:linear-gradient(135deg,rgba(0,119,204,0.05),rgba(0,119,204,0.02));border-color:rgba(0,119,204,0.20);">
+      <div class="card" style="background:linear-gradient(135deg,rgba(0,168,120,0.05),rgba(0,168,120,0.02));border-color:rgba(0,168,120,0.2);">
         <div class="card-title">Generació automàtica</div>
         <p style="font-size:13px;color:var(--text-soft);line-height:1.7;margin-bottom:16px;">
           El sistema genera formació cada dia a les <strong>10:00</strong> a partir de les dades del Google Sheet.
@@ -669,7 +691,7 @@
 
       <div id="prompt-box" style="display:none;margin-bottom:16px;">
         <div style="background:var(--bg);border:1px solid var(--accent);border-radius:10px;overflow:hidden;">
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:rgba(0,119,204,0.06);border-bottom:1px solid var(--border);">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:rgba(0,168,120,0.06);border-bottom:1px solid var(--border);">
             <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);text-transform:uppercase;letter-spacing:1px;">✓ Prompt copiat</span>
             <button onclick="copyPromptToClipboard()" style="background:none;border:1px solid var(--accent);color:var(--accent);border-radius:6px;padding:4px 12px;font-size:11px;cursor:pointer;font-family:'JetBrains Mono',monospace;">Tornar a copiar</button>
           </div>
@@ -947,10 +969,10 @@ function setTipusExcel(tipus) {
 
   const baseStyle = 'flex:1;padding:12px;border-radius:10px;cursor:pointer;transition:all 0.2s;font-family:Outfit,sans-serif;font-size:13px;font-weight:';
   document.getElementById('tipus-vendes').style.cssText = baseStyle +
-    (isVendes ? '600;border:1px solid var(--accent);background:rgba(0,119,204,0.10);color:var(--accent);' :
+    (isVendes ? '600;border:1px solid var(--accent);background:rgba(0,168,120,0.1);color:var(--accent);' :
                 '500;border:1px solid var(--border2);background:transparent;color:var(--text-muted);');
   document.getElementById('tipus-caducitats').style.cssText = baseStyle +
-    (!isVendes ? '600;border:1px solid var(--accent4);background:rgba(255,204,68,0.1);color:var(--accent4);' :
+    (!isVendes ? '600;border:1px solid var(--accent4);background:rgba(224,155,31,0.1);color:var(--accent4);' :
                  '500;border:1px solid var(--border2);background:transparent;color:var(--text-muted);');
 
   // Descripció
@@ -1160,7 +1182,7 @@ function renderExcelPreview(rows, cc, nc, uc, ec) {
     </tr></thead>
     <tbody>
       ${rows.slice(0,15).map((row,i) => `
-        <tr style="border-bottom:1px solid var(--border);${i%2?'background:rgba(255,255,255,0.02)':''}">
+        <tr style="border-bottom:1px solid var(--border);${i%2?'background:rgba(28,43,42,0.02)':''}">
           ${cols.map(c => `<td style="padding:7px 12px;font-size:12px;color:var(--text-muted)">${(row[c]||'—')}</td>`).join('')}
         </tr>`).join('')}
       ${rows.length>15?`<tr><td colspan="${cols.length}" style="padding:8px 12px;font-size:11px;color:var(--text-muted);text-align:center">... i ${rows.length-15} productes més</td></tr>`:''}
@@ -1565,7 +1587,7 @@ function renderOutput(text) {
       const item = line.replace(/^[-*]\s+/, '');
       const isAlerta = afterSection.includes('ALERTA');
       const bc = isAlerta ? 'var(--accent3)' : 'var(--accent)';
-      const bg = isAlerta ? 'rgba(255,90,90,0.05)' : 'var(--surface2)';
+      const bg = isAlerta ? 'rgba(224,85,107,0.05)' : 'var(--surface2)';
       // Si l'ítem acaba amb ':' és una sub-capçalera disfressada de bullet
       if (item.match(/^[^:]{3,40}:$/) && !isAlerta) {
         closeList();
@@ -1642,9 +1664,9 @@ function renderOutput(text) {
       } else if (s.includes('ALERTA')) {
         html += `<div class="alerta-box"><p>${line}</p></div>`;
       } else if (s === 'OBJECTIU') {
-        html += `<p style="font-size:14.5px;line-height:1.75;color:var(--text);background:rgba(77,142,255,0.06);border-radius:8px;padding:12px 16px;margin:4px 0 8px;">${line}</p>`;
+        html += `<p style="font-size:14.5px;line-height:1.75;color:var(--text);background:rgba(43,108,212,0.06);border-radius:8px;padding:12px 16px;margin:4px 0 8px;">${line}</p>`;
       } else if (s === 'CONTEXT CLINIC') {
-        html += `<p style="font-size:13.5px;line-height:1.75;color:var(--text-soft);background:rgba(77,142,255,0.04);border-radius:8px;padding:11px 15px;margin:4px 0 6px;border:1px solid rgba(77,142,255,0.1);">${line}</p>`;
+        html += `<p style="font-size:13.5px;line-height:1.75;color:var(--text-soft);background:rgba(43,108,212,0.04);border-radius:8px;padding:11px 15px;margin:4px 0 6px;border:1px solid rgba(43,108,212,0.1);">${line}</p>`;
       } else if (s === 'FONTS') {
         const fontLine = line.replace(/^\[(\d{1,2})\]/, '<strong style="color:var(--accent2);">[$1]</strong>');
         html += `<p style="font-size:11px;line-height:1.6;color:var(--text-muted);margin:2px 0;padding-left:8px;">${fontLine}</p>`;
@@ -2361,7 +2383,7 @@ function setManualTab(tab) {
   document.getElementById('manual-prompt-mode').style.display = isPrompt ? 'block' : 'none';
   document.getElementById('manual-direct-mode').style.display = isPrompt ? 'none' : 'block';
   document.getElementById('manual-tab-prompt').style.cssText = isPrompt
-    ? 'flex:1;padding:8px;border:1px solid var(--accent);background:rgba(0,119,204,0.08);color:var(--accent);border-radius:6px;font-family:"Outfit",sans-serif;font-size:12px;font-weight:600;cursor:pointer;'
+    ? 'flex:1;padding:8px;border:1px solid var(--accent);background:rgba(0,168,120,0.08);color:var(--accent);border-radius:6px;font-family:"Outfit",sans-serif;font-size:12px;font-weight:600;cursor:pointer;'
     : 'flex:1;padding:8px;border:1px solid var(--border);background:transparent;color:var(--text-muted);border-radius:6px;font-family:"Outfit",sans-serif;font-size:12px;cursor:pointer;';
   document.getElementById('manual-tab-direct').style.cssText = isPrompt
     ? 'flex:1;padding:8px;border:1px solid var(--border);background:transparent;color:var(--text-muted);border-radius:6px;font-family:"Outfit",sans-serif;font-size:12px;cursor:pointer;'
