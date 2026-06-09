@@ -412,9 +412,87 @@
   .quiz-option:disabled { cursor: not-allowed; opacity: 0.75; }
 
   .quiz-feedback { font-size: 13px; margin-top: 10px; padding: 10px 14px; border-radius: 8px; display: none; }
-  .quiz-feedback.show { display: block; }
+  .quiz-feedback.show { display: block; animation: fadeUp 0.3s ease both; }
   .quiz-feedback.ok { background: rgba(0,168,120,0.08); color: var(--accent); border: 1px solid rgba(0,168,120,0.2); }
   .quiz-feedback.ko { background: rgba(224,85,107,0.08); color: var(--accent3); border: 1px solid rgba(224,85,107,0.2); }
+
+  /* ── PERFIL PERSONAL ── */
+  .perfil-bar {
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 14px 18px; margin-bottom: 20px; box-shadow: var(--shadow-sm);
+    animation: fadeDown 0.5s 0.05s ease both;
+  }
+  .perfil-avatar {
+    width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
+    background: linear-gradient(135deg, var(--accent), #00c98f);
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 17px; box-shadow: 0 2px 8px rgba(0,168,120,0.3);
+  }
+  .perfil-info { flex: 1; min-width: 140px; }
+  .perfil-salut { font-size: 15px; font-weight: 600; color: var(--text); }
+  .perfil-nivell { font-size: 11px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; margin-top: 2px; }
+  .perfil-ratxa { font-size: 13px; font-weight: 600; color: var(--accent4); white-space: nowrap; }
+  .perfil-progres { width: 100%; height: 5px; background: var(--surface3); border-radius: 3px; margin-top: 7px; overflow: hidden; }
+  .perfil-progres-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #00c98f); border-radius: 3px; transition: width 0.8s ease; }
+  .perfil-canvi { font-size: 11px; color: var(--text-muted); cursor: pointer; text-decoration: underline; white-space: nowrap; }
+  .perfil-canvi:hover { color: var(--accent); }
+
+  /* Selector "Qui ets?" (primer cop) */
+  .qui-ets { text-align: center; padding: 28px 16px; }
+  .qui-ets h3 { font-size: 17px; margin-bottom: 6px; }
+  .qui-ets p { font-size: 13px; color: var(--text-muted); margin-bottom: 18px; }
+  .qui-ets-grid { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .qui-ets-btn {
+    padding: 11px 20px; border-radius: 999px; border: 1px solid var(--border2);
+    background: var(--surface); color: var(--text); font-family: 'Outfit', sans-serif;
+    font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+  }
+  .qui-ets-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); transform: translateY(-2px); }
+
+  /* ── EN 30 SEGONS ── */
+  .en30s-card {
+    background: linear-gradient(135deg, rgba(0,168,120,0.07), rgba(0,168,120,0.02));
+    border: 1px solid rgba(0,168,120,0.25); border-radius: var(--radius);
+    padding: 16px 18px; margin: 4px 0 10px;
+  }
+  .en30s-item { display: flex; gap: 10px; align-items: flex-start; padding: 7px 0; font-size: 14px; font-weight: 500; line-height: 1.55; color: var(--text); }
+  .en30s-num {
+    width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0; margin-top: 1px;
+    background: var(--accent); color: #fff; font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .temps-lectura { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; }
+
+  /* ── RESULTAT QUIZ ── */
+  .quiz-progres { display: flex; gap: 6px; margin-bottom: 18px; }
+  .quiz-progres span { flex: 1; height: 6px; border-radius: 3px; background: var(--surface3); transition: background 0.3s; }
+  .quiz-progres span.fet-ok { background: var(--accent); }
+  .quiz-progres span.fet-ko { background: var(--accent3); }
+  .resultat-card {
+    text-align: center; padding: 30px 20px; border-radius: var(--radius);
+    background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-md);
+    animation: fadeUp 0.4s ease both; margin-top: 16px;
+  }
+  .resultat-emoji { font-size: 52px; margin-bottom: 8px; }
+  .resultat-titol { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 900; margin-bottom: 4px; }
+  .resultat-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 18px; }
+  .resultat-desglos { display: flex; flex-direction: column; gap: 6px; max-width: 320px; margin: 0 auto 18px; text-align: left; }
+  .desglos-row { display: flex; justify-content: space-between; font-size: 13px; padding: 8px 14px; background: var(--surface2); border-radius: 8px; }
+  .desglos-row strong { color: var(--accent); font-family: 'JetBrains Mono', monospace; }
+  .desglos-row.total { background: var(--accent-dim); border: 1px solid rgba(0,168,120,0.25); font-weight: 700; }
+  .desglos-row.total strong { font-size: 15px; }
+
+  /* ── CONFETI ── */
+  .confeti { position: fixed; top: -12px; border-radius: 2px; pointer-events: none; z-index: 9999; animation: confetiCau linear forwards; }
+  @keyframes confetiCau { to { transform: translateY(105vh) rotate(720deg); opacity: 0.6; } }
+
+  /* ── LLIGA MES/TOTAL ── */
+  .lliga-toggle { display: flex; gap: 4px; background: var(--surface2); padding: 4px; border-radius: 10px; margin-bottom: 14px; }
+  .lliga-btn { flex: 1; padding: 8px; border: none; border-radius: 8px; background: transparent; color: var(--text-muted); font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .lliga-btn.active { background: var(--surface); color: var(--accent); box-shadow: var(--shadow-sm); }
+  .fet-avui-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .fet-avui-chip { font-size: 11px; padding: 4px 10px; border-radius: 999px; background: var(--accent-dim); color: var(--accent); font-weight: 600; }
 
   .participant-select { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; padding: 14px 18px; background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius-sm); }
   .participant-select label { margin: 0; white-space: nowrap; font-size: 11px; }
@@ -513,6 +591,20 @@
     <button class="nav-tab" onclick="showPage('gamification')">🏆 Ranking</button>
   </div>
 
+  <!-- Perfil personal (ocult fins triar qui ets) -->
+  <div class="perfil-bar" id="perfil-bar" style="display:none;">
+    <div class="perfil-avatar" id="perfil-avatar">?</div>
+    <div class="perfil-info">
+      <div class="perfil-salut" id="perfil-salut">Hola!</div>
+      <div class="perfil-nivell" id="perfil-nivell">—</div>
+      <div class="perfil-progres"><div class="perfil-progres-fill" id="perfil-progres-fill" style="width:0%"></div></div>
+    </div>
+    <div style="text-align:right;">
+      <div class="perfil-ratxa" id="perfil-ratxa"></div>
+      <div class="perfil-canvi" onclick="canviaUsuari()">Canviar</div>
+    </div>
+  </div>
+
   <!-- ══════════════════════════════════════════
        PAGE 0: FORMACIÓ DEL DIA
   ══════════════════════════════════════════ -->
@@ -540,6 +632,7 @@
         <div class="quiz-cta-text">
           <h3>Ja has llegit la formació?</h3>
           <p>Posa a prova el que has après i suma punts al ranking</p>
+          <div class="fet-avui-chips" id="fet-avui-chips"></div>
         </div>
         <button onclick="goToQuizFromFormacio()" class="btn-quiz-gran">🎯 Fer el Quiz →</button>
       </div>
@@ -788,20 +881,19 @@
       </div>
 
       <div id="quiz-content" style="display:none">
-        <div class="participant-select">
-          <label>Qui respon?</label>
-          <select id="quiz-participant"></select>
-        </div>
-
+        <div id="quiz-qui-respon" style="font-size:13px;color:var(--text-muted);margin-bottom:8px;"></div>
         <div id="quiz-topic-label" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);margin-bottom:16px;"></div>
 
+        <div class="quiz-progres" id="quiz-progres"></div>
+
         <div class="quiz-section">
-          <div class="quiz-header">🎮 Preguntes</div>
           <div id="quiz-questions-container"></div>
           <button class="btn-generate" id="btn-submit-quiz" onclick="submitQuiz()" style="margin-top:8px;" disabled>
-            Enviar respostes
+            Veure el meu resultat
           </button>
         </div>
+
+        <div id="quiz-resultat"></div>
       </div>
     </div>
   </div>
@@ -831,6 +923,10 @@
       <!-- Ranking -->
       <div class="card">
         <div class="card-title">🏆 Ranking</div>
+        <div class="lliga-toggle">
+          <button class="lliga-btn active" id="lliga-mes" onclick="setLliga('mes')">📅 Lliga del mes</button>
+          <button class="lliga-btn" id="lliga-total" onclick="setLliga('total')">⭐ Històric total</button>
+        </div>
         <div class="podium" id="podium"></div>
         <div class="ranking-list" id="ranking-list"></div>
       </div>
@@ -848,13 +944,15 @@
 
         <div class="card">
           <div class="card-title">🎖️ Insígnies</div>
-          <div style="font-size:12px;color:var(--text-muted);line-height:1.8;">
-            🥇 <strong style="color:var(--text)">Primer lloc</strong> — líder del ranking<br>
-            🔥 <strong style="color:var(--text)">Ratxa x5</strong> — 5 sessions seguides<br>
+          <div style="font-size:12px;color:var(--text-muted);line-height:1.9;">
+            🥇 <strong style="color:var(--text)">Primer lloc</strong> — líder del mes<br>
+            🔥 <strong style="color:var(--text)">Ratxa x5</strong> — 5 dies seguits<br>
+            🔥🔥 <strong style="color:var(--text)">Ratxa x10</strong> — 10 dies seguits<br>
             🎯 <strong style="color:var(--text)">Perfecte</strong> — quiz sense errors<br>
+            🌅 <strong style="color:var(--text)">Matiner</strong> — 5 cops primer del dia<br>
             💊 <strong style="color:var(--text)">Expert farmàcia</strong> — 50 pts acumulats<br>
-            🦴 <strong style="color:var(--text)">Expert ortopèdia</strong> — 3 quizos d'ortopèdia<br>
-            ⚡ <strong style="color:var(--text)">Constància</strong> — 10 sessions participades
+            🦴 <strong style="color:var(--text)">Expert ortopèdia</strong> — quiz d'ortopèdia<br>
+            ⚡ <strong style="color:var(--text)">Constància</strong> — 10 sessions
           </div>
         </div>
       </div>
@@ -887,6 +985,29 @@ let fileContents = [];
 let isLoading = false;
 let currentQuizData = null;
 let quizAnswers = {};
+let usuariActual = null;     // nom de l'empleat actiu en aquest dispositiu
+let lligaActual = 'mes';     // 'mes' | 'total'
+
+// Nivells de carrera farmacèutica (per punts HISTÒRICS totals)
+const NIVELLS = [
+  { min: 0,    nom: 'Estudiant',  emoji: '🌱' },
+  { min: 50,   nom: 'Auxiliar',   emoji: '💊' },
+  { min: 150,  nom: 'Tècnic',     emoji: '🧪' },
+  { min: 300,  nom: 'Adjunt',     emoji: '⚕️' },
+  { min: 500,  nom: 'Titular',    emoji: '🩺' },
+  { min: 800,  nom: 'Mestre',     emoji: '🎓' },
+  { min: 1200, nom: 'Llegenda',   emoji: '👑' }
+];
+function nivellDe(punts) {
+  let actual = NIVELLS[0], seg = null;
+  for (let i = 0; i < NIVELLS.length; i++) {
+    if (punts >= NIVELLS[i].min) { actual = NIVELLS[i]; seg = NIVELLS[i+1] || null; }
+  }
+  const base = actual.min;
+  const sostre = seg ? seg.min : actual.min;
+  const progres = seg ? Math.round(((punts - base) / (sostre - base)) * 100) : 100;
+  return { actual, seg, progres, falten: seg ? sostre - punts : 0 };
+}
 
 // Google Sheets backend
 const GS_URL = 'https://script.google.com/macros/s/AKfycbziP-sxR1Ran0UYzv8MRuDjQFlVhNpeEm-W93HkEQQ2tEf8LsBeDvhTXXu2W9UCaQGn/exec';
@@ -934,8 +1055,8 @@ async function loadState() {
       gsCall({ action: 'getHistorial', limit: 30 })
     ]);
     gameState.players = rankData.players.map(p => ({
-      name: p.nom, points: p.punts, streak: p.racha,
-      sessions: p.sessions, badges: p.insignies || []
+      name: p.nom, points: p.punts, pointsMes: p.puntsMes || 0, streak: p.racha,
+      sessions: p.sessions, ultimaData: p.ultimaData || '', badges: p.insignies || []
     }));
     const histMap = {};
     (histData.historial || []).forEach(h => {
@@ -951,6 +1072,8 @@ async function loadState() {
     showConnectionStatus('error');
   }
   renderAll();
+  renderPerfil();
+  renderFetAvui();
 }
 
 async function saveState() { /* saved per-action */ }
@@ -1217,7 +1340,6 @@ function showPage(name) {
   const idx = ['formacio','generator','programacio','quiz','gamification'].indexOf(name);
   if (idx >= 0) document.querySelectorAll('.nav-tab')[idx].classList.add('active');
   if (name === 'gamification') renderAll();
-  if (name === 'quiz') renderQuizParticipants();
   if (name === 'formacio') carregarFormacioDelDia();
   if (name === 'programacio') carregarProgramacio();
 }
@@ -1238,10 +1360,15 @@ async function carregarFormacioDelDia() {
 
     document.getElementById('formacio-data').textContent = f.data || '';
     document.getElementById('formacio-titol').textContent = f.titol || '';
+    const mots = (f.contingut || '').split(/\s+/).filter(Boolean).length;
+    const mins = Math.max(1, Math.round(mots / 200));
+    const dataEl = document.getElementById('formacio-data');
+    dataEl.innerHTML = (f.data || '') + ` <span class="temps-lectura">· ⏱ ${mins} min de lectura</span>`;
     document.getElementById('formacio-body').dataset.raw = f.contingut;
     document.getElementById('formacio-body').innerHTML = renderOutput(f.contingut);
     document.getElementById('formacio-loading').style.display = 'none';
     document.getElementById('formacio-content').style.display = 'block';
+    renderFetAvui();
   } catch(e) {
     // Fallback: intenta llegir del Sheet
     try {
@@ -1431,8 +1558,8 @@ function getSelectedTags(id) {
 }
 
 function buildPrompt() {
-  const botplus = (document.getElementById('botplus-text')?.value || '').trim();
-  const extra = (document.getElementById('extra-instructions')?.value || '').trim();
+  const botplus = document.getElementById('botplus-text').value.trim();
+  const extra = document.getElementById('extra-instructions').value.trim();
   const teamLevel = document.getElementById('team-level').value;
   const formats = getSelectedTags('format-tags');
   const seasons = getSelectedTags('season-tags');
@@ -1520,13 +1647,14 @@ function renderOutput(text) {
   const lines = clean.split('\n');
   let html = '';
   let inList = false;
+  let en30count = 0;
   let inTable = false;
   let tableHtml = '';
   let isFirstRow = true;
   let afterSection = '';
   let ortoOpen = false;
 
-  const closeList = () => { if (inList) { html += '</ul>'; inList = false; } };
+  const closeList = () => { if (inList) { html += inList === 'en30s' ? '</div>' : '</ul>'; inList = false; } };
   const closeTable = () => {
     if (inTable) {
       html += '<div style="overflow-x:auto;margin:8px 0 16px;"><table>' + tableHtml + '</tbody></table></div>';
@@ -1535,6 +1663,7 @@ function renderOutput(text) {
   };
 
   const SEC_CFG = {
+    'EN 30 SEGONS':        { icon: '⚡', color: 'var(--accent)'   },
     'OBJECTIU':            { icon: '🎯', color: 'var(--accent2)'  },
     'CONTEXT CLINIC':      { icon: '🩺', color: 'var(--accent2)'  },
     'CONTEXT CLÍNIC':      { icon: '🩺', color: 'var(--accent2)'  },
@@ -1583,8 +1712,15 @@ function renderOutput(text) {
 
     } else if (line.match(/^[-*]\s+/)) {
       closeTable();
-      if (!inList) { html += '<ul style="padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;margin:0 0 4px;">'; inList = true; }
       const item = line.replace(/^[-*]\s+/, '');
+      // ── EN 30 SEGONS: targeta numerada ──
+      if (afterSection.includes('30 SEGONS')) {
+        if (!inList) { html += '<div class="en30s-card">'; inList = 'en30s'; en30count = 0; }
+        en30count++;
+        html += `<div class="en30s-item"><span class="en30s-num">${en30count}</span><span>${item}</span></div>`;
+        continue;
+      }
+      if (!inList) { html += '<ul style="padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;margin:0 0 4px;">'; inList = true; }
       const isAlerta = afterSection.includes('ALERTA');
       const bc = isAlerta ? 'var(--accent3)' : 'var(--accent)';
       const bg = isAlerta ? 'rgba(224,85,107,0.05)' : 'var(--surface2)';
@@ -2109,17 +2245,26 @@ function loadDemoQuiz() {
 
 function renderQuiz() {
   if (!currentQuizData) return;
+  if (!usuariActual) { mostraQuiEts(); showToast('👋 Primer tria qui ets'); }
   document.getElementById('quiz-empty').style.display = 'none';
   document.getElementById('quiz-content').style.display = 'block';
+  document.getElementById('quiz-resultat').innerHTML = '';
   document.getElementById('quiz-topic-label').textContent = '📚 ' + currentQuizData.topic;
+  document.getElementById('quiz-qui-respon').innerHTML = usuariActual
+    ? `Respon: <strong style="color:var(--accent)">${usuariActual}</strong>`
+    : '';
+
+  const n = currentQuizData.questions.length;
+  document.getElementById('quiz-progres').innerHTML = Array.from({length:n}, (_,i) => `<span id="prog-${i}"></span>`).join('');
 
   const container = document.getElementById('quiz-questions-container');
   container.innerHTML = currentQuizData.questions.map((q, qi) => `
     <div class="quiz-question" id="qq-${qi}">
-      <p>${qi+1}. ${q.q}</p>
+      <div class="quiz-q-num">Pregunta ${qi+1} de ${n}</div>
+      <p>${q.q}</p>
       <div class="quiz-options">
         ${q.options.map((opt, oi) => `
-          <button class="quiz-option" onclick="selectAnswer(${qi}, ${oi})" id="qo-${qi}-${oi}">
+          <button class="quiz-option" onclick="answerImmediate(${qi}, ${oi})" id="qo-${qi}-${oi}">
             <span style="font-family:'JetBrains Mono',monospace;color:var(--accent2);margin-right:8px;">${String.fromCharCode(65+oi)})</span>${opt}
           </button>
         `).join('')}
@@ -2129,93 +2274,128 @@ function renderQuiz() {
   `).join('');
 
   document.getElementById('btn-submit-quiz').disabled = true;
-  renderQuizParticipants();
+  document.getElementById('btn-submit-quiz').style.display = 'none';
+  quizAnswers = {};
 }
 
-function renderQuizParticipants() {
-  const sel = document.getElementById('quiz-participant');
-  if (!sel) return;
-  sel.innerHTML = gameState.players.length > 0
-    ? gameState.players.map(p => `<option value="${p.name}">${p.name}</option>`).join('')
-    : '<option value="Anònim">Anònim</option>';
-}
-
-function selectAnswer(qi, oi) {
+// Feedback IMMEDIAT en tocar una opció (més engrescador i didàctic)
+function answerImmediate(qi, oi) {
+  if (qi in quizAnswers) return; // ja respost
+  const q = currentQuizData.questions[qi];
+  const isCorrect = oi === q.correct;
   quizAnswers[qi] = oi;
-  // Highlight selected
-  const q = document.querySelectorAll(`#qq-${qi} .quiz-option`);
-  q.forEach((btn, i) => {
-    btn.style.borderColor = i === oi ? 'var(--accent2)' : 'var(--border)';
-    btn.style.color = i === oi ? 'var(--text)' : '';
+
+  document.querySelectorAll(`#qq-${qi} .quiz-option`).forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.correct) btn.classList.add('correct');
+    else if (i === oi) btn.classList.add('wrong');
   });
-  // Enable submit if all answered
-  if (currentQuizData && Object.keys(quizAnswers).length === currentQuizData.questions.length) {
-    document.getElementById('btn-submit-quiz').disabled = false;
+
+  const fb = document.getElementById(`qf-${qi}`);
+  fb.className = `quiz-feedback show ${isCorrect ? 'ok' : 'ko'}`;
+  fb.innerHTML = isCorrect
+    ? `✓ Correcte! ${q.explanation}`
+    : `✗ La resposta era ${String.fromCharCode(65+q.correct)}. ${q.explanation}`;
+
+  const prog = document.getElementById(`prog-${qi}`);
+  if (prog) prog.className = isCorrect ? 'fet-ok' : 'fet-ko';
+
+  // Totes respostes → mostra el botó de resultat
+  if (Object.keys(quizAnswers).length === currentQuizData.questions.length) {
+    const btn = document.getElementById('btn-submit-quiz');
+    btn.disabled = false;
+    btn.style.display = 'block';
   }
 }
 
 async function submitQuiz() {
   if (!currentQuizData) return;
-  const participant = document.getElementById('quiz-participant').value || 'Anònim';
+  const participant = usuariActual || 'Anònim';
+  const total = currentQuizData.questions.length;
   let correct = 0;
+  currentQuizData.questions.forEach((q, qi) => { if (quizAnswers[qi] === q.correct) correct++; });
 
-  currentQuizData.questions.forEach((q, qi) => {
-    const chosen = quizAnswers[qi];
-    const isCorrect = chosen === q.correct;
-    if (isCorrect) correct++;
+  const btn = document.getElementById('btn-submit-quiz');
+  btn.disabled = true;
+  btn.textContent = '⏳ Guardant...';
 
-    // Show results
-    document.querySelectorAll(`#qq-${qi} .quiz-option`).forEach((btn, oi) => {
-      btn.disabled = true;
-      if (oi === q.correct) btn.classList.add('correct');
-      else if (oi === chosen && !isCorrect) btn.classList.add('wrong');
-    });
+  const res = await awardPoints(participant, correct, total, currentQuizData.topic);
+  btn.style.display = 'none';
 
-    const fb = document.getElementById(`qf-${qi}`);
-    fb.className = `quiz-feedback show ${isCorrect ? 'ok' : 'ko'}`;
-    fb.innerHTML = isCorrect
-      ? `✓ Correcte! ${q.explanation}`
-      : `✗ La resposta correcta era ${String.fromCharCode(65+q.correct)}. ${q.explanation}`;
-  });
+  // Si ja havia jugat avui, no recompta
+  if (res && res.repetit) {
+    document.getElementById('quiz-resultat').innerHTML = `
+      <div class="resultat-card">
+        <div class="resultat-emoji">✅</div>
+        <div class="resultat-titol">${correct}/${total} correctes</div>
+        <div class="resultat-sub">Ja havies fet el quiz d'avui — els punts només compten un cop al dia.</div>
+      </div>`;
+    return;
+  }
 
-  const pts = correct * 10;
-  document.getElementById('btn-submit-quiz').disabled = true;
-  document.getElementById('btn-submit-quiz').textContent = `✓ ${correct}/${currentQuizData.questions.length} correctes — ${pts} pts per a ${participant}`;
+  const d = (res && res.desglossament) || { base: correct*10, perfecte:0, matiner:0, ratxa:0 };
+  const totalPts = (res && res.puntsTotals) || (correct*10);
+  const racha = (res && res.racha) || 0;
+  const perfecte = correct === total && total > 0;
 
-  // Update game state
-  await awardPoints(participant, pts, correct, currentQuizData.questions.length, currentQuizData.topic);
-  showToast(`🏆 ${pts} punts per a ${participant}!`);
+  let emoji, titol;
+  if (perfecte)          { emoji = '🏆'; titol = 'Perfecte!'; }
+  else if (correct/total >= 0.66) { emoji = '👏'; titol = 'Molt bé!'; }
+  else if (correct > 0)  { emoji = '💪'; titol = 'Bon intent!'; }
+  else                   { emoji = '📚'; titol = 'A repassar!'; }
+
+  const fila = (label, val) => val > 0 ? `<div class="desglos-row"><span>${label}</span><strong>+${val}</strong></div>` : '';
+
+  document.getElementById('quiz-resultat').innerHTML = `
+    <div class="resultat-card">
+      <div class="resultat-emoji">${emoji}</div>
+      <div class="resultat-titol">${titol}</div>
+      <div class="resultat-sub">${correct}/${total} correctes${racha >= 2 ? ` · 🔥 ratxa de ${racha} dies` : ''}</div>
+      <div class="resultat-desglos">
+        ${fila('Respostes correctes', d.base)}
+        ${fila('🎯 Quiz perfecte', d.perfecte)}
+        ${fila('🌅 Primer del dia', d.matiner)}
+        ${fila('🔥 Bonus ratxa', d.ratxa)}
+        <div class="desglos-row total"><span>Total guanyat</span><strong>${totalPts} pts</strong></div>
+      </div>
+      <button class="btn-small" onclick="showPage('gamification')">Veure el ranking →</button>
+    </div>`;
+
+  if (perfecte) llancaConfeti();
+  showToast(`🏆 ${totalPts} punts per a ${participant}!`);
 }
 
 // ══════════════════════════
 // GAMIFICATION
 // ══════════════════════════
-async function awardPoints(playerName, pts, correct, total, topic) {
-  showToast('⏳ Guardant a Google Sheets...');
+async function awardPoints(playerName, correct, total, topic) {
   try {
     const result = await gsPost('saveQuizResult', {
-      nom: playerName, punts: pts, correctes: correct, total: total, tema: topic
+      nom: playerName, correctes: correct, total: total, tema: topic
     });
-    // Refresh state from sheets
     gameState.players = result.players.map(p => ({
-      name: p.nom, points: p.punts, streak: p.racha,
-      sessions: p.sessions, badges: p.insignies || []
+      name: p.nom, points: p.punts, pointsMes: p.puntsMes || 0, streak: p.racha,
+      sessions: p.sessions, ultimaData: p.ultimaData || '', badges: p.insignies || []
     }));
-    // Add to local history for immediate display
-    const today = new Date().toLocaleDateString('ca-ES');
-    let session = gameState.history.find(h => h.date === today && h.topic === topic);
-    if (!session) {
-      session = { date: today, topic, scores: [] };
-      gameState.history.unshift(session);
-      gameState.totalSessions++;
+    if (!result.repetit) {
+      const today = new Date().toLocaleDateString('ca-ES');
+      let session = gameState.history.find(h => h.date === today && h.topic === topic);
+      if (!session) {
+        session = { date: today, topic, scores: [] };
+        gameState.history.unshift(session);
+        gameState.totalSessions++;
+      }
+      session.scores.push({ name: playerName, pts: result.puntsTotals || 0, correct, total });
+      gameState.totalQuestions += total;
     }
-    session.scores.push({ name: playerName, pts, correct, total });
-    gameState.totalQuestions += total;
-    showToast('✓ Guardat a Google Sheets!');
+    renderAll();
+    renderPerfil();
+    renderFetAvui();
+    return result;
   } catch(e) {
     showToast('⚠️ Error guardant: ' + e.message);
+    return null;
   }
-  renderAll();
 }
 
 function renderAll() {
@@ -2228,8 +2408,114 @@ function renderAll() {
   document.getElementById('stat-players').textContent = gameState.players.length;
 }
 
+// ══════════════════════════
+// PERFIL PERSONAL (sense localStorage: estat en memòria + ?qui= a la URL)
+// ══════════════════════════
+function detectaUsuari() {
+  // 1) paràmetre a la URL (permet posar un accés directe per persona al mòbil)
+  const q = new URLSearchParams(location.search).get('qui');
+  if (q) { usuariActual = q; return; }
+  // 2) ja triat en aquesta sessió
+  // (usuariActual ja conté el valor si s'ha triat abans)
+}
+
+function renderPerfil() {
+  const bar = document.getElementById('perfil-bar');
+  if (!usuariActual) { bar.style.display = 'none'; return; }
+  const p = gameState.players.find(x => x.name === usuariActual);
+  bar.style.display = 'flex';
+  document.getElementById('perfil-avatar').textContent = usuariActual.charAt(0).toUpperCase();
+  const punts = p ? p.points : 0;
+  const nv = nivellDe(punts);
+  const hora = new Date().getHours();
+  const salut = hora < 14 ? 'Bon dia' : hora < 20 ? 'Bona tarda' : 'Bona nit';
+  document.getElementById('perfil-salut').textContent = `${salut}, ${usuariActual}!`;
+  document.getElementById('perfil-nivell').textContent =
+    `${nv.actual.emoji} ${nv.actual.nom} · ${punts} pts` + (nv.seg ? ` · ${nv.falten} pts per ${nv.seg.nom}` : ' · nivell màxim');
+  document.getElementById('perfil-progres-fill').style.width = nv.progres + '%';
+  const ratxa = p ? p.streak : 0;
+  document.getElementById('perfil-ratxa').textContent = ratxa >= 2 ? `🔥 ${ratxa} dies` : '';
+}
+
+function mostraQuiEts() {
+  const bar = document.getElementById('perfil-bar');
+  bar.style.display = 'block';
+  bar.innerHTML = `<div class="qui-ets" style="width:100%;">
+    <h3>👋 Qui ets?</h3>
+    <p>Tria el teu nom per guardar els teus punts i la teva ratxa</p>
+    <div class="qui-ets-grid" id="qui-ets-grid"></div>
+  </div>`;
+  const grid = document.getElementById('qui-ets-grid');
+  grid.innerHTML = gameState.players.length
+    ? gameState.players.map(p => `<button class="qui-ets-btn" onclick="triaUsuari('${p.name.replace(/'/g,"\\'")}')">${p.name}</button>`).join('')
+    : '<p style="font-size:13px;">Encara no hi ha participants. Demana al titular que n\'afegeixi a la pestanya Ranking.</p>';
+}
+
+function triaUsuari(nom) {
+  usuariActual = nom;
+  // Restaurem el contingut original de la barra
+  document.getElementById('perfil-bar').innerHTML = `
+    <div class="perfil-avatar" id="perfil-avatar">?</div>
+    <div class="perfil-info">
+      <div class="perfil-salut" id="perfil-salut">Hola!</div>
+      <div class="perfil-nivell" id="perfil-nivell">—</div>
+      <div class="perfil-progres"><div class="perfil-progres-fill" id="perfil-progres-fill" style="width:0%"></div></div>
+    </div>
+    <div style="text-align:right;">
+      <div class="perfil-ratxa" id="perfil-ratxa"></div>
+      <div class="perfil-canvi" onclick="canviaUsuari()">Canviar</div>
+    </div>`;
+  renderPerfil();
+  renderFetAvui();
+  showToast(`👋 Hola ${nom}!`);
+}
+
+function canviaUsuari() {
+  usuariActual = null;
+  mostraQuiEts();
+}
+
+function renderFetAvui() {
+  const el = document.getElementById('fet-avui-chips');
+  if (!el) return;
+  const avui = new Date().toLocaleDateString('ca-ES');
+  const fets = gameState.history.filter(h => h.date === avui)
+    .flatMap(h => h.scores.map(s => s.name));
+  const unics = [...new Set(fets)];
+  el.innerHTML = unics.length
+    ? unics.map(n => `<span class="fet-avui-chip">✓ ${n}</span>`).join('')
+    : '';
+}
+
+function setLliga(mode) {
+  lligaActual = mode;
+  document.getElementById('lliga-mes').classList.toggle('active', mode === 'mes');
+  document.getElementById('lliga-total').classList.toggle('active', mode === 'total');
+  renderPodium();
+  renderRankingList();
+}
+
+function ptsLliga(p) { return lligaActual === 'mes' ? (p.pointsMes || 0) : p.points; }
+
+function llancaConfeti() {
+  const colors = ['#00a878','#e09b1f','#2b6cd4','#e0556b','#8b5cf6'];
+  for (let i = 0; i < 80; i++) {
+    const c = document.createElement('div');
+    c.className = 'confeti';
+    c.style.left = Math.random() * 100 + 'vw';
+    c.style.width = c.style.height = (6 + Math.random() * 8) + 'px';
+    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+    c.style.animationDuration = (2 + Math.random() * 1.5) + 's';
+    c.style.animationDelay = (Math.random() * 0.4) + 's';
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 4200);
+  }
+}
+
+
 function renderPodium() {
-  const sorted = [...gameState.players].sort((a,b) => b.points - a.points).slice(0,3);
+  const sorted = [...gameState.players].sort((a,b) => ptsLliga(b) - ptsLliga(a))
+    .filter(p => ptsLliga(p) > 0).slice(0,3);
   const podium = document.getElementById('podium');
   if (sorted.length === 0) { podium.innerHTML = ''; return; }
 
@@ -2242,27 +2528,34 @@ function renderPodium() {
     const em = sorted.length === 1 ? '🥇' : emojis[i];
     return `<div class="podium-place">
       <div class="podium-name">${p.name}</div>
-      <div class="podium-score" style="color:var(--accent4)">${p.points}pts</div>
+      <div class="podium-score" style="color:var(--accent4)">${ptsLliga(p)}pts</div>
       <div class="podium-bar ${cl}">${em}</div>
     </div>`;
   }).join('');
 }
 
 function renderRankingList() {
-  const sorted = [...gameState.players].sort((a,b) => b.points - a.points);
+  const sorted = [...gameState.players].sort((a,b) => ptsLliga(b) - ptsLliga(a));
   const medals = ['🥇','🥈','🥉'];
+  const etiqueta = lligaActual === 'mes' ? 'pts aquest mes' : 'pts totals';
   document.getElementById('ranking-list').innerHTML = sorted.length === 0
     ? '<div style="color:var(--text-muted);font-size:13px;text-align:center;padding:20px;">Afegeix participants i fes quizos per veure el ranking.</div>'
-    : sorted.map((p, i) => `
-      <div class="ranking-item">
+    : sorted.map((p, i) => {
+      const nv = nivellDe(p.points);
+      const jo = p.name === usuariActual;
+      return `
+      <div class="ranking-item" ${jo ? 'style="border-color:var(--accent);background:var(--accent-dim);"' : ''}>
         <div class="ranking-pos">${medals[i] || (i+1)}</div>
-        <div class="ranking-name">${p.name}</div>
+        <div class="ranking-name">${p.name} ${jo ? '<span style="font-size:10px;color:var(--accent);">(tu)</span>' : ''}
+          <div style="font-size:10px;color:var(--text-muted);font-weight:400;">${nv.actual.emoji} ${nv.actual.nom}</div>
+        </div>
         <div class="ranking-badges">${p.badges.slice(0,4).join(' ')}</div>
         <div style="text-align:right;">
-          <div class="ranking-pts">${p.points} pts</div>
-          <div class="ranking-streak">${p.streak > 1 ? '🔥'+p.streak : ''} ${p.sessions} sessions</div>
+          <div class="ranking-pts">${ptsLliga(p)} pts</div>
+          <div class="ranking-streak" title="${etiqueta}">${p.streak > 1 ? '🔥'+p.streak+'d' : ''} ${p.sessions} sessions</div>
         </div>
-      </div>`).join('');
+      </div>`;
+    }).join('');
 }
 
 function renderPlayerList() {
@@ -2713,7 +3006,11 @@ document.addEventListener('click', function(e) {
 });
 
 // Init
-loadState();
+detectaUsuari();
+loadState().then(() => {
+  if (usuariActual) { renderPerfil(); renderFetAvui(); }
+  else mostraQuiEts();
+});
 carregarPrioritats();
 actualitzaEstatBiblioteca();
 
