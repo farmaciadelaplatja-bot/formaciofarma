@@ -825,7 +825,7 @@
   <div class="page" id="page-programacio">
 
     <!-- Formulari nova formació -->
-    <div class="card">
+    <div class="card" id="prog-form-card">
       <div class="card-title">✏️ Nova formació manual</div>
 
       <div class="grid-2">
@@ -1074,6 +1074,7 @@ async function loadState() {
   renderAll();
   renderPerfil();
   renderFetAvui();
+  renderFetAvuiSelector();
 }
 
 async function saveState() { /* saved per-action */ }
@@ -2391,6 +2392,7 @@ async function awardPoints(playerName, correct, total, topic) {
     renderAll();
     renderPerfil();
     renderFetAvui();
+    renderFetAvuiSelector();
     return result;
   } catch(e) {
     showToast('⚠️ Error guardant: ' + e.message);
@@ -2444,11 +2446,13 @@ function mostraQuiEts() {
     <h3>👋 Qui ets?</h3>
     <p>Tria el teu nom per guardar els teus punts i la teva ratxa</p>
     <div class="qui-ets-grid" id="qui-ets-grid"></div>
+    <div id="fet-avui-selector" style="margin-top:14px;min-height:24px;"></div>
   </div>`;
   const grid = document.getElementById('qui-ets-grid');
   grid.innerHTML = gameState.players.length
     ? gameState.players.map(p => `<button class="qui-ets-btn" onclick="triaUsuari('${p.name.replace(/'/g,"\\'")}')">${p.name}</button>`).join('')
     : '<p style="font-size:13px;">Encara no hi ha participants. Demana al titular que n\'afegeixi a la pestanya Ranking.</p>';
+  renderFetAvuiSelector();
 }
 
 function triaUsuari(nom) {
@@ -2485,6 +2489,21 @@ function renderFetAvui() {
   el.innerHTML = unics.length
     ? unics.map(n => `<span class="fet-avui-chip">✓ ${n}</span>`).join('')
     : '';
+}
+
+function renderFetAvuiSelector() {
+  const el = document.getElementById('fet-avui-selector');
+  if (!el) return;
+  const avui = new Date().toLocaleDateString('ca-ES');
+  const fets = gameState.history.filter(h => h.date === avui)
+    .flatMap(h => h.scores.map(s => s.name));
+  const unics = [...new Set(fets)];
+  if (!unics.length) { el.innerHTML = ''; return; }
+  el.innerHTML = `
+    <div style="font-size:11px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;">✅ Ja han fet el quiz avui</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;">
+      ${unics.map(n => `<span class="fet-avui-chip">✓ ${n}</span>`).join('')}
+    </div>`;
 }
 
 function setLliga(mode) {
@@ -2872,24 +2891,71 @@ async function carregarProgramacio() {
   try {
     const data = await gsCall({ action: 'getProgramacio' });
     const items = data.programacio || [];
+    window.progItems = items; // guardem per reciclar/reprogramar sense problemes d'escapat
     if (items.length === 0) {
       list.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:13px;">No hi ha formacions programades.</div>';
       return;
     }
-    list.innerHTML = items.map(item => `
-      <div style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--bg);border:1px solid var(--border);border-radius:8px;margin-bottom:8px;">
+    list.innerHTML = items.map((item, i) => {
+      const estatBadge = item.estat==='CUA' ? '📋 Cua' : item.estat==='PUBLICADA' ? '✓ Publicada' : '📅 '+formatDataProg(item.data);
+      const badgeColor = item.estat==='PUBLICADA'?'var(--text-muted)':item.estat==='CUA'?'var(--accent2)':'var(--accent4)';
+      const badgeBg = item.estat==='PUBLICADA'?'var(--surface2)':item.estat==='CUA'?'rgba(110,157,255,0.1)':'rgba(255,209,102,0.1)';
+      // Accions: publicades → reciclar + reprogramar; pendents/cua → eliminar
+      const accions = item.estat === 'PUBLICADA'
+        ? `<button onclick="reciclarTema(${i})" title="Genera contingut NOU amb el mateix tema" style="background:var(--accent-dim);border:1px solid var(--accent);color:var(--accent);cursor:pointer;font-size:11px;font-weight:600;padding:6px 10px;border-radius:8px;white-space:nowrap;">♻️ Reciclar tema</button>
+           <button onclick="reprogramar(${i})" title="Torna a programar aquesta mateixa formació" style="background:rgba(255,209,102,0.12);border:1px solid var(--accent4);color:var(--accent4);cursor:pointer;font-size:11px;font-weight:600;padding:6px 10px;border-radius:8px;white-space:nowrap;">📅 Reprogramar</button>`
+        : `<button onclick="eliminarFormacioManual(${item.rowIndex})" style="background:none;border:none;color:var(--accent3);cursor:pointer;font-size:18px;padding:0 4px;">×</button>`;
+      return `
+      <div style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--bg);border:1px solid var(--border);border-radius:8px;margin-bottom:8px;flex-wrap:wrap;">
         <div style="flex-shrink:0;">
-          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:${item.estat==='PUBLICADA'?'var(--text-muted)':item.estat==='CUA'?'var(--accent2)':'var(--accent4)'};background:${item.estat==='PUBLICADA'?'var(--surface2)':item.estat==='CUA'?'rgba(110,157,255,0.1)':'rgba(255,209,102,0.1)'};padding:4px 10px;border-radius:20px;white-space:nowrap;">${item.estat==='CUA'?'📋 Cua':item.estat==='PUBLICADA'?'✓ Publicada':'📅 '+formatDataProg(item.data)}</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:${badgeColor};background:${badgeBg};padding:4px 10px;border-radius:20px;white-space:nowrap;">${estatBadge}</div>
         </div>
-        <div style="flex:1;">
+        <div style="flex:1;min-width:160px;">
           <div style="font-size:14px;font-weight:500;color:var(--text);">${item.titol}</div>
-          <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">${item.contingut.substring(0,80)}...</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">${(item.contingut||'').substring(0,80)}...</div>
         </div>
-        ${item.estat !== 'PUBLICADA' ? `<button onclick="eliminarFormacioManual(${item.rowIndex})" style="background:none;border:none;color:var(--accent3);cursor:pointer;font-size:18px;padding:0 4px;">×</button>` : ''}
-      </div>
-    `).join('');
+        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">${accions}</div>
+      </div>`;
+    }).join('');
   } catch(e) {
     list.innerHTML = '<div style="color:var(--accent3);font-size:13px;padding:10px;">Error carregant: ' + e.message + '</div>';
+  }
+}
+
+// Omple el formulari de dalt amb un títol i contingut i fa scroll-to
+function omplePrograma(titol, contingut) {
+  document.getElementById('prog-titol').value = titol || '';
+  document.getElementById('prog-contingut').value = contingut || '';
+  document.getElementById('prog-data').value = '';
+  document.getElementById('prog-tipus').value = 'data';
+  document.getElementById('prog-form-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// Reprograma: reaprofita el MATEIX contingut ja publicat
+function reprogramar(i) {
+  const item = (window.progItems || [])[i];
+  if (!item) { showToast('No s\'ha trobat la formació'); return; }
+  omplePrograma(item.titol, item.contingut);
+  showToast('📅 Tria una data i prem Programar per repetir-la');
+}
+
+// Recicla el tema: genera contingut NOU amb Gemini sobre el mateix tema
+async function reciclarTema(i) {
+  const item = (window.progItems || [])[i];
+  if (!item) { showToast('No s\'ha trobat la formació'); return; }
+  if (!confirm('Generar contingut NOU sobre el tema "' + item.titol + '"?\nPot trigar uns 30 segons.')) return;
+  omplePrograma(item.titol, '⏳ Generant contingut nou sobre aquest tema... (uns 30 segons)');
+  document.getElementById('prog-contingut').disabled = true;
+  showToast('⏳ Reciclant tema amb Gemini...');
+  try {
+    const d = await gsPost('generarContingutPerTema', { tema: item.titol });
+    document.getElementById('prog-contingut').disabled = false;
+    omplePrograma(d.titol || item.titol, d.contingut || '');
+    showToast('✓ Contingut nou generat! Revisa\'l, tria data i prem Programar');
+  } catch(e) {
+    document.getElementById('prog-contingut').disabled = false;
+    omplePrograma(item.titol, '');
+    showToast('⚠️ Error reciclant: ' + e.message);
   }
 }
 
