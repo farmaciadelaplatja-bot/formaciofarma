@@ -1431,8 +1431,8 @@ function getSelectedTags(id) {
 }
 
 function buildPrompt() {
-  const botplus = document.getElementById('botplus-text').value.trim();
-  const extra = document.getElementById('extra-instructions').value.trim();
+  const botplus = (document.getElementById('botplus-text')?.value || '').trim();
+  const extra = (document.getElementById('extra-instructions')?.value || '').trim();
   const teamLevel = document.getElementById('team-level').value;
   const formats = getSelectedTags('format-tags');
   const seasons = getSelectedTags('season-tags');
