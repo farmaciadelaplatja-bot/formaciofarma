@@ -3062,7 +3062,7 @@ async function carregarProgramacio() {
       const badgeBg = item.estat==='PUBLICADA'?'var(--surface2)':item.estat==='CUA'?'rgba(110,157,255,0.1)':'rgba(255,209,102,0.1)';
       // Accions: publicades → reciclar + reprogramar; pendents/cua → eliminar
       const accions = item.estat === 'PUBLICADA'
-        ? `<button onclick="reciclarTema(${i})" title="Genera contingut NOU amb el mateix tema" style="background:var(--accent-dim);border:1px solid var(--accent);color:var(--accent);cursor:pointer;font-size:11px;font-weight:600;padding:6px 10px;border-radius:8px;white-space:nowrap;">♻️ Reciclar tema</button>
+        ? `<button onclick="reciclarTema(${i})" title="Va al Generador amb el tema pre-emplenat" style="background:var(--accent-dim);border:1px solid var(--accent);color:var(--accent);cursor:pointer;font-size:11px;font-weight:600;padding:6px 10px;border-radius:8px;white-space:nowrap;">♻️ Nou contingut →</button>
            <button onclick="reprogramar(${i})" title="Torna a programar aquesta mateixa formació" style="background:rgba(255,209,102,0.12);border:1px solid var(--accent4);color:var(--accent4);cursor:pointer;font-size:11px;font-weight:600;padding:6px 10px;border-radius:8px;white-space:nowrap;">📅 Reprogramar</button>`
         : `<button onclick="eliminarFormacioManual(${item.rowIndex})" style="background:none;border:none;color:var(--accent3);cursor:pointer;font-size:18px;padding:0 4px;">×</button>`;
       return `
@@ -3129,39 +3129,20 @@ function reprogramar(i) {
   showToast('Tria una data i prem Programar');
 }
 
-async function reciclarTema(i) {
+function reciclarTema(i) {
   const item = (window.progItems || [])[i];
   if (!item) { showToast("No s'ha trobat la formació"); return; }
-  if (!confirm('Generar contingut NOU sobre "' + item.titol + '"?\nPot trigar uns 30 segons.')) return;
-  ompleResultatPrograma(item.titol, 'Generant contingut nou...', true);
-  showToast('Reciclant tema amb Gemini...');
-  try {
-    const raw = await gsPost('generarContingutPerTema', { tema: item.titol }, 90000);
-    // Normalitzar resposta: pot venir com { ok, titol, contingut } o directament com string
-    let titol = item.titol;
-    let contingut = '';
-    if (raw && typeof raw === 'object') {
-      titol = raw.titol || raw.title || item.titol;
-      contingut = raw.contingut || raw.content || raw.text || raw.result || '';
-      // Si contingut segueix buit, log per debug
-      if (!contingut) {
-        console.error('[reciclarTema] Resposta rebuda sense contingut:', JSON.stringify(raw).slice(0, 500));
-        showToast('Resposta rebuda però sense contingut. Comprova la consola.');
-        document.getElementById('prog-resultat-contingut').disabled = false;
-        document.getElementById('prog-resultat-contingut').value = '⚠️ El backend ha retornat una resposta buida. Revisa els logs de l\'Apps Script.\n\nResposta rebuda: ' + JSON.stringify(raw).slice(0, 300);
-        document.getElementById('prog-resultat-titol').textContent = '⚠️ Contingut buit — revisa el backend';
-        return;
-      }
-    } else if (typeof raw === 'string') {
-      contingut = raw;
-    }
-    ompleResultatPrograma(titol, contingut, false);
-    showToast("Contingut nou generat! Revisa'l i programa-la");
-  } catch(e) {
-    tancarResultatPrograma();
-    showToast('Error: ' + e.message);
-    console.error('[reciclarTema] Error complet:', e);
-  }
+  // Redirigir al Generador manual amb el tema pre-emplenat
+  // El Generador ja gestiona la crida a Gemini i el timeout correctament
+  showPage('generator');
+  setMode('manual');
+  const topicEl = document.getElementById('manual-topic');
+  const goalEl  = document.getElementById('manual-goal');
+  if (topicEl) topicEl.value = item.titol;
+  if (goalEl)  goalEl.value  = 'Angle NOU — el tema ja s\'ha cobert abans. Canvia exemples, casos i preguntes del quiz.';
+  // Scroll al camp de tema
+  setTimeout(() => topicEl && topicEl.scrollIntoView({ behavior: 'smooth', block: 'center' }), 120);
+  showToast('Tema pre-emplenat. Copia el prompt i genera amb Claude ↗');
 }
 
 async function addFormacioManual() {
