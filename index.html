@@ -699,7 +699,6 @@
         <div class="quiz-cta-text">
           <h3>Ja has llegit la formació?</h3>
           <p>Posa a prova el que has après i suma punts al ranking</p>
-          <div class="fet-avui-chips" id="fet-avui-chips"></div>
         </div>
         <button onclick="goToQuizFromFormacio()" class="btn-quiz-gran">🎯 Fer el Quiz →</button>
       </div>
@@ -1097,6 +1096,13 @@ const NIVELLS = [
   { min: 800,  nom: 'Mestre',     emoji: '🎓' },
   { min: 1200, nom: 'Llegenda',   emoji: '👑' }
 ];
+// Color únic i consistent per a cada persona (hash del nom → matís)
+function colorDe(nom) {
+  let h = 0;
+  for (const c of String(nom)) h = (h * 31 + c.charCodeAt(0)) % 360;
+  return h;
+}
+
 function nivellDe(punts) {
   let actual = NIVELLS[0], seg = null;
   for (let i = 0; i < NIVELLS.length; i++) {
@@ -1185,9 +1191,7 @@ async function loadState() {
   }
   renderAll();
   renderPerfil();
-  renderFetAvui();
-  renderFetAvuiSelector();
-  renderFetAvuiSelectorInline();
+  pintaFetsAvui();
 }
 
 async function saveState() { /* saved per-action */ }
@@ -1482,7 +1486,7 @@ async function carregarFormacioDelDia() {
     document.getElementById('formacio-body').innerHTML = renderOutput(f.contingut);
     document.getElementById('formacio-loading').style.display = 'none';
     document.getElementById('formacio-content').style.display = 'block';
-    renderFetAvui();
+    pintaFetsAvui();
   } catch(e) {
     // Fallback: intenta llegir del Sheet
     try {
@@ -2547,8 +2551,7 @@ async function awardPoints(playerName, correct, total, topic) {
     }
     renderAll();
     renderPerfil();
-    renderFetAvui();
-    renderFetAvuiSelector();
+    pintaFetsAvui();
     return result;
   } catch(e) {
     showToast('⚠️ Error guardant: ' + e.message);
@@ -2567,7 +2570,7 @@ function renderAll() {
 }
 
 // ══════════════════════════
-// PERFIL PERSONAL (sense localStorage: estat en memòria + ?qui= a la URL)
+// PERFIL PERSONAL (persistent amb localStorage + ?qui= a la URL)
 // ══════════════════════════
 function detectaUsuari() {
   // 1) paràmetre ?qui= a la URL (accés directe per persona)
@@ -2582,7 +2585,11 @@ function renderPerfil() {
   if (!usuariActual) { bar.style.display = 'none'; return; }
   const p = gameState.players.find(x => x.name === usuariActual);
   bar.style.display = 'flex';
-  document.getElementById('perfil-avatar').textContent = usuariActual.charAt(0).toUpperCase();
+  const av = document.getElementById('perfil-avatar');
+  av.textContent = usuariActual.charAt(0).toUpperCase();
+  const hue = colorDe(usuariActual);
+  av.style.background = `linear-gradient(135deg, hsl(${hue} 62% 44%), hsl(${(hue+45)%360} 62% 56%))`;
+  av.style.boxShadow = `0 2px 10px hsl(${hue} 62% 44% / 0.35)`;
   const punts = p ? p.points : 0;
   const nv = nivellDe(punts);
   const hora = new Date().getHours();
@@ -2594,27 +2601,10 @@ function renderPerfil() {
   const ratxa = p ? p.streak : 0;
   document.getElementById('perfil-ratxa').textContent = ratxa >= 2 ? `🔥 ${ratxa} dies` : '';
   // Mostrar qui ha fet el quiz avui a la barra de perfil
-  renderFetAvuiSelectorInline();
+  pintaFetsAvui();
 }
 
-function renderFetAvuiSelectorInline() {
-  // Inserir dins la perfil-info si no hi ha el div (quan usuari ja identificat)
-  let el = document.getElementById('fet-avui-inline');
-  if (!el) {
-    const info = document.querySelector('.perfil-info');
-    if (!info) return;
-    el = document.createElement('div');
-    el.id = 'fet-avui-inline';
-    el.style.cssText = 'margin-top:7px;display:flex;flex-wrap:wrap;gap:4px;';
-    info.appendChild(el);
-  }
-  const avui = new Date().toLocaleDateString('ca-ES');
-  const fets = gameState.history.filter(h => h.date === avui)
-    .flatMap(h => h.scores.map(s => s.name));
-  const unics = [...new Set(fets)];
-  if (!unics.length) { el.innerHTML = ''; return; }
-  el.innerHTML = unics.map(n => `<span class="fet-avui-chip" style="font-size:10px;">${n === usuariActual ? '✓ Tu' : '✓ '+n}</span>`).join('');
-}
+
 
 function mostraQuiEts() {
   const bar = document.getElementById('perfil-bar');
@@ -2627,9 +2617,13 @@ function mostraQuiEts() {
   </div>`;
   const grid = document.getElementById('qui-ets-grid');
   grid.innerHTML = gameState.players.length
-    ? gameState.players.map(p => `<button class="qui-ets-btn" onclick="triaUsuari('${p.name.replace(/'/g,"\\'")}')">${p.name}</button>`).join('')
+    ? gameState.players.map(p => {
+        const hue = colorDe(p.name);
+        return `<button class="qui-ets-btn" onclick="triaUsuari('${p.name.replace(/'/g,"\\'")}')" style="display:flex;align-items:center;gap:8px;">
+          <span style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,hsl(${hue} 62% 44%),hsl(${(hue+45)%360} 62% 56%));color:#fff;font-size:12px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">${p.name.charAt(0).toUpperCase()}</span>${p.name}</button>`;
+      }).join('')
     : '<p style="font-size:13px;">Encara no hi ha participants. Demana al titular que n\'afegeixi a la pestanya Ranking.</p>';
-  renderFetAvuiSelector();
+  pintaFetsAvui();
 }
 
 function triaUsuari(nom) {
@@ -2648,7 +2642,7 @@ function triaUsuari(nom) {
       <div class="perfil-canvi" onclick="canviaUsuari()">Canviar</div>
     </div>`;
   renderPerfil();
-  renderFetAvui();
+  pintaFetsAvui();
   showToast(`👋 Hola ${nom}!`);
 }
 
@@ -2658,31 +2652,83 @@ function canviaUsuari() {
   mostraQuiEts();
 }
 
-function renderFetAvui() {
-  const el = document.getElementById('fet-avui-chips');
-  if (!el) return;
-  const avui = new Date().toLocaleDateString('ca-ES');
-  const fets = gameState.history.filter(h => h.date === avui)
-    .flatMap(h => h.scores.map(s => s.name));
-  const unics = [...new Set(fets)];
-  el.innerHTML = unics.length
-    ? unics.map(n => `<span class="fet-avui-chip">✓ ${n}</span>`).join('')
-    : '';
+
+
+
+
+// ══════════════════════════
+// QUI HA FET LA FORMACIÓ AVUI (funció única, dates normalitzades)
+// ══════════════════════════
+// Normalitza QUALSEVOL representació de data (ISO, Date, dd/mm/yyyy, m/d/yyyy)
+// a la clau "yyyy-mm-dd". Necessari perquè Google Sheets converteix les
+// cel·les de data i el backend les retorna com a ISO.
+function dataKey(v) {
+  if (!v) return '';
+  if (v instanceof Date) {
+    return v.getFullYear() + '-' + String(v.getMonth()+1).padStart(2,'0') + '-' + String(v.getDate()).padStart(2,'0');
+  }
+  const s = String(v).trim();
+  let m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);          // ISO
+  if (m) return m[1] + '-' + m[2] + '-' + m[3];
+  m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);       // dd/mm/yyyy o m/d/yyyy
+  if (m) {
+    let d = +m[1], mo = +m[2];
+    if (d <= 12 && mo > 12) { const t = d; d = mo; mo = t; } // era m/d/yyyy
+    return m[3] + '-' + String(mo).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+  }
+  const dt = new Date(s);
+  return isNaN(dt) ? s : dataKey(dt);
 }
 
-function renderFetAvuiSelector() {
-  const el = document.getElementById('fet-avui-selector');
-  if (!el) return;
-  const avui = new Date().toLocaleDateString('ca-ES');
-  const fets = gameState.history.filter(h => h.date === avui)
+// Mostra una data en format llegible dd/mm/yyyy
+function formatDia(v) {
+  const k = dataKey(v);
+  const m = k.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  return m ? `${+m[3]}/${+m[2]}/${m[1]}` : String(v);
+}
+
+function quiHaFetAvui() {
+  const k = dataKey(new Date());
+  const noms = (gameState.history || [])
+    .filter(h => dataKey(h.date) === k)
     .flatMap(h => h.scores.map(s => s.name));
-  const unics = [...new Set(fets)];
-  if (!unics.length) { el.innerHTML = ''; return; }
-  el.innerHTML = `
-    <div style="font-size:11px;color:var(--text-muted);font-family:'Fira Code',monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;">✅ Ja han fet el quiz avui</div>
-    <div style="display:flex;flex-wrap:wrap;gap:6px;">
-      ${unics.map(n => `<span class="fet-avui-chip">✓ ${n}</span>`).join('')}
-    </div>`;
+  const unics = [...new Set(noms)];
+  // Tu primer
+  if (usuariActual && unics.includes(usuariActual)) {
+    unics.splice(unics.indexOf(usuariActual), 1);
+    unics.unshift(usuariActual);
+  }
+  return unics;
+}
+
+// Pinta els xips a TOTS els llocs visibles (selector i barra de perfil)
+function pintaFetsAvui() {
+  const unics = quiHaFetAvui();
+  const chips = unics.map(n =>
+    `<span class="fet-avui-chip">${n === usuariActual ? '⭐ Tu' : '✓ ' + n}</span>`
+  ).join('');
+
+  // a) Dins el selector "Qui ets?" (quan encara no t'has identificat)
+  const sel = document.getElementById('fet-avui-selector');
+  if (sel) {
+    sel.innerHTML = unics.length
+      ? `<div style="font-size:11px;color:var(--text-muted);font-family:'Fira Code',monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;">✅ Ja han fet el quiz avui</div>
+         <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;">${chips}</div>`
+      : '';
+  }
+
+  // b) Dins la barra de perfil (quan ja estàs identificat)
+  const info = document.querySelector('.perfil-info');
+  if (info) {
+    let inline = document.getElementById('fet-avui-inline');
+    if (!inline) {
+      inline = document.createElement('div');
+      inline.id = 'fet-avui-inline';
+      inline.style.cssText = 'margin-top:7px;display:flex;flex-wrap:wrap;gap:4px;';
+      info.appendChild(inline);
+    }
+    inline.innerHTML = chips;
+  }
 }
 
 function setLliga(mode) {
@@ -2772,7 +2818,7 @@ function renderHistory() {
     ? '<div style="color:var(--text-muted);font-size:13px;text-align:center;padding:20px;">Encara no hi ha sessions registrades.</div>'
     : gameState.history.slice(0,10).map(h => `
       <div class="history-item">
-        <div class="history-date">${h.date}</div>
+        <div class="history-date">${formatDia(h.date)}</div>
         <div class="history-topic">${h.topic}</div>
         <div class="history-scores">${h.scores.map(s =>
           `<span class="history-score">${s.name}: ${s.pts}pts (${s.correct}/${s.total})</span>`
@@ -3295,7 +3341,7 @@ document.addEventListener('click', function(e) {
 // Init
 detectaUsuari();
 loadState().then(() => {
-  if (usuariActual) { renderPerfil(); renderFetAvui(); }
+  if (usuariActual) { renderPerfil(); pintaFetsAvui(); }
   else mostraQuiEts();
 });
 carregarPrioritats();
