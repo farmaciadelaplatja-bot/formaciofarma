@@ -1187,6 +1187,7 @@ async function loadState() {
   renderPerfil();
   renderFetAvui();
   renderFetAvuiSelector();
+  renderFetAvuiSelectorInline();
 }
 
 async function saveState() { /* saved per-action */ }
@@ -2569,11 +2570,11 @@ function renderAll() {
 // PERFIL PERSONAL (sense localStorage: estat en memòria + ?qui= a la URL)
 // ══════════════════════════
 function detectaUsuari() {
-  // 1) paràmetre a la URL (permet posar un accés directe per persona al mòbil)
+  // 1) paràmetre ?qui= a la URL (accés directe per persona)
   const q = new URLSearchParams(location.search).get('qui');
-  if (q) { usuariActual = q; return; }
-  // 2) ja triat en aquesta sessió
-  // (usuariActual ja conté el valor si s'ha triat abans)
+  if (q) { usuariActual = q; try { localStorage.setItem('ff_usuari', q); } catch(e){} return; }
+  // 2) localStorage (persistent entre sessions)
+  try { const saved = localStorage.getItem('ff_usuari'); if (saved) { usuariActual = saved; return; } } catch(e){}
 }
 
 function renderPerfil() {
@@ -2592,11 +2593,32 @@ function renderPerfil() {
   document.getElementById('perfil-progres-fill').style.width = nv.progres + '%';
   const ratxa = p ? p.streak : 0;
   document.getElementById('perfil-ratxa').textContent = ratxa >= 2 ? `🔥 ${ratxa} dies` : '';
+  // Mostrar qui ha fet el quiz avui a la barra de perfil
+  renderFetAvuiSelectorInline();
+}
+
+function renderFetAvuiSelectorInline() {
+  // Inserir dins la perfil-info si no hi ha el div (quan usuari ja identificat)
+  let el = document.getElementById('fet-avui-inline');
+  if (!el) {
+    const info = document.querySelector('.perfil-info');
+    if (!info) return;
+    el = document.createElement('div');
+    el.id = 'fet-avui-inline';
+    el.style.cssText = 'margin-top:7px;display:flex;flex-wrap:wrap;gap:4px;';
+    info.appendChild(el);
+  }
+  const avui = new Date().toLocaleDateString('ca-ES');
+  const fets = gameState.history.filter(h => h.date === avui)
+    .flatMap(h => h.scores.map(s => s.name));
+  const unics = [...new Set(fets)];
+  if (!unics.length) { el.innerHTML = ''; return; }
+  el.innerHTML = unics.map(n => `<span class="fet-avui-chip" style="font-size:10px;">${n === usuariActual ? '✓ Tu' : '✓ '+n}</span>`).join('');
 }
 
 function mostraQuiEts() {
   const bar = document.getElementById('perfil-bar');
-  bar.style.display = 'block';
+  bar.style.display = 'flex';
   bar.innerHTML = `<div class="qui-ets" style="width:100%;">
     <h3>👋 Qui ets?</h3>
     <p>Tria el teu nom per guardar els teus punts i la teva ratxa</p>
@@ -2612,6 +2634,7 @@ function mostraQuiEts() {
 
 function triaUsuari(nom) {
   usuariActual = nom;
+  try { localStorage.setItem('ff_usuari', nom); } catch(e){}
   // Restaurem el contingut original de la barra
   document.getElementById('perfil-bar').innerHTML = `
     <div class="perfil-avatar" id="perfil-avatar">?</div>
@@ -2631,6 +2654,7 @@ function triaUsuari(nom) {
 
 function canviaUsuari() {
   usuariActual = null;
+  try { localStorage.removeItem('ff_usuari'); } catch(e){}
   mostraQuiEts();
 }
 
