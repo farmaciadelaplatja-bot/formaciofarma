@@ -3132,17 +3132,28 @@ function reprogramar(i) {
 function reciclarTema(i) {
   const item = (window.progItems || [])[i];
   if (!item) { showToast("No s'ha trobat la formació"); return; }
-  // Redirigir al Generador manual amb el tema pre-emplenat
-  // El Generador ja gestiona la crida a Gemini i el timeout correctament
+  // 1) Anar a la pàgina del Generador
   showPage('generator');
-  setMode('manual');
-  const topicEl = document.getElementById('manual-topic');
-  const goalEl  = document.getElementById('manual-goal');
-  if (topicEl) topicEl.value = item.titol;
-  if (goalEl)  goalEl.value  = 'Angle NOU — el tema ja s\'ha cobert abans. Canvia exemples, casos i preguntes del quiz.';
-  // Scroll al camp de tema
-  setTimeout(() => topicEl && topicEl.scrollIntoView({ behavior: 'smooth', block: 'center' }), 120);
-  showToast('Tema pre-emplenat. Copia el prompt i genera amb Claude ↗');
+  // 2) Activar mode Manual (amb setTimeout per assegurar que el DOM ja és visible)
+  setTimeout(() => {
+    setMode('manual');
+    const topicEl = document.getElementById('manual-topic');
+    const goalEl  = document.getElementById('manual-goal');
+    if (topicEl) {
+      topicEl.value = item.titol;
+      topicEl.focus();
+    }
+    if (goalEl) goalEl.value = "Angle NOU — aquest tema ja s'ha cobert. Canvia exemples, casos i preguntes.";
+    // Clicar el tab Manual visualment per si setMode no l'activa
+    const tabManual = document.getElementById('tab-manual');
+    if (tabManual) tabManual.click();
+    // Scroll fins al camp
+    setTimeout(() => {
+      const topicEl2 = document.getElementById('manual-topic');
+      if (topicEl2) topicEl2.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 150);
+    showToast('Tema pre-emplenat al Generador ↓');
+  }, 80);
 }
 
 async function addFormacioManual() {
