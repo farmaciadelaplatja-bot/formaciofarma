@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FormacióFarma — Farmàcia Ortopèdia Platja Cubelles</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=JetBrains+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Libre+Baskerville:ital,wght@0,700;1,400&family=Fira+Code:wght@400;500;600&display=swap');
 
   :root {
     --bg: #eef1f0;
@@ -25,8 +25,11 @@
     --text-soft: #44585a;
     --radius: 14px;
     --radius-sm: 8px;
-    --shadow-sm: 0 1px 3px rgba(28,43,42,0.06), 0 1px 2px rgba(28,43,42,0.04);
-    --shadow-md: 0 4px 16px rgba(28,43,42,0.08), 0 2px 4px rgba(28,43,42,0.04);
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+    --shadow-sm: 0 1px 3px rgba(0,90,60,0.07), 0 1px 2px rgba(0,90,60,0.04);
+    --shadow-md: 0 4px 16px rgba(0,90,60,0.09), 0 2px 6px rgba(0,90,60,0.05);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -34,7 +37,7 @@
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Sora', sans-serif;
     min-height: 100vh;
     padding: 28px 16px 60px;
   }
@@ -72,11 +75,11 @@
   }
 
   @keyframes fadeDown { from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:none; } }
-  @keyframes fadeUp   { from { opacity:0; transform:translateY(12px);  } to { opacity:1; transform:none; } }
+  @keyframes fadeUp   { from { opacity:0; transform:translateY(12px) scale(0.98); } to { opacity:1; transform:translateY(0) scale(1); } }
   @keyframes fadeIn   { from { opacity:0; } to { opacity:1; } }
 
   .logo {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Libre Baskerville', serif;
     font-size: 30px; font-weight: 900;
     color: var(--accent);
     letter-spacing: -0.5px;
@@ -89,7 +92,7 @@
   }
   .subtitle {
     color: var(--text-muted); font-size: 11px;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Fira Code', monospace;
     margin-top: 6px; letter-spacing: 1px;
     text-transform: uppercase;
   }
@@ -104,11 +107,12 @@
   }
   .nav-tab {
     flex: 1; padding: 10px 8px; border: none; border-radius: 10px; background: transparent;
-    color: var(--text-muted); font-family: 'Outfit', sans-serif; font-size: 12px;
-    font-weight: 500; cursor: pointer; transition: all 0.25s; text-align: center;
+    color: var(--text-muted); font-family: 'Sora', sans-serif; font-size: 12px;
+    font-weight: 500; cursor: pointer; transition: transform 200ms var(--ease-out), background 200ms var(--ease-out), box-shadow 200ms var(--ease-out); text-align: center;
     white-space: nowrap;
   }
   .nav-tab:hover { color: var(--text-soft); background: var(--surface2); }
+  .nav-tab:active { transform: scale(0.96); transition: transform 100ms var(--ease-out); }
   .nav-tab.active {
     background: var(--surface); color: var(--accent);
     border: 1px solid var(--border2);
@@ -122,8 +126,8 @@
   }
   .mode-tab {
     flex: 1; padding: 10px 16px; border: none; border-radius: 10px; background: transparent;
-    color: var(--text-muted); font-family: 'Outfit', sans-serif; font-size: 13px;
-    font-weight: 500; cursor: pointer; transition: all 0.25s; text-align: center;
+    color: var(--text-muted); font-family: 'Sora', sans-serif; font-size: 13px;
+    font-weight: 500; cursor: pointer; transition: transform 200ms var(--ease-out), background 200ms var(--ease-out), box-shadow 200ms var(--ease-out); text-align: center;
   }
   .mode-tab.active { background: var(--surface3); color: var(--accent); border: 1px solid var(--border2); }
 
@@ -136,7 +140,7 @@
   }
   .card:hover { border-color: var(--border2); box-shadow: var(--shadow-md); }
   .card-title {
-    font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--accent);
+    font-family: 'Fira Code', monospace; font-size: 10px; color: var(--accent);
     text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px;
     display: flex; align-items: center; gap: 10px;
   }
@@ -144,12 +148,12 @@
 
   label {
     display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 6px;
-    font-family: 'JetBrains Mono', monospace; letter-spacing: 0.5px; text-transform: uppercase;
+    font-family: 'Fira Code', monospace; letter-spacing: 0.5px; text-transform: uppercase;
   }
 
   input, select, textarea {
     width: 100%; background: var(--surface2); border: 1px solid var(--border);
-    border-radius: var(--radius-sm); color: var(--text); font-family: 'Outfit', sans-serif;
+    border-radius: var(--radius-sm); color: var(--text); font-family: 'Sora', sans-serif;
     font-size: 14px; padding: 11px 14px; outline: none; transition: border-color 0.2s, background 0.2s;
     margin-bottom: 14px;
   }
@@ -168,7 +172,7 @@
   .tag {
     padding: 6px 14px; border-radius: 20px; font-size: 12px; cursor: pointer;
     border: 1px solid var(--border2); background: transparent; color: var(--text-muted);
-    font-family: 'Outfit', sans-serif; transition: all 0.2s; font-weight: 500;
+    font-family: 'Sora', sans-serif; transition: transform 180ms var(--ease-out), background 180ms var(--ease-out), color 180ms var(--ease-out), border-color 180ms var(--ease-out), box-shadow 180ms var(--ease-out); font-weight: 500;
   }
   .tag:hover { border-color: var(--accent); color: var(--text-soft); }
   .tag.selected { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
@@ -177,7 +181,7 @@
   .upload-zone {
     border: 1px dashed var(--border2); border-radius: var(--radius-sm); padding: 22px;
     text-align: center; color: var(--text-muted); font-size: 13px; cursor: pointer;
-    transition: all 0.2s; margin-bottom: 14px; position: relative;
+    transition: transform 180ms var(--ease-out), background 180ms var(--ease-out), color 180ms var(--ease-out), border-color 180ms var(--ease-out), box-shadow 180ms var(--ease-out); margin-bottom: 14px; position: relative;
   }
   .upload-zone:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
   .upload-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; margin: 0; padding: 0; border: none; height: 100%; }
@@ -186,7 +190,7 @@
   .file-item {
     display: flex; align-items: center; justify-content: space-between;
     background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
-    padding: 8px 12px; font-size: 12px; font-family: 'JetBrains Mono', monospace; color: var(--text-muted);
+    padding: 8px 12px; font-size: 12px; font-family: 'Fira Code', monospace; color: var(--text-muted);
   }
   .file-item .remove { background: none; border: none; color: var(--accent3); cursor: pointer; font-size: 14px; line-height: 1; padding: 0 2px; }
 
@@ -197,15 +201,15 @@
   .btn-icon {
     background: var(--surface2); border: 1px solid var(--border); color: var(--text-muted);
     border-radius: var(--radius-sm); width: 40px; height: 40px; cursor: pointer; font-size: 16px;
-    display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; transition: transform 180ms var(--ease-out), background 180ms var(--ease-out), color 180ms var(--ease-out), border-color 180ms var(--ease-out), box-shadow 180ms var(--ease-out); flex-shrink: 0;
   }
   .btn-icon:hover { border-color: var(--accent3); color: var(--accent3); }
   .btn-icon.add:hover { border-color: var(--accent); color: var(--accent); }
 
   .btn-generate {
     width: 100%; padding: 16px; background: var(--accent); color: #fff; border: none;
-    border-radius: var(--radius); font-family: 'Outfit', sans-serif; font-size: 15px;
-    font-weight: 600; cursor: pointer; transition: all 0.25s; letter-spacing: 0.3px; margin-top: 8px;
+    border-radius: var(--radius); font-family: 'Sora', sans-serif; font-size: 15px;
+    font-weight: 600; cursor: pointer; transition: transform 200ms var(--ease-out), background 200ms var(--ease-out), box-shadow 200ms var(--ease-out); letter-spacing: 0.3px; margin-top: 8px;
     position: relative; overflow: hidden; box-shadow: var(--shadow-sm);
   }
   .btn-generate::after {
@@ -214,17 +218,18 @@
     pointer-events: none;
   }
   .btn-generate:hover { background: #008f66; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,168,120,0.30); }
+  .btn-generate:active { transform: scale(0.97) translateY(0); box-shadow: none; transition: transform 120ms var(--ease-out); }
   .btn-generate:disabled { background: var(--border); color: var(--text-muted); transform: none; box-shadow: none; cursor: not-allowed; }
 
   .output-container { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-top: 24px; box-shadow: var(--shadow-md); }
   .output-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--border); background: var(--surface2); }
-  .output-title { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; }
+  .output-title { font-family: 'Fira Code', monospace; font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; }
   .output-actions { display: flex; gap: 8px; }
 
   .btn-small {
-    padding: 7px 14px; border-radius: 6px; font-size: 12px; font-family: 'Outfit', sans-serif;
+    padding: 7px 14px; border-radius: 6px; font-size: 12px; font-family: 'Sora', sans-serif;
     font-weight: 500; cursor: pointer; border: 1px solid var(--border2); background: transparent;
-    color: var(--text-muted); transition: all 0.2s;
+    color: var(--text-muted); transition: transform 180ms var(--ease-out), background 180ms var(--ease-out), color 180ms var(--ease-out), border-color 180ms var(--ease-out), box-shadow 180ms var(--ease-out);
   }
   .btn-small:hover { border-color: var(--accent); color: var(--accent); }
   .btn-small.primary { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
@@ -232,22 +237,22 @@
 
   .output-body {
     padding: 28px; font-size: 14px; line-height: 1.8; color: var(--text);
-    white-space: pre-wrap; font-family: 'Outfit', sans-serif; min-height: 200px;
+    white-space: pre-wrap; font-family: 'Sora', sans-serif; min-height: 200px;
   }
-  .output-body.loading { display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+  .output-body.loading { display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-family: 'Fira Code', monospace; font-size: 13px; }
 
   .loader { display: inline-block; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; margin-right: 12px; animation: pulse 1s infinite; }
   @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.3; transform: scale(0.6); } }
 
   .prompt-preview {
     background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px;
-    font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted); line-height: 1.7;
+    font-family: 'Fira Code', monospace; font-size: 11px; color: var(--text-muted); line-height: 1.7;
     max-height: 200px; overflow-y: auto; margin-top: 8px; display: none;
   }
   .prompt-preview.visible { display: block; }
   .toggle-prompt {
     background: none; border: none; color: var(--text-muted); font-size: 12px; cursor: pointer;
-    font-family: 'JetBrains Mono', monospace; padding: 0; margin-top: 8px; text-decoration: underline; text-underline-offset: 3px;
+    font-family: 'Fira Code', monospace; padding: 0; margin-top: 8px; text-decoration: underline; text-underline-offset: 3px;
   }
   .toggle-prompt:hover { color: var(--accent2); }
 
@@ -256,7 +261,7 @@
   ══════════════════════════════════════ */
   .formacio-data-badge {
     display: inline-flex; align-items: center; gap: 8px;
-    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    font-family: 'Fira Code', monospace; font-size: 10px;
     color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px;
     background: var(--surface2); border: 1px solid var(--border2);
     padding: 5px 12px; border-radius: 20px; margin-bottom: 14px;
@@ -267,7 +272,7 @@
     box-shadow: 0 0 8px var(--accent); animation: pulse 2s infinite;
   }
   .formacio-titol-gran {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Libre Baskerville', serif;
     font-size: clamp(24px, 5vw, 36px); font-weight: 900;
     color: var(--text); line-height: 1.15; letter-spacing: -0.5px;
   }
@@ -275,8 +280,8 @@
     display: inline-flex; align-items: center; gap: 8px;
     padding: 10px 20px; background: transparent;
     border: 1px solid var(--border2); color: var(--text-soft);
-    border-radius: var(--radius-sm); font-family: 'Outfit', sans-serif;
-    font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s;
+    border-radius: var(--radius-sm); font-family: 'Sora', sans-serif;
+    font-size: 13px; font-weight: 500; cursor: pointer; transition: transform 180ms var(--ease-out), background 180ms var(--ease-out), color 180ms var(--ease-out), border-color 180ms var(--ease-out), box-shadow 180ms var(--ease-out);
   }
   .btn-print:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
 
@@ -290,15 +295,15 @@
   .quiz-cta-text p { font-size: 13px; color: var(--text-muted); }
   .btn-quiz-gran {
     padding: 14px 32px; background: var(--accent4); color: #0a0800;
-    border: none; border-radius: var(--radius-sm); font-family: 'Outfit', sans-serif;
-    font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.25s;
+    border: none; border-radius: var(--radius-sm); font-family: 'Sora', sans-serif;
+    font-size: 15px; font-weight: 700; cursor: pointer; transition: transform 200ms var(--ease-out), background 200ms var(--ease-out), box-shadow 200ms var(--ease-out);
     white-space: nowrap; box-shadow: 0 4px 16px rgba(224,155,31,0.2);
   }
   .btn-quiz-gran:hover { background: #ffe066; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(224,155,31,0.35); }
 
   /* output-body styles */
   .output-body h2 {
-    font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700;
+    font-family: 'Libre Baskerville', serif; font-size: 18px; font-weight: 700;
     margin-bottom: 12px; margin-top: 22px;
     display: flex; align-items: center; gap: 10px;
   }
@@ -309,7 +314,7 @@
   .output-body strong { color: var(--accent); }
 
   .output-body table { width:100%; border-collapse:collapse; margin:10px 0 16px; font-size:13px; border-radius:10px; overflow:hidden; table-layout:fixed; }
-  .output-body th { background:rgba(139,92,246,0.1); color:var(--accent5); font-family:'JetBrains Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:1.5px; padding:10px 14px; text-align:left; border-bottom:1px solid rgba(139,92,246,0.2); word-wrap:break-word; }
+  .output-body th { background:rgba(139,92,246,0.1); color:var(--accent5); font-family:'Fira Code',monospace; font-size:10px; text-transform:uppercase; letter-spacing:1.5px; padding:10px 14px; text-align:left; border-bottom:1px solid rgba(139,92,246,0.2); word-wrap:break-word; }
   .output-body td { padding:10px 14px; border-bottom:1px solid var(--border); color:var(--text); vertical-align:top; word-wrap:break-word; line-height:1.55; }
   .output-body tr:last-child td { border-bottom:none; }
   .output-body tr:hover td { background:rgba(139,92,246,0.04); }
@@ -317,29 +322,29 @@
   .output-body th:nth-child(2), .output-body td:nth-child(2) { width:25%; }
   .output-body th:nth-child(3), .output-body td:nth-child(3) { width:53%; }
 
-  .alerta-box { background:rgba(224,85,107,0.06); border:1px solid rgba(224,85,107,0.2); border-left:3px solid var(--accent3); border-radius:var(--radius-sm); padding:14px 18px; margin:8px 0 14px; }
+  .alerta-box { background:rgba(224,85,107,0.07); border:1px solid rgba(224,85,107,0.22); border-radius:var(--radius-sm); padding:14px 18px; margin:8px 0 14px; }
   .alerta-box p { margin:0; color:var(--text); font-size:13.5px; line-height:1.7; }
-  .tip-box { background:rgba(224,155,31,0.06); border:1px solid rgba(224,155,31,0.2); border-left:3px solid var(--accent4); border-radius:var(--radius-sm); padding:14px 18px; margin:8px 0 14px; }
+  .tip-box { background:rgba(224,155,31,0.07); border:1px solid rgba(224,155,31,0.22); border-radius:var(--radius-sm); padding:14px 18px; margin:8px 0 14px; }
   .tip-box p { margin:0; color:var(--text); font-size:13.5px; line-height:1.7; font-style:italic; }
 
   /* Consell directe al pacient */
   .consell-pacient {
     background: rgba(0,168,120,0.05);
-    border-left: 3px solid var(--accent);
+    border-radius: 10px;
     border-radius: 0 8px 8px 8px;
     padding: 10px 16px 10px 14px;
     margin: -2px 0 10px 28px;
     font-size: 13px; line-height: 1.65; color: var(--text-soft);
   }
   .consell-pacient-label {
-    font-size: 9px; font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; font-family: 'Fira Code', monospace;
     color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px;
     display: block; margin-bottom: 5px; font-weight: 600;
   }
 
   /* Sub-capçalera dins del contingut (Interaccions, etc.) */
   .sub-header {
-    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    font-family: 'Fira Code', monospace; font-size: 10px;
     color: var(--accent2); text-transform: uppercase; letter-spacing: 1.5px;
     margin: 16px 0 8px; padding: 0; font-weight: 600;
     display: flex; align-items: center; gap: 8px;
@@ -351,7 +356,6 @@
     padding: 9px 14px; background: var(--surface2);
     border-radius: 8px; font-size: 13px; line-height: 1.6;
     margin: 4px 0; color: var(--text-soft);
-    border-left: 2px solid var(--border2);
   }
 
   /* Targeta de cas d'ortopèdia */
@@ -367,7 +371,7 @@
   .orto-card-titol::before { content: '🦴'; font-size: 14px; }
   .orto-camp { display: flex; gap: 8px; margin: 6px 0; font-size: 13px; line-height: 1.55; }
   .orto-camp-label {
-    flex-shrink: 0; font-family: 'JetBrains Mono', monospace; font-size: 9px;
+    flex-shrink: 0; font-family: 'Fira Code', monospace; font-size: 9px;
     text-transform: uppercase; letter-spacing: 1px; font-weight: 600;
     padding: 2px 8px; border-radius: 4px; height: fit-content; margin-top: 2px;
     min-width: 70px; text-align: center;
@@ -381,30 +385,35 @@
      QUIZ
   ══════════════════════════════════════ */
   .quiz-section { margin-top: 20px; border-top: 1px solid var(--border); padding-top: 24px; }
-  .quiz-header { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--accent4); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; }
+  .quiz-header { font-family: 'Fira Code', monospace; font-size: 10px; color: var(--accent4); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; }
 
   .quiz-question { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 14px; transition: border-color 0.2s; }
   .quiz-question:hover { border-color: var(--border2); }
-  .quiz-q-num { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
+  .quiz-q-num { font-family: 'Fira Code', monospace; font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
   .quiz-question p { font-size: 15px; font-weight: 500; margin-bottom: 16px; color: var(--text); line-height: 1.5; }
   .quiz-options { display: flex; flex-direction: column; gap: 8px; }
 
   .quiz-option {
+  .quiz-question .quiz-option { animation: fadeUp 240ms var(--ease-out) both; }
+  .quiz-question .quiz-option:nth-child(1) { animation-delay: 0ms; }
+  .quiz-question .quiz-option:nth-child(2) { animation-delay: 55ms; }
+  .quiz-question .quiz-option:nth-child(3) { animation-delay: 110ms; }
     padding: 13px 18px; border-radius: 10px; border: 1px solid var(--border2);
     background: var(--surface3); color: var(--text-soft);
-    font-size: 14px; cursor: pointer; transition: all 0.2s;
-    text-align: left; font-family: 'Outfit', sans-serif;
+    font-size: 14px; cursor: pointer; transition: transform 180ms var(--ease-out), background 180ms var(--ease-out), color 180ms var(--ease-out), border-color 180ms var(--ease-out), box-shadow 180ms var(--ease-out);
+    text-align: left; font-family: 'Sora', sans-serif;
     display: flex; align-items: center; gap: 12px;
   }
   .quiz-option::before {
     content: attr(data-letter); width: 26px; height: 26px; border-radius: 6px;
     background: var(--surface2); border: 1px solid var(--border2);
     display: flex; align-items: center; justify-content: center;
-    font-family: 'JetBrains Mono', monospace; font-size: 11px;
-    color: var(--text-muted); flex-shrink: 0; transition: all 0.2s;
+    font-family: 'Fira Code', monospace; font-size: 11px;
+    color: var(--text-muted); flex-shrink: 0; transition: transform 180ms var(--ease-out), background 180ms var(--ease-out), color 180ms var(--ease-out), border-color 180ms var(--ease-out), box-shadow 180ms var(--ease-out);
   }
   .quiz-option:hover:not(:disabled) { border-color: var(--accent2); color: var(--text); background: rgba(43,108,212,0.06); }
   .quiz-option:hover:not(:disabled)::before { background: rgba(43,108,212,0.12); border-color: var(--accent2); color: var(--accent2); }
+  .quiz-option:active:not(:disabled) { transform: scale(0.98); transition: transform 100ms var(--ease-out); }
   .quiz-option.correct { border-color: var(--accent); background: rgba(0,168,120,0.08); color: var(--accent); }
   .quiz-option.correct::before { background: rgba(0,168,120,0.15); border-color: var(--accent); color: var(--accent); }
   .quiz-option.wrong { border-color: var(--accent3); background: rgba(224,85,107,0.08); color: var(--accent3); }
@@ -412,7 +421,7 @@
   .quiz-option:disabled { cursor: not-allowed; opacity: 0.75; }
 
   .quiz-feedback { font-size: 13px; margin-top: 10px; padding: 10px 14px; border-radius: 8px; display: none; }
-  .quiz-feedback.show { display: block; animation: fadeUp 0.3s ease both; }
+  .quiz-feedback.show { display: block; animation: fadeUp 280ms var(--ease-out) both; }
   .quiz-feedback.ok { background: rgba(0,168,120,0.08); color: var(--accent); border: 1px solid rgba(0,168,120,0.2); }
   .quiz-feedback.ko { background: rgba(224,85,107,0.08); color: var(--accent3); border: 1px solid rgba(224,85,107,0.2); }
 
@@ -421,7 +430,7 @@
     display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
     background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
     padding: 14px 18px; margin-bottom: 20px; box-shadow: var(--shadow-sm);
-    animation: fadeDown 0.5s 0.05s ease both;
+    animation: fadeDown 380ms 0.04s var(--ease-out) both;
   }
   .perfil-avatar {
     width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
@@ -431,10 +440,10 @@
   }
   .perfil-info { flex: 1; min-width: 140px; }
   .perfil-salut { font-size: 15px; font-weight: 600; color: var(--text); }
-  .perfil-nivell { font-size: 11px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; margin-top: 2px; }
+  .perfil-nivell { font-size: 11px; color: var(--text-muted); font-family: 'Fira Code', monospace; margin-top: 2px; }
   .perfil-ratxa { font-size: 13px; font-weight: 600; color: var(--accent4); white-space: nowrap; }
   .perfil-progres { width: 100%; height: 5px; background: var(--surface3); border-radius: 3px; margin-top: 7px; overflow: hidden; }
-  .perfil-progres-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #00c98f); border-radius: 3px; transition: width 0.8s ease; }
+  .perfil-progres-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #00c98f); border-radius: 3px; transition: width 700ms var(--ease-out); }
   .perfil-canvi { font-size: 11px; color: var(--text-muted); cursor: pointer; text-decoration: underline; white-space: nowrap; }
   .perfil-canvi:hover { color: var(--accent); }
 
@@ -445,10 +454,11 @@
   .qui-ets-grid { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
   .qui-ets-btn {
     padding: 11px 20px; border-radius: 999px; border: 1px solid var(--border2);
-    background: var(--surface); color: var(--text); font-family: 'Outfit', sans-serif;
-    font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+    background: var(--surface); color: var(--text); font-family: 'Sora', sans-serif;
+    font-size: 14px; font-weight: 600; cursor: pointer; transition: transform 180ms var(--ease-out), background 180ms var(--ease-out), color 180ms var(--ease-out), border-color 180ms var(--ease-out), box-shadow 180ms var(--ease-out);
   }
-  .qui-ets-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); transform: translateY(-2px); }
+  @media (hover: hover) and (pointer: fine) { .qui-ets-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); transform: translateY(-2px); } }
+  .qui-ets-btn:active { transform: scale(0.96) translateY(0); transition: transform 100ms var(--ease-out); }
 
   /* ── EN 30 SEGONS ── */
   .en30s-card {
@@ -462,24 +472,24 @@
     background: var(--accent); color: #fff; font-size: 12px; font-weight: 700;
     display: flex; align-items: center; justify-content: center;
   }
-  .temps-lectura { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; }
+  .temps-lectura { font-family: 'Fira Code', monospace; font-size: 10px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; }
 
   /* ── RESULTAT QUIZ ── */
   .quiz-progres { display: flex; gap: 6px; margin-bottom: 18px; }
-  .quiz-progres span { flex: 1; height: 6px; border-radius: 3px; background: var(--surface3); transition: background 0.3s; }
+  .quiz-progres span { flex: 1; height: 6px; border-radius: 3px; background: var(--surface3); transition: background 220ms var(--ease-out); }
   .quiz-progres span.fet-ok { background: var(--accent); }
   .quiz-progres span.fet-ko { background: var(--accent3); }
   .resultat-card {
     text-align: center; padding: 30px 20px; border-radius: var(--radius);
     background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-md);
-    animation: fadeUp 0.4s ease both; margin-top: 16px;
+    animation: fadeUp 340ms var(--ease-out) both; margin-top: 16px;
   }
   .resultat-emoji { font-size: 52px; margin-bottom: 8px; }
-  .resultat-titol { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 900; margin-bottom: 4px; }
+  .resultat-titol { font-family: 'Libre Baskerville', serif; font-size: 24px; font-weight: 900; margin-bottom: 4px; }
   .resultat-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 18px; }
   .resultat-desglos { display: flex; flex-direction: column; gap: 6px; max-width: 320px; margin: 0 auto 18px; text-align: left; }
   .desglos-row { display: flex; justify-content: space-between; font-size: 13px; padding: 8px 14px; background: var(--surface2); border-radius: 8px; }
-  .desglos-row strong { color: var(--accent); font-family: 'JetBrains Mono', monospace; }
+  .desglos-row strong { color: var(--accent); font-family: 'Fira Code', monospace; }
   .desglos-row.total { background: var(--accent-dim); border: 1px solid rgba(0,168,120,0.25); font-weight: 700; }
   .desglos-row.total strong { font-size: 15px; }
 
@@ -489,10 +499,52 @@
 
   /* ── LLIGA MES/TOTAL ── */
   .lliga-toggle { display: flex; gap: 4px; background: var(--surface2); padding: 4px; border-radius: 10px; margin-bottom: 14px; }
-  .lliga-btn { flex: 1; padding: 8px; border: none; border-radius: 8px; background: transparent; color: var(--text-muted); font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .lliga-btn { flex: 1; padding: 8px; border: none; border-radius: 8px; background: transparent; color: var(--text-muted); font-family: 'Sora', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; transition: transform 180ms var(--ease-out), background 180ms var(--ease-out), color 180ms var(--ease-out), border-color 180ms var(--ease-out), box-shadow 180ms var(--ease-out); }
   .lliga-btn.active { background: var(--surface); color: var(--accent); box-shadow: var(--shadow-sm); }
   .fet-avui-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
   .fet-avui-chip { font-size: 11px; padding: 4px 10px; border-radius: 999px; background: var(--accent-dim); color: var(--accent); font-weight: 600; }
+
+  /* ── INFOGRAFIA: LA XIFRA ── */
+  .xifra-card {
+    display: flex; align-items: center; gap: 18px;
+    background: linear-gradient(135deg, rgba(0,168,120,0.09), rgba(43,108,212,0.05));
+    border: 1px solid rgba(0,168,120,0.25); border-radius: var(--radius);
+    padding: 20px 22px; margin: 4px 0 10px;
+  }
+  .xifra-num {
+    font-family: 'Libre Baskerville', serif; font-weight: 900;
+    font-size: clamp(30px, 8vw, 44px); line-height: 1; color: var(--accent);
+    flex-shrink: 0; white-space: nowrap;
+  }
+  .xifra-context { font-size: 14px; font-weight: 500; line-height: 1.5; color: var(--text); }
+
+  /* ── INFOGRAFIA: FES / EVITA (semàfor) ── */
+  .semafor-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin: 4px 0 10px; }
+  @media (min-width: 520px) { .semafor-grid { grid-template-columns: 1fr 1fr; } }
+  .semafor-row {
+    display: flex; gap: 10px; align-items: flex-start;
+    padding: 12px 14px; border-radius: 10px; font-size: 13px; line-height: 1.5; font-weight: 500;
+  }
+  .semafor-row .ic { font-size: 16px; flex-shrink: 0; line-height: 1.3; }
+  .semafor-fes   { background: rgba(0,168,120,0.08); border: 1px solid rgba(0,168,120,0.25); color: var(--text); }
+  .semafor-evita { background: rgba(224,85,107,0.07); border: 1px solid rgba(224,85,107,0.25); color: var(--text); }
+
+  /* ── INFOGRAFIA: COM ACTUAR (passos) ── */
+  .passos-flux { display: flex; flex-direction: column; gap: 0; margin: 4px 0 10px; }
+  .pas-step { display: flex; gap: 14px; align-items: flex-start; position: relative; padding-bottom: 18px; }
+  .pas-step:last-child { padding-bottom: 0; }
+  .pas-step::before {
+    content: ''; position: absolute; left: 15px; top: 32px; bottom: 0;
+    width: 2px; background: linear-gradient(180deg, var(--accent), rgba(0,168,120,0.15));
+  }
+  .pas-step:last-child::before { display: none; }
+  .pas-num {
+    width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; z-index: 1;
+    background: var(--accent); color: #fff; font-weight: 700; font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,168,120,0.3);
+  }
+  .pas-text { font-size: 14px; font-weight: 500; line-height: 1.5; padding-top: 5px; color: var(--text); }
 
   .participant-select { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; padding: 14px 18px; background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius-sm); }
   .participant-select label { margin: 0; white-space: nowrap; font-size: 11px; }
@@ -506,8 +558,8 @@
 
   .podium { display: flex; align-items: flex-end; justify-content: center; gap: 10px; height: 130px; margin-bottom: 24px; padding: 0 8px; }
   .podium-place { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 6px; flex: 1; }
-  .podium-name { font-size: 11px; color: var(--text-soft); font-family: 'Outfit', sans-serif; text-align: center; font-weight: 500; }
-  .podium-score { font-size: 12px; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+  .podium-name { font-size: 11px; color: var(--text-soft); font-family: 'Sora', sans-serif; text-align: center; font-weight: 500; }
+  .podium-score { font-size: 12px; font-weight: 700; font-family: 'Fira Code', monospace; }
   .podium-bar { width: 100%; border-radius: 8px 8px 0 0; display: flex; align-items: center; justify-content: center; font-size: 20px; position: relative; overflow: hidden; }
   .podium-bar::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 50%); }
   .podium-bar.p1 { background: linear-gradient(180deg, #ffd700, #b8860b); height: 90px; box-shadow: 0 -4px 20px rgba(255,215,0,0.25); }
@@ -515,12 +567,12 @@
   .podium-bar.p3 { background: linear-gradient(180deg, #cd7f32, #7a4510); height: 50px; }
 
   .ranking-list { display: flex; flex-direction: column; gap: 8px; }
-  .ranking-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); transition: all 0.2s; }
+  .ranking-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); transition: transform 180ms var(--ease-out), background 180ms var(--ease-out), color 180ms var(--ease-out), border-color 180ms var(--ease-out), box-shadow 180ms var(--ease-out); }
   .ranking-item:hover { border-color: var(--border2); background: var(--surface3); transform: translateX(2px); }
   .ranking-item.rank-1 { border-color: rgba(255,215,0,0.25); background: rgba(255,215,0,0.04); }
-  .ranking-pos { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-muted); width: 22px; text-align: center; }
+  .ranking-pos { font-family: 'Fira Code', monospace; font-size: 12px; color: var(--text-muted); width: 22px; text-align: center; }
   .ranking-name { flex: 1; font-size: 14px; font-weight: 600; }
-  .ranking-pts { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--accent); font-weight: 700; }
+  .ranking-pts { font-family: 'Fira Code', monospace; font-size: 14px; color: var(--accent); font-weight: 700; }
   .ranking-streak { font-size: 11px; color: var(--accent4); margin-left: 4px; }
   .ranking-badges { display: flex; gap: 3px; margin-left: 4px; }
   .badge { font-size: 14px; cursor: default; }
@@ -528,34 +580,41 @@
   .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
   .stat-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; text-align: center; transition: border-color 0.2s; }
   .stat-box:hover { border-color: var(--border2); }
-  .stat-val { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 900; color: var(--accent); line-height: 1; }
-  .stat-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 6px; }
+  .stat-val { font-family: 'Libre Baskerville', serif; font-size: 30px; font-weight: 900; color: var(--accent); line-height: 1; }
+  .stat-label { font-family: 'Fira Code', monospace; font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 6px; }
 
   .player-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
   .player-item { display: flex; align-items: center; gap: 10px; padding: 11px 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); }
   .player-item .player-name { flex: 1; font-size: 14px; font-weight: 500; }
-  .player-item .player-pts { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent); margin-right: 8px; }
+  .player-item .player-pts { font-family: 'Fira Code', monospace; font-size: 12px; color: var(--accent); margin-right: 8px; }
   .player-item .remove { background: none; border: none; color: var(--accent3); cursor: pointer; font-size: 16px; opacity: 0.6; transition: opacity 0.2s; }
   .player-item .remove:hover { opacity: 1; }
 
   .add-player-row { display: flex; gap: 8px; }
   .add-player-row input { margin: 0; flex: 1; }
-  .btn-add { padding: 11px 18px; background: var(--accent-dim); border: 1px solid var(--accent); color: var(--accent); border-radius: var(--radius-sm); font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
+  .btn-add { padding: 11px 18px; background: var(--accent-dim); border: 1px solid var(--accent); color: var(--accent); border-radius: var(--radius-sm); font-family: 'Sora', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: transform 180ms var(--ease-out), background 180ms var(--ease-out), color 180ms var(--ease-out), border-color 180ms var(--ease-out), box-shadow 180ms var(--ease-out); }
   .btn-add:hover { background: rgba(0,168,120,0.15); }
 
   .history-list { display: flex; flex-direction: column; gap: 8px; }
   .history-item { padding: 13px 16px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; }
-  .history-date { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-muted); margin-bottom: 5px; letter-spacing: 0.5px; }
+  .history-date { font-family: 'Fira Code', monospace; font-size: 10px; color: var(--text-muted); margin-bottom: 5px; letter-spacing: 0.5px; }
   .history-topic { font-weight: 600; margin-bottom: 6px; color: var(--text); }
   .history-scores { display: flex; gap: 8px; flex-wrap: wrap; }
-  .history-score { font-size: 11px; padding: 3px 10px; background: var(--surface3); border-radius: 4px; font-family: 'JetBrains Mono', monospace; color: var(--text-muted); }
+  .history-score { font-size: 11px; padding: 3px 10px; background: var(--surface3); border-radius: 4px; font-family: 'Fira Code', monospace; color: var(--text-muted); }
 
   /* Toast */
-  .toast { position: fixed; bottom: 28px; right: 24px; background: var(--surface2); border: 1px solid var(--accent); color: var(--accent); padding: 12px 22px; border-radius: var(--radius-sm); font-size: 13px; font-family: 'JetBrains Mono', monospace; z-index: 999; transform: translateY(80px); opacity: 0; transition: all 0.3s; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+  .toast { position: fixed; bottom: 28px; right: 24px; background: var(--surface); border: 1px solid var(--accent); color: var(--accent); padding: 12px 22px; border-radius: var(--radius-sm); font-size: 13px; font-family: 'Fira Code', monospace; z-index: 999; transform: translateY(12px); opacity: 0; transition: opacity 200ms var(--ease-out), transform 200ms var(--ease-out); box-shadow: 0 4px 24px rgba(0,168,120,0.15); }
   .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.hiding { transform: translateY(-8px); opacity: 0; transition: opacity 160ms var(--ease-out), transform 160ms var(--ease-out); }
 
   .page { display: none; }
-  .page.active { display: block; animation: fadeIn 0.3s ease; }
+  .page.active { display: block; animation: fadeIn 260ms var(--ease-out) both; }
+  /* Stagger cards dins de la pàgina activa */
+  .page.active > .card:nth-child(1) { animation: fadeUp 300ms 0ms var(--ease-out) both; }
+  .page.active > .card:nth-child(2) { animation: fadeUp 300ms 50ms var(--ease-out) both; }
+  .page.active > .card:nth-child(3) { animation: fadeUp 300ms 100ms var(--ease-out) both; }
+  .page.active > .card:nth-child(4) { animation: fadeUp 300ms 150ms var(--ease-out) both; }
+  .page.active > .card:nth-child(5) { animation: fadeUp 300ms 200ms var(--ease-out) both; }
 
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: transparent; }
@@ -567,6 +626,14 @@
     .data-row { grid-template-columns: 1fr 1fr auto; }
     .nav-tab { font-size: 11px; padding: 9px 6px; }
   }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    .confeti { display: none; }
+  }
 </style>
 </head>
 <body>
@@ -577,7 +644,7 @@
       <div class="logo">Formació<em>Farma</em></div>
       <div class="subtitle">farmàcia ortopèdia platja cubelles</div>
     </div>
-    <div id="conn-status" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);cursor:pointer;" onclick="loadState()" title="Clica per refrescar">
+    <div id="conn-status" style="font-family:'Fira Code',monospace;font-size:11px;color:var(--text-muted);cursor:pointer;" onclick="loadState()" title="Clica per refrescar">
       <span style="color:var(--text-muted)">⏳ Connectant...</span>
     </div>
   </header>
@@ -611,7 +678,7 @@
   <div class="page active" id="page-formacio">
     <div class="card" id="formacio-loading" style="text-align:center;padding:40px;">
       <div style="font-size:32px;margin-bottom:12px;">⏳</div>
-      <div style="color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:13px;">Carregant la formació del dia...</div>
+      <div style="color:var(--text-muted);font-family:'Fira Code',monospace;font-size:13px;">Carregant la formació del dia...</div>
     </div>
 
     <div id="formacio-content" style="display:none;">
@@ -705,15 +772,15 @@
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:16px 0;">
           <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center;">
             <div style="font-size:18px;margin-bottom:4px;">📊</div>
-            <div style="font-size:10px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;">Vendes Farmatic</div>
+            <div style="font-size:10px;color:var(--text-muted);font-family:'Fira Code',monospace;">Vendes Farmatic</div>
           </div>
           <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center;">
             <div style="font-size:18px;margin-bottom:4px;">⏳</div>
-            <div style="font-size:10px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;">Caducitats</div>
+            <div style="font-size:10px;color:var(--text-muted);font-family:'Fira Code',monospace;">Caducitats</div>
           </div>
           <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center;">
             <div style="font-size:18px;margin-bottom:4px;">📚</div>
-            <div style="font-size:10px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;">Bibliografia</div>
+            <div style="font-size:10px;color:var(--text-muted);font-family:'Fira Code',monospace;">Bibliografia</div>
           </div>
         </div>
 
@@ -727,7 +794,7 @@
           Els PDFs, Words i PowerPoints de la carpeta <strong>PDFs_Formació</strong> de Drive s'indexen aquí
           perquè Gemini els pugui usar com a base clínica. Indexa'ls un cop i quedaran disponibles per sempre.
         </p>
-        <div id="biblio-estat" style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-muted);margin-bottom:12px;">
+        <div id="biblio-estat" style="font-family:'Fira Code',monospace;font-size:12px;color:var(--text-muted);margin-bottom:12px;">
           Comprovant estat...
         </div>
         <button onclick="indexarBiblioteca()" class="btn-small primary" id="btn-indexar" style="padding:10px 18px;font-size:13px;">
@@ -779,23 +846,23 @@
 
       <div style="display:flex;gap:10px;margin-bottom:12px;">
         <button class="btn-generate" onclick="copyPromptToClipboard()" style="flex:1;">📋 Copiar prompt per a Claude</button>
-        <a href="https://claude.ai" target="_blank" style="display:flex;align-items:center;padding:0 20px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);color:var(--text-muted);font-size:13px;font-family:'Outfit',sans-serif;text-decoration:none;white-space:nowrap;">Obrir Claude.ai ↗</a>
+        <a href="https://claude.ai" target="_blank" style="display:flex;align-items:center;padding:0 20px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);color:var(--text-muted);font-size:13px;font-family:'Sora',sans-serif;text-decoration:none;white-space:nowrap;">Obrir Claude.ai ↗</a>
       </div>
 
       <div id="prompt-box" style="display:none;margin-bottom:16px;">
         <div style="background:var(--bg);border:1px solid var(--accent);border-radius:10px;overflow:hidden;">
           <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:rgba(0,168,120,0.06);border-bottom:1px solid var(--border);">
-            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);text-transform:uppercase;letter-spacing:1px;">✓ Prompt copiat</span>
-            <button onclick="copyPromptToClipboard()" style="background:none;border:1px solid var(--accent);color:var(--accent);border-radius:6px;padding:4px 12px;font-size:11px;cursor:pointer;font-family:'JetBrains Mono',monospace;">Tornar a copiar</button>
+            <span style="font-family:'Fira Code',monospace;font-size:10px;color:var(--accent);text-transform:uppercase;letter-spacing:1px;">✓ Prompt copiat</span>
+            <button onclick="copyPromptToClipboard()" style="background:none;border:1px solid var(--accent);color:var(--accent);border-radius:6px;padding:4px 12px;font-size:11px;cursor:pointer;font-family:'Fira Code',monospace;">Tornar a copiar</button>
           </div>
-          <div id="prompt-preview-text" style="padding:16px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);line-height:1.7;max-height:180px;overflow-y:auto;white-space:pre-wrap;"></div>
+          <div id="prompt-preview-text" style="padding:16px;font-family:'Fira Code',monospace;font-size:11px;color:var(--text-muted);line-height:1.7;max-height:180px;overflow-y:auto;white-space:pre-wrap;"></div>
         </div>
       </div>
 
       <div class="card">
         <div class="card-title">Enganxa la resposta de Claude</div>
         <textarea id="manual-response" placeholder="Copia la resposta de Claude i enganxa-la aquí..." style="min-height:120px;" oninput="onManualResponseInput()"></textarea>
-        <button id="manual-load-btn" onclick="loadManualResponse()" disabled style="width:100%;padding:12px;background:var(--accent4);color:#1a0a00;border:none;border-radius:var(--radius-sm);font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;opacity:0.5;">→ Carregar i previsualitzar</button>
+        <button id="manual-load-btn" onclick="loadManualResponse()" disabled style="width:100%;padding:12px;background:var(--accent4);color:#1a0a00;border:none;border-radius:var(--radius-sm);font-family:'Sora',sans-serif;font-size:13px;font-weight:600;cursor:pointer;opacity:0.5;">→ Carregar i previsualitzar</button>
       </div>
 
       <div class="card" id="manual-preview-card" style="display:none;">
@@ -846,12 +913,12 @@
       <input type="text" id="prog-titol" placeholder="ex: Peu diabètic, Al·lèrgies primaverals..." style="margin-bottom:12px;">
 
       <label>Contingut formatiu</label>
-      <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;font-family:'JetBrains Mono',monospace;">
+      <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;font-family:'Fira Code',monospace;">
         Pots generar-lo al Generador i copiar-lo aquí, o pegar la resposta de Claude directament
       </div>
       <textarea id="prog-contingut" placeholder="Enganxa aquí el contingut formatiu complet (amb el format ## OBJECTIU, ## CONTINGUT PRINCIPAL, etc.)..." style="min-height:150px;"></textarea>
 
-      <button onclick="addFormacioManual()" style="width:100%;padding:14px;background:var(--accent);color:var(--bg);border:none;border-radius:var(--radius);font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;cursor:pointer;margin-top:4px;">
+      <button onclick="addFormacioManual()" style="width:100%;padding:14px;background:var(--accent);color:var(--bg);border:none;border-radius:var(--radius);font-family:'Sora',sans-serif;font-size:14px;font-weight:600;cursor:pointer;margin-top:4px;">
         📅 Programar formació
       </button>
     </div>
@@ -862,6 +929,38 @@
       <div id="prog-list">
         <div style="text-align:center;padding:20px;color:var(--text-muted);font-size:13px;">Carregant...</div>
       </div>
+    </div>
+
+    <!-- Panell resultat reciclar/reprogramar (s'obre aquí baix, visible) -->
+    <div class="card" id="prog-resultat-card" style="display:none; border: 2px solid var(--accent);">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <div class="card-title" id="prog-resultat-titol" style="margin:0;">📝 Contingut preparat</div>
+        <button onclick="tancarResultatPrograma()" style="background:none;border:none;color:var(--text-muted);font-size:20px;cursor:pointer;padding:0;">×</button>
+      </div>
+
+      <div class="grid-2" style="margin-bottom:12px;">
+        <div>
+          <label>Data de publicació</label>
+          <input type="date" id="prog-resultat-data" style="margin:0;">
+        </div>
+        <div>
+          <label>O afegir a la cua</label>
+          <select id="prog-resultat-tipus" style="margin:0;">
+            <option value="data">Data concreta</option>
+            <option value="cua">Afegir a la cua</option>
+          </select>
+        </div>
+      </div>
+
+      <label>Títol</label>
+      <input type="text" id="prog-resultat-titol-input" style="margin-bottom:12px;">
+
+      <label>Contingut formatiu</label>
+      <textarea id="prog-resultat-contingut" style="min-height:180px;margin-bottom:12px;font-size:12px;"></textarea>
+
+      <button onclick="programarDesDeResultat()" style="width:100%;padding:14px;background:var(--accent);color:var(--bg);border:none;border-radius:var(--radius);font-family:'Sora',sans-serif;font-size:14px;font-weight:600;cursor:pointer;">
+        📅 Programar aquesta formació
+      </button>
     </div>
 
   </div>
@@ -882,7 +981,7 @@
 
       <div id="quiz-content" style="display:none">
         <div id="quiz-qui-respon" style="font-size:13px;color:var(--text-muted);margin-bottom:8px;"></div>
-        <div id="quiz-topic-label" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);margin-bottom:16px;"></div>
+        <div id="quiz-topic-label" style="font-family:'Fira Code',monospace;font-size:11px;color:var(--text-muted);margin-bottom:16px;"></div>
 
         <div class="quiz-progres" id="quiz-progres"></div>
 
@@ -1057,7 +1156,7 @@ function showConnectionStatus(status) {
     error:   ['✗', 'var(--accent3)', 'Error connexió']
   };
   const [icon, color, text] = map[status];
-  el.innerHTML = `<span style="color:${color};font-family:'JetBrains Mono',monospace;font-size:11px;">${icon} ${text}</span>`;
+  el.innerHTML = `<span style="color:${color};font-family:'Fira Code',monospace;font-size:11px;">${icon} ${text}</span>`;
 }
 
 async function loadState() {
@@ -1104,7 +1203,7 @@ function setTipusExcel(tipus) {
   tipusExcel = tipus;
   const isVendes = tipus === 'vendes';
 
-  const baseStyle = 'flex:1;padding:12px;border-radius:10px;cursor:pointer;transition:all 0.2s;font-family:Outfit,sans-serif;font-size:13px;font-weight:';
+  const baseStyle = 'flex:1;padding:12px;border-radius:10px;cursor:pointer;transition:all 0.2s;font-family:Sora,sans-serif;font-size:13px;font-weight:';
   document.getElementById('tipus-vendes').style.cssText = baseStyle +
     (isVendes ? '600;border:1px solid var(--accent);background:rgba(0,168,120,0.1);color:var(--accent);' :
                 '500;border:1px solid var(--border2);background:transparent;color:var(--text-muted);');
@@ -1315,7 +1414,7 @@ function renderExcelPreview(rows, cc, nc, uc, ec) {
   const table = document.getElementById('excel-table');
   table.innerHTML = `
     <thead><tr style="background:var(--surface2)">
-      ${cols.map(c => `<th style="padding:8px 12px;text-align:left;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);text-transform:uppercase;border-bottom:1px solid var(--border)">${excelHeaders[c]||('Col ' + (c+1))}</th>`).join('')}
+      ${cols.map(c => `<th style="padding:8px 12px;text-align:left;font-family:'Fira Code',monospace;font-size:10px;color:var(--accent);text-transform:uppercase;border-bottom:1px solid var(--border)">${excelHeaders[c]||('Col ' + (c+1))}</th>`).join('')}
     </tr></thead>
     <tbody>
       ${rows.slice(0,15).map((row,i) => `
@@ -1667,6 +1766,12 @@ function renderOutput(text) {
   let isFirstRow = true;
   let afterSection = '';
   let ortoOpen = false;
+  let semOpen = false;   // graella FES/EVITA oberta
+  let pasOpen = false;   // flux de passos obert
+  const closeVisuals = () => {
+    if (semOpen) { html += '</div>'; semOpen = false; }
+    if (pasOpen) { html += '</div>'; pasOpen = false; }
+  };
 
   const closeList = () => { if (inList) { html += inList === 'en30s' ? '</div>' : '</ul>'; inList = false; } };
   const closeTable = () => {
@@ -1678,6 +1783,9 @@ function renderOutput(text) {
 
   const SEC_CFG = {
     'EN 30 SEGONS':        { icon: '⚡', color: 'var(--accent)'   },
+    'LA XIFRA':            { icon: '📊', color: 'var(--accent)'   },
+    'FES I EVITA':         { icon: '🚦', color: 'var(--accent)'   },
+    'COM ACTUAR':          { icon: '🧭', color: 'var(--accent2)'  },
     'OBJECTIU':            { icon: '🎯', color: 'var(--accent2)'  },
     'CONTEXT CLINIC':      { icon: '🩺', color: 'var(--accent2)'  },
     'CONTEXT CLÍNIC':      { icon: '🩺', color: 'var(--accent2)'  },
@@ -1714,18 +1822,20 @@ function renderOutput(text) {
     } else if (line.startsWith('## ')) {
       closeList(); closeTable();
       if (ortoOpen) { html += '</div>'; ortoOpen = false; }
+      closeVisuals();
       const sec = line.replace(/^##\s+/, '').trim();
       const secKey = sec.toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
       afterSection = secKey;
       const c = SEC_CFG[sec] || SEC_CFG[secKey] || { icon: '\u25B8', color: 'var(--accent)' };
       html += `<div style="display:flex;align-items:center;gap:11px;margin:28px 0 14px;">
         <div style="width:34px;height:34px;border-radius:10px;background:${c.color}18;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;box-shadow:0 0 0 1px ${c.color}25;">${c.icon}</div>
-        <span style="font-family:\'JetBrains Mono\',monospace;font-size:11px;color:${c.color};text-transform:uppercase;letter-spacing:2.5px;font-weight:600;">${sec}</span>
+        <span style="font-family:\'Fira Code\',monospace;font-size:11px;color:${c.color};text-transform:uppercase;letter-spacing:2.5px;font-weight:600;">${sec}</span>
         <span style="flex:1;height:1px;background:linear-gradient(90deg, ${c.color}25, transparent);"></span>
       </div>`;
 
     } else if (line.match(/^[-*]\s+/)) {
       closeTable();
+      closeVisuals();
       const item = line.replace(/^[-*]\s+/, '');
       // ── EN 30 SEGONS: targeta numerada ──
       if (afterSection.includes('30 SEGONS')) {
@@ -1743,7 +1853,7 @@ function renderOutput(text) {
         closeList();
         html += `<div class="sub-header">${item.replace(/:$/, '')}</div>`;
       } else {
-        html += `<li style="display:flex;gap:10px;align-items:flex-start;padding:13px 16px;background:${bg};border-radius:10px;border-left:3px solid ${bc};font-size:13.5px;line-height:1.6;">
+        html += `<li style="display:flex;gap:10px;align-items:flex-start;padding:13px 16px;background:${bg};border-radius:10px;border:1px solid ${bc}25;font-size:13.5px;line-height:1.6;">
           <span style="color:${bc};flex-shrink:0;font-size:8px;margin-top:6px;">◆</span>
           <span style="flex:1;">${item}</span>
         </li>`;
@@ -1766,6 +1876,38 @@ function renderOutput(text) {
     } else {
       closeList(); closeTable();
       const s = afterSection;
+
+      // ── LA XIFRA: dada gran d'infografia ──
+      if (line.match(/^XIFRA\s*:/i)) {
+        closeVisuals();
+        const cos = line.replace(/^XIFRA\s*:\s*/i, '');
+        const parts = cos.split('|');
+        const num = (parts[0] || '').trim();
+        const ctx = (parts[1] || '').trim();
+        html += `<div class="xifra-card"><div class="xifra-num">${num}</div><div class="xifra-context">${ctx}</div></div>`;
+        continue;
+      }
+
+      // ── FES / EVITA: semàfor ──
+      if (line.match(/^(FES|EVITA)\s*:/i)) {
+        if (pasOpen) { html += '</div>'; pasOpen = false; }
+        if (!semOpen) { html += '<div class="semafor-grid">'; semOpen = true; }
+        const m = line.match(/^(FES|EVITA)\s*:\s*(.*)$/i);
+        const esFes = m[1].toUpperCase() === 'FES';
+        html += `<div class="semafor-row ${esFes ? 'semafor-fes' : 'semafor-evita'}"><span class="ic">${esFes ? '✅' : '⛔'}</span><span>${m[2].trim()}</span></div>`;
+        continue;
+      }
+
+      // ── PAS N: flux d'actuació ──
+      if (line.match(/^PAS\s*\d+\s*:/i)) {
+        if (semOpen) { html += '</div>'; semOpen = false; }
+        if (!pasOpen) { html += '<div class="passos-flux">'; pasOpen = true; }
+        const m = line.match(/^PAS\s*(\d+)\s*:\s*(.*)$/i);
+        html += `<div class="pas-step"><div class="pas-num">${m[1]}</div><div class="pas-text">${m[2].trim()}</div></div>`;
+        continue;
+      }
+      // Línia normal després de semàfor/passos → tanca'ls
+      closeVisuals();
 
       // ── Targetes d'ortopèdia (CAS/DETECTAR/SOLUCIO/CONSELL) ──
       if (s.includes('ORTOPEDIA') && line.match(/^(CAS|DETECTAR|SOLUCIO|SOLUCIÓ|CONSELL)\s*:/i)) {
@@ -1826,7 +1968,7 @@ function renderOutput(text) {
     }
   }
 
-  closeList(); closeTable();
+  closeList(); closeTable(); closeVisuals(); if (ortoOpen) { html += '</div>'; ortoOpen = false; }
   if (ortoOpen) html += '</div>';
   return html;
 }
@@ -2044,11 +2186,11 @@ function downloadPDF() {
   /* Sections */
   .section {
     background: #f8fafb; border-radius: 10px; padding: 12px 14px;
-    border-left: 4px solid var(--accent);
+    border-top: 3px solid var(--accent); padding-top: 12px;
   }
-  .section.blue { border-left-color: #6e9dff; }
-  .section.red { border-left-color: #ff6b6b; background: #fff8f8; }
-  .section.gold { border-left-color: #ffd166; background: #fffbf0; }
+  .section.blue { border-top-color: #6e9dff; }
+  .section.red { border-top-color: #ff6b6b; background: #fff8f8; }
+  .section.gold { border-top-color: #ffd166; background: #fffbf0; }
   .section.full { grid-column: 1 / -1; }
 
   .section-label {
@@ -2279,7 +2421,7 @@ function renderQuiz() {
       <div class="quiz-options">
         ${q.options.map((opt, oi) => `
           <button class="quiz-option" onclick="answerImmediate(${qi}, ${oi})" id="qo-${qi}-${oi}">
-            <span style="font-family:'JetBrains Mono',monospace;color:var(--accent2);margin-right:8px;">${String.fromCharCode(65+oi)})</span>${opt}
+            <span style="font-family:'Fira Code',monospace;color:var(--accent2);margin-right:8px;">${String.fromCharCode(65+oi)})</span>${opt}
           </button>
         `).join('')}
       </div>
@@ -2513,7 +2655,7 @@ function renderFetAvuiSelector() {
   const unics = [...new Set(fets)];
   if (!unics.length) { el.innerHTML = ''; return; }
   el.innerHTML = `
-    <div style="font-size:11px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;">✅ Ja han fet el quiz avui</div>
+    <div style="font-size:11px;color:var(--text-muted);font-family:'Fira Code',monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;">✅ Ja han fet el quiz avui</div>
     <div style="display:flex;flex-wrap:wrap;gap:6px;">
       ${unics.map(n => `<span class="fet-avui-chip">✓ ${n}</span>`).join('')}
     </div>`;
@@ -2656,9 +2798,14 @@ async function resetAll() {
 // ══════════════════════════
 function showToast(msg) {
   const t = document.getElementById('toast');
+  if (t._hideTimer) clearTimeout(t._hideTimer);
+  t.classList.remove('hiding');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
+  t._hideTimer = setTimeout(() => {
+    t.classList.add('hiding');
+    setTimeout(() => { t.classList.remove('show','hiding'); }, 180);
+  }, 2600);
 }
 
 // ══════════════════════════
@@ -2708,11 +2855,11 @@ function setManualTab(tab) {
   document.getElementById('manual-prompt-mode').style.display = isPrompt ? 'block' : 'none';
   document.getElementById('manual-direct-mode').style.display = isPrompt ? 'none' : 'block';
   document.getElementById('manual-tab-prompt').style.cssText = isPrompt
-    ? 'flex:1;padding:8px;border:1px solid var(--accent);background:rgba(0,168,120,0.08);color:var(--accent);border-radius:6px;font-family:"Outfit",sans-serif;font-size:12px;font-weight:600;cursor:pointer;'
-    : 'flex:1;padding:8px;border:1px solid var(--border);background:transparent;color:var(--text-muted);border-radius:6px;font-family:"Outfit",sans-serif;font-size:12px;cursor:pointer;';
+    ? 'flex:1;padding:8px;border:1px solid var(--accent);background:rgba(0,168,120,0.08);color:var(--accent);border-radius:6px;font-family:"Sora",sans-serif;font-size:12px;font-weight:600;cursor:pointer;'
+    : 'flex:1;padding:8px;border:1px solid var(--border);background:transparent;color:var(--text-muted);border-radius:6px;font-family:"Sora",sans-serif;font-size:12px;cursor:pointer;';
   document.getElementById('manual-tab-direct').style.cssText = isPrompt
-    ? 'flex:1;padding:8px;border:1px solid var(--border);background:transparent;color:var(--text-muted);border-radius:6px;font-family:"Outfit",sans-serif;font-size:12px;cursor:pointer;'
-    : 'flex:1;padding:8px;border:1px solid var(--accent4);background:rgba(255,209,102,0.1);color:var(--accent4);border-radius:6px;font-family:"Outfit",sans-serif;font-size:12px;font-weight:600;cursor:pointer;';
+    ? 'flex:1;padding:8px;border:1px solid var(--border);background:transparent;color:var(--text-muted);border-radius:6px;font-family:"Sora",sans-serif;font-size:12px;cursor:pointer;'
+    : 'flex:1;padding:8px;border:1px solid var(--accent4);background:rgba(255,209,102,0.1);color:var(--accent4);border-radius:6px;font-family:"Sora",sans-serif;font-size:12px;font-weight:600;cursor:pointer;';
 }
 
 function buildManualPrompt() {
@@ -2921,7 +3068,7 @@ async function carregarProgramacio() {
       return `
       <div style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--bg);border:1px solid var(--border);border-radius:8px;margin-bottom:8px;flex-wrap:wrap;">
         <div style="flex-shrink:0;">
-          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:${badgeColor};background:${badgeBg};padding:4px 10px;border-radius:20px;white-space:nowrap;">${estatBadge}</div>
+          <div style="font-family:'Fira Code',monospace;font-size:11px;color:${badgeColor};background:${badgeBg};padding:4px 10px;border-radius:20px;white-space:nowrap;">${estatBadge}</div>
         </div>
         <div style="flex:1;min-width:160px;">
           <div style="font-size:14px;font-weight:500;color:var(--text);">${item.titol}</div>
@@ -2935,43 +3082,66 @@ async function carregarProgramacio() {
   }
 }
 
-// Omple el formulari de dalt amb un títol i contingut i fa scroll-to
-function omplePrograma(titol, contingut) {
-  document.getElementById('prog-titol').value = titol || '';
-  document.getElementById('prog-contingut').value = contingut || '';
-  document.getElementById('prog-data').value = '';
-  document.getElementById('prog-tipus').value = 'data';
-  document.getElementById('prog-form-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+// Obre el panell de resultat (sota la llista, visible) amb títol i contingut
+function ompleResultatPrograma(titol, contingut, esperant) {
+  const card = document.getElementById('prog-resultat-card');
+  document.getElementById('prog-resultat-titol').textContent = esperant ? '⏳ Generant...' : '📝 Contingut preparat — revisa i programa';
+  document.getElementById('prog-resultat-titol-input').value = titol || '';
+  document.getElementById('prog-resultat-contingut').value = contingut || '';
+  document.getElementById('prog-resultat-contingut').disabled = !!esperant;
+  document.getElementById('prog-resultat-data').value = '';
+  document.getElementById('prog-resultat-tipus').value = 'data';
+  card.style.display = 'block';
+  setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
 }
 
-// Reprograma: reaprofita el MATEIX contingut ja publicat
+function tancarResultatPrograma() {
+  document.getElementById('prog-resultat-card').style.display = 'none';
+}
+
+async function programarDesDeResultat() {
+  const titol = document.getElementById('prog-resultat-titol-input').value.trim();
+  const contingut = document.getElementById('prog-resultat-contingut').value.trim();
+  const tipus = document.getElementById('prog-resultat-tipus').value;
+  const dataInput = document.getElementById('prog-resultat-data').value;
+  if (!titol) { showToast('Cal posar un títol'); return; }
+  if (!contingut) { showToast('Cal posar el contingut'); return; }
+  if (tipus === 'data' && !dataInput) { showToast('Cal seleccionar una data'); return; }
+  let dataStr = '', estat = 'PENDENT';
+  if (tipus === 'cua') { estat = 'CUA'; }
+  else if (dataInput) {
+    const parts = dataInput.split('-');
+    dataStr = parts[2] + '/' + parts[1] + '/' + parts[0];
+  }
+  try {
+    showToast('Guardant...');
+    await gsPost('addProgramacio', { data: dataStr, titol, contingut, estat });
+    tancarResultatPrograma();
+    await carregarProgramacio();
+    showToast('Formació programada!');
+  } catch(e) { showToast('Error: ' + e.message); }
+}
+
 function reprogramar(i) {
   const item = (window.progItems || [])[i];
-  if (!item) { showToast('No s\'ha trobat la formació'); return; }
-  omplePrograma(item.titol, item.contingut);
-  showToast('📅 Tria una data i prem Programar per repetir-la');
+  if (!item) { showToast("No s'ha trobat la formació"); return; }
+  ompleResultatPrograma(item.titol, item.contingut, false);
+  showToast('Tria una data i prem Programar');
 }
 
-// Recicla el tema: genera contingut NOU amb Gemini sobre el mateix tema
 async function reciclarTema(i) {
   const item = (window.progItems || [])[i];
-  if (!item) { showToast('No s\'ha trobat la formació'); return; }
-  if (!confirm('Generar contingut NOU sobre el tema "' + item.titol + '"?\nPot trigar uns 30 segons.')) return;
-  omplePrograma(item.titol, '⏳ Generant contingut nou sobre aquest tema... (uns 30 segons)');
-  document.getElementById('prog-contingut').disabled = true;
-  showToast('⏳ Reciclant tema amb Gemini...');
+  if (!item) { showToast("No s'ha trobat la formació"); return; }
+  if (!confirm('Generar contingut NOU sobre "' + item.titol + '"?\nPot trigar uns 30 segons.')) return;
+  ompleResultatPrograma(item.titol, 'Generant contingut nou...', true);
+  showToast('Reciclant tema amb Gemini...');
   try {
-    const d = await gsPost('generarContingutPerTema', { tema: item.titol });
-    document.getElementById('prog-contingut').disabled = false;
-    omplePrograma(d.titol || item.titol, d.contingut || '');
-    showToast('✓ Contingut nou generat! Revisa\'l, tria data i prem Programar');
+    const d = await gsPost('generarContingutPerTema', { tema: item.titol }, 90000);
+    ompleResultatPrograma(d.titol || item.titol, d.contingut || '', false);
+    showToast("Contingut nou generat! Revisa'l i programa-la");
   } catch(e) {
-    document.getElementById('prog-contingut').disabled = false;
-    omplePrograma(item.titol, '');
-    const msg = e.message.includes('desconeguda')
-      ? '⚠️ Cal redesplegar l\'Apps Script (v6). Veure instruccions.'
-      : '⚠️ Error reciclant: ' + e.message;
-    showToast(msg);
+    tancarResultatPrograma();
+    showToast('Error: ' + e.message);
   }
 }
 
