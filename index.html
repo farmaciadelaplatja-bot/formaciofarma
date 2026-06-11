@@ -1159,14 +1159,92 @@ function showConnectionStatus(status) {
   const map = {
     loading: ['⏳', 'var(--accent4)', 'Connectant...'],
     ok:      ['●', 'var(--accent)',  'Connectat'],
-    error:   ['✗', 'var(--accent3)', 'Error connexió']
+    cache:   ['📱', 'var(--accent4)', 'Mode local · toca per reintentar'],
+    error:   ['📡', 'var(--accent3)', 'Sense connexió · toca per reintentar']
   };
-  const [icon, color, text] = map[status];
+  const [icon, color, text] = map[status] || map.error;
   el.innerHTML = `<span style="color:${color};font-family:'Fira Code',monospace;font-size:11px;">${icon} ${text}</span>`;
+  // Banner d'ajuda per al titular (només si error real, mai amb cache)
+  let banner = document.getElementById('conn-banner');
+  if (status === 'error') {
+    if (!banner) {
+      banner = document.createElement('div');
+      banner.id = 'conn-banner';
+      banner.style.cssText = 'margin:0 0 16px;padding:12px 16px;background:rgba(224,155,31,0.08);border:1px solid rgba(224,155,31,0.3);border-radius:12px;font-size:12px;line-height:1.6;color:var(--text);';
+      banner.innerHTML = `<strong>⚠️ No es pot connectar amb el full de càlcul.</strong><br>
+        L'app funciona en mode local (els quizos es guarden al dispositiu i se sincronitzaran).<br>
+        <span style="color:var(--text-muted);">Per arreglar-ho (titular): Apps Script → Desplegar → Gestiona desplegaments → Edita → <strong>Qui té accés: "Qualsevol persona"</strong> → Nova versió → Desplega.</span>`;
+      const main = document.querySelector('.perfil-bar');
+      if (main && main.parentNode) main.parentNode.insertBefore(banner, main);
+    }
+  } else if (banner) {
+    banner.remove();
+  }
+}
+
+// ══════════════════════════
+// CACHE LOCAL + SINCRONITZACIÓ (funciona offline)
+// ══════════════════════════
+const CACHE_KEY = 'ff_cache_v1';
+const PENDENTS_KEY = 'ff_pendents_v1';
+
+function desaCache() {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify({
+      players: gameState.players, history: gameState.history, ts: Date.now()
+    }));
+  } catch(e){}
+}
+
+function carregaCache() {
+  try {
+    const c = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+    if (c && c.players) {
+      gameState.players = c.players;
+      gameState.history = c.history || [];
+      gameState.totalSessions = gameState.history.length;
+      return true;
+    }
+  } catch(e){}
+  return false;
+}
+
+// Resultats fets al dispositiu (pendents de sincronitzar o ja sincronitzats)
+function llegeixPendents() {
+  try { return JSON.parse(localStorage.getItem(PENDENTS_KEY) || '[]'); } catch(e){ return []; }
+}
+function desaPendents(arr) {
+  // Neteja entrades de fa més de 7 dies
+  const limit = Date.now() - 7*24*3600*1000;
+  try { localStorage.setItem(PENDENTS_KEY, JSON.stringify(arr.filter(p => p.ts > limit))); } catch(e){}
+}
+function afegeixPendent(reg) {
+  const arr = llegeixPendents();
+  arr.push(reg);
+  desaPendents(arr);
+}
+
+// Intenta enviar al backend els resultats que es van guardar sense connexió
+async function sincronitzaPendents() {
+  const arr = llegeixPendents();
+  const pendents = arr.filter(p => !p.sincronitzat);
+  if (!pendents.length) return;
+  for (const p of pendents) {
+    try {
+      await gsPost('saveQuizResult', { nom: p.nom, correctes: p.correct, total: p.total, tema: p.topic });
+      p.sincronitzat = true;
+    } catch(e) { break; } // si falla un, parem (seguim sense connexió)
+  }
+  desaPendents(arr);
 }
 
 async function loadState() {
   showConnectionStatus('loading');
+  // 1) Pinta IMMEDIATAMENT amb la cache local (memòria instantània)
+  const teniaCache = carregaCache();
+  if (teniaCache) { renderAll(); renderPerfil(); pintaFetsAvui(); }
+
+  // 2) Refresca del backend
   try {
     const [rankData, histData] = await Promise.all([
       gsCall({ action: 'getRanking' }),
@@ -1178,16 +1256,18 @@ async function loadState() {
     }));
     const histMap = {};
     (histData.historial || []).forEach(h => {
-      const key = h.data + '|' + h.tema;
+      const key = dataKey(h.data) + '|' + h.tema;
       if (!histMap[key]) histMap[key] = { date: h.data, topic: h.tema, scores: [] };
       histMap[key].scores.push({ name: h.participant, pts: h.punts, correct: h.correctes, total: h.total });
     });
     gameState.history = Object.values(histMap);
     gameState.totalSessions = gameState.history.length;
     gameState.totalQuestions = (histData.historial||[]).reduce((s,h) => s+(h.total||0), 0);
+    desaCache();
     showConnectionStatus('ok');
+    sincronitzaPendents(); // envia el que s'hagués guardat offline
   } catch(e) {
-    showConnectionStatus('error');
+    showConnectionStatus(teniaCache ? 'cache' : 'error');
   }
   renderAll();
   renderPerfil();
@@ -2539,23 +2619,47 @@ async function awardPoints(playerName, correct, total, topic) {
       sessions: p.sessions, ultimaData: p.ultimaData || '', badges: p.insignies || []
     }));
     if (!result.repetit) {
-      const today = new Date().toLocaleDateString('ca-ES');
-      let session = gameState.history.find(h => h.date === today && h.topic === topic);
+      const k = dataKey(new Date());
+      let session = gameState.history.find(h => dataKey(h.date) === k && h.topic === topic);
       if (!session) {
-        session = { date: today, topic, scores: [] };
+        session = { date: new Date().toISOString(), topic, scores: [] };
         gameState.history.unshift(session);
         gameState.totalSessions++;
       }
       session.scores.push({ name: playerName, pts: result.puntsTotals || 0, correct, total });
       gameState.totalQuestions += total;
+      // Registre local (per xips i com a còpia)
+      afegeixPendent({ nom: playerName, correct, total, topic, ts: Date.now(), sincronitzat: true });
     }
+    desaCache();
     renderAll();
     renderPerfil();
     pintaFetsAvui();
     return result;
   } catch(e) {
-    showToast('⚠️ Error guardant: ' + e.message);
-    return null;
+    // ── MODE OFFLINE: guarda al dispositiu i sincronitza més tard ──
+    const jaAvui = llegeixPendents().some(p =>
+      p.nom === playerName && dataKey(new Date(p.ts)) === dataKey(new Date()));
+    if (jaAvui) return { repetit: true, offline: true };
+
+    afegeixPendent({ nom: playerName, correct, total, topic, ts: Date.now(), sincronitzat: false });
+    // Punts locals provisionals (sense bonus matiner/ratxa, que els calcula el backend)
+    const base = correct * 10;
+    const perfecte = (correct === total && total > 0) ? 5 : 0;
+    // Actualitza el jugador en local perquè el ranking es mogui
+    const pl = gameState.players.find(p => p.name === playerName);
+    if (pl) { pl.points += base + perfecte; pl.pointsMes = (pl.pointsMes||0) + base + perfecte; pl.sessions++; }
+    desaCache();
+    renderAll();
+    renderPerfil();
+    pintaFetsAvui();
+    showToast('📱 Guardat al dispositiu — se sincronitzarà quan hi hagi connexió');
+    return {
+      offline: true,
+      desglossament: { base, perfecte, matiner: 0, ratxa: 0 },
+      puntsTotals: base + perfecte,
+      racha: pl ? pl.streak : 0
+    };
   }
 }
 
@@ -2616,14 +2720,33 @@ function mostraQuiEts() {
     <div id="fet-avui-selector" style="margin-top:14px;min-height:24px;"></div>
   </div>`;
   const grid = document.getElementById('qui-ets-grid');
-  grid.innerHTML = gameState.players.length
+  grid.innerHTML = (gameState.players.length
     ? gameState.players.map(p => {
         const hue = colorDe(p.name);
         return `<button class="qui-ets-btn" onclick="triaUsuari('${p.name.replace(/'/g,"\\'")}')" style="display:flex;align-items:center;gap:8px;">
           <span style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,hsl(${hue} 62% 44%),hsl(${(hue+45)%360} 62% 56%));color:#fff;font-size:12px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">${p.name.charAt(0).toUpperCase()}</span>${p.name}</button>`;
       }).join('')
-    : '<p style="font-size:13px;">Encara no hi ha participants. Demana al titular que n\'afegeixi a la pestanya Ranking.</p>';
+    : '')
+    + `<div style="display:flex;gap:6px;width:100%;max-width:300px;margin-top:6px;">
+        <input type="text" id="qui-ets-nou" placeholder="${gameState.players.length ? 'O escriu un altre nom...' : 'Escriu el teu nom...'}"
+          style="flex:1;margin:0;padding:10px 14px;font-size:13px;"
+          onkeydown="if(event.key==='Enter')afegeixNouUsuari()">
+        <button class="qui-ets-btn" onclick="afegeixNouUsuari()" style="padding:10px 16px;">→</button>
+      </div>`;
   pintaFetsAvui();
+}
+
+function afegeixNouUsuari() {
+  const inp = document.getElementById('qui-ets-nou');
+  const nom = (inp && inp.value || '').trim();
+  if (!nom) { showToast('Escriu un nom'); return; }
+  if (nom.length > 20) { showToast('Nom massa llarg (màx 20)'); return; }
+  // Afegir a la llista local si no existeix
+  if (!gameState.players.find(p => p.name === nom)) {
+    gameState.players.push({ name: nom, points: 0, pointsMes: 0, streak: 0, sessions: 0, badges: [] });
+    desaCache();
+  }
+  triaUsuari(nom);
 }
 
 function triaUsuari(nom) {
@@ -2692,6 +2815,8 @@ function quiHaFetAvui() {
   const noms = (gameState.history || [])
     .filter(h => dataKey(h.date) === k)
     .flatMap(h => h.scores.map(s => s.name));
+  // Fusiona registres locals del dispositiu (funciona sense connexió)
+  llegeixPendents().forEach(p => { if (dataKey(new Date(p.ts)) === k) noms.push(p.nom); });
   const unics = [...new Set(noms)];
   // Tu primer
   if (usuariActual && unics.includes(usuariActual)) {
